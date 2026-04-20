@@ -13,15 +13,16 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#030b14;--bg2:#06101f;--bg3:#0a1628;
+  --bg:#030b14;--bg2:#06101f;--bg3:#0a1628;--bg4:#0d1e35;
   --border:#1a3050;--border2:#1e3a5f;
   --blue:#4a90d9;--blue2:#357abd;
   --text:#c8d8f0;--muted:#7aafd4;--dim:#3a5070;
-  --gold:#f0c040;--green:#27ae60;--red:#c0392b;
+  --gold:#f0c040;--green:#27ae60;--red:#c0392b;--orange:#e67e22;
   --font:'Courier New',Courier,monospace;
 }
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;overflow-x:hidden}
 
+/* HEADER */
 .header{background:var(--bg2);border-bottom:1px solid var(--border);padding:11px 14px;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between}
 .hlogo{width:32px;height:32px;border-radius:50%;border:2px solid var(--blue);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--blue);flex-shrink:0}
 .htitle{font-size:12px;font-weight:bold;color:#fff}
@@ -31,10 +32,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 
 main{padding:12px 12px 110px;max-width:680px;margin:0 auto}
 
+/* SECTION */
 .sec{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px}
 .sec-title{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;color:var(--blue);border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:14px}
 .badge{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;min-width:20px;border-radius:50%;background:var(--blue);color:#fff;font-size:10px;font-weight:bold}
 
+/* FIELDS */
 .field{margin-bottom:10px}
 .field:last-child{margin-bottom:0}
 label{display:block;font-size:10px;font-weight:bold;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px}
@@ -46,23 +49,45 @@ select option{background:var(--bg3)}
 ::placeholder{color:var(--dim)}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 
+/* DYNAMIC BLOCKS */
 .dyn-list{display:flex;flex-direction:column;gap:10px}
 .dyn-block{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:12px}
 .dyn-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .dyn-label{font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:.7px;color:var(--gold)}
-.btn-remove{background:none;border:1px solid var(--red);color:var(--red);border-radius:5px;padding:4px 9px;font-size:10px;font-family:var(--font);cursor:pointer}
+.btn-remove{background:none;border:1px solid var(--red);color:var(--red);border-radius:5px;padding:4px 8px;font-size:10px;font-family:var(--font);cursor:pointer}
 .btn-remove:active{background:var(--red);color:#fff}
 
-.btn-add{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:12px;margin-top:10px;background:none;border:1px dashed var(--border2);border-radius:8px;color:var(--blue);font-family:var(--font);font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:.8px;cursor:pointer;transition:all .15s}
+/* ROLE PAIR BLOCK */
+.role-block{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:10px;display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.role-block:last-child{margin-bottom:0}
+.role-persona{flex:1;font-size:11px;color:var(--muted);font-weight:bold;text-transform:uppercase;letter-spacing:.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.role-input{flex:1;background:var(--bg);border:1px solid var(--border2);border-radius:5px;padding:7px 9px;color:var(--text);font-family:var(--font);font-size:12px;outline:none}
+.role-input:focus{border-color:var(--blue)}
+.role-list{display:flex;flex-direction:column;gap:0}
+
+/* ADD BUTTON */
+.btn-add{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:11px;margin-top:10px;background:none;border:1px dashed var(--border2);border-radius:8px;color:var(--blue);font-family:var(--font);font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:.8px;cursor:pointer;transition:all .15s}
 .btn-add:active{background:rgba(74,144,217,.1);border-color:var(--blue)}
-.btn-add-icon{font-size:18px;line-height:1;color:var(--blue)}
 
-.sublabel{font-size:10px;font-weight:bold;text-transform:uppercase;letter-spacing:.8px;color:var(--gold);margin:12px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+/* SUBLABEL */
+.sublabel{font-size:10px;font-weight:bold;text-transform:uppercase;letter-spacing:.8px;color:var(--gold);margin:14px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
 
+/* CRIME DETECTION */
+.crime-box{margin-top:10px;padding:10px;background:var(--bg4);border:1px solid var(--border2);border-radius:8px;display:none}
+.crime-box.show{display:block}
+.crime-title{font-size:10px;font-weight:bold;text-transform:uppercase;letter-spacing:.8px;color:var(--gold);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.crime-item{margin-bottom:10px;padding:8px;background:var(--bg3);border-radius:6px;border-left:3px solid var(--blue)}
+.crime-item:last-child{margin-bottom:0}
+.crime-name{font-size:11px;font-weight:bold;color:var(--blue);margin-bottom:4px}
+.crime-norm{font-size:10px;color:var(--text);line-height:1.6;padding-left:4px}
+.crime-ref{color:var(--gold);font-weight:bold}
+
+/* COPY BUTTON */
 .btn-copy{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--blue);color:#fff;border:none;padding:17px 20px;font-family:var(--font);font-size:13px;font-weight:bold;text-transform:uppercase;letter-spacing:.8px;cursor:pointer;transition:background .15s}
 .btn-copy.ok{background:var(--green)}
 .btn-copy:active{background:var(--blue2)}
 
+/* TOAST */
 .toast{position:fixed;top:62px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;padding:10px 18px;border-radius:8px;font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:.5px;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap;z-index:300}
 .toast.show{opacity:1}
 </style>
@@ -81,7 +106,7 @@ select option{background:var(--bg3)}
 
 <main>
 
-<!-- 1 -->
+<!-- 1 DATOS -->
 <div class="sec">
   <div class="sec-title"><span class="badge">1</span>Datos de la Actuación</div>
   <div class="g2">
@@ -89,10 +114,10 @@ select option{background:var(--bg3)}
     <div class="field"><label>Hora</label><input type="time" id="hora"></div>
   </div>
   <div class="field" style="margin-top:8px"><label>Lugar exacto</label><input type="text" id="lugar" placeholder="Dirección, espacio, zona..."></div>
-  <div class="field"><label>Orden de servicio</label><input type="text" id="ordenServicio" placeholder="Nº/referencia (opcional)"></div>
+  <div class="field"><label>Orden de servicio</label><input type="text" id="ordenServicio" placeholder="Nº / referencia (opcional)"></div>
 </div>
 
-<!-- 2 -->
+<!-- 2 AGENTES -->
 <div class="sec">
   <div class="sec-title"><span class="badge">2</span>Agentes Actuantes</div>
   <div class="field"><label>Indicativo (todos)</label><input type="text" id="indicativo" placeholder="Ej: Omega 5234"></div>
@@ -108,9 +133,37 @@ select option{background:var(--bg3)}
   </div>
 </div>
 
-<!-- 3 -->
+<!-- 3 VEHÍCULOS (movido) -->
 <div class="sec">
-  <div class="sec-title"><span class="badge">3</span>Patrullas Colaboradoras</div>
+  <div class="sec-title"><span class="badge">3</span>Vehículos Implicados</div>
+  <div class="dyn-list" id="list-vehiculos"></div>
+  <button class="btn-add" id="add-vehiculos" onclick="addBlock('vehiculos')">+ Añadir vehículo</button>
+</div>
+
+<!-- 4 AUTORES (movido) -->
+<div class="sec">
+  <div class="sec-title"><span class="badge">4</span>Autor/es — Detenido/s</div>
+  <div class="dyn-list" id="list-autores"></div>
+  <button class="btn-add" id="add-autores" onclick="addBlock('autores')">+ Añadir autor / detenido</button>
+</div>
+
+<!-- 5 VÍCTIMAS (movido) -->
+<div class="sec">
+  <div class="sec-title"><span class="badge">5</span>Víctima/s</div>
+  <div class="dyn-list" id="list-victimas"></div>
+  <button class="btn-add" id="add-victimas" onclick="addBlock('victimas')">+ Añadir víctima</button>
+</div>
+
+<!-- 6 TESTIGOS (movido) -->
+<div class="sec">
+  <div class="sec-title"><span class="badge">6</span>Testigos</div>
+  <div class="dyn-list" id="list-testigos"></div>
+  <button class="btn-add" id="add-testigos" onclick="addBlock('testigos')">+ Añadir testigo</button>
+</div>
+
+<!-- 7 PATRULLAS COLABORADORAS -->
+<div class="sec">
+  <div class="sec-title"><span class="badge">7</span>Patrullas Colaboradoras</div>
   <div class="g2">
     <div class="field"><label>Patrulla 1 · Indicativo</label><input type="text" id="p1ind" placeholder="Indicativo..."></div>
     <div class="field"><label>Nº Policiales</label><input type="text" id="p1num" placeholder="Separados por coma..."></div>
@@ -121,39 +174,34 @@ select option{background:var(--bg3)}
   </div>
 </div>
 
-<!-- 4 -->
+<!-- 8 TRASLADO -->
 <div class="sec">
-  <div class="sec-title"><span class="badge">4</span>Patrulla de Traslado del Detenido</div>
+  <div class="sec-title"><span class="badge">8</span>Patrulla de Traslado del Detenido</div>
   <div class="field"><label>Indicativo / Nº Vehículo</label><input type="text" id="trasVeh" placeholder="Ej: P-543, Omega 1122..."></div>
   <div class="field"><label>Nº Policiales</label><input type="text" id="trasNum" placeholder="Números de los agentes..."></div>
   <div class="field"><label>Destino</label><input type="text" id="trasDst" placeholder="Comisaría / dependencias..."></div>
 </div>
 
-<!-- 5 -->
+<!-- 9 ROLES DINÁMICOS -->
 <div class="sec">
-  <div class="sec-title"><span class="badge">5</span>Roles de los Agentes</div>
-  <div class="sublabel">Entrevistas</div>
-  <div class="g2">
-    <div class="field"><label>Entrevista Autor 1</label><input type="text" id="entAu1" placeholder="Nº..."></div>
-    <div class="field"><label>Entrevista Autor 2</label><input type="text" id="entAu2" placeholder="Nº..."></div>
-    <div class="field"><label>Entrevista Autor 3</label><input type="text" id="entAu3" placeholder="Nº..."></div>
-    <div class="field"><label>Entrevista Autor 4</label><input type="text" id="entAu4" placeholder="Nº..."></div>
-    <div class="field"><label>Entrevista Víctima 1</label><input type="text" id="entVi1" placeholder="Nº..."></div>
-    <div class="field"><label>Entrevista Víctima 2</label><input type="text" id="entVi2" placeholder="Nº..."></div>
-    <div class="field"><label>Entrevista Víctima 3</label><input type="text" id="entVi3" placeholder="Nº..."></div>
-    <div class="field"><label>Entrevista Víctima 4</label><input type="text" id="entVi4" placeholder="Nº..."></div>
-  </div>
-  <div class="sublabel">Cacheos</div>
-  <div class="g2">
-    <div class="field"><label>Cacheo Autor 1</label><input type="text" id="cacheAu1" placeholder="Nº..."></div>
-    <div class="field"><label>Cacheo Autor 2</label><input type="text" id="cacheAu2" placeholder="Nº..."></div>
-    <div class="field"><label>Cacheo Autor 3</label><input type="text" id="cacheAu3" placeholder="Nº..."></div>
-    <div class="field"><label>Cacheo Autor 4</label><input type="text" id="cacheAu4" placeholder="Nº..."></div>
-    <div class="field"><label>Cacheo Víctima 1</label><input type="text" id="cacheVi1" placeholder="Nº..."></div>
-    <div class="field"><label>Cacheo Víctima 2</label><input type="text" id="cacheVi2" placeholder="Nº..."></div>
-    <div class="field"><label>Cacheo Víctima 3</label><input type="text" id="cacheVi3" placeholder="Nº..."></div>
-    <div class="field"><label>Cacheo Víctima 4</label><input type="text" id="cacheVi4" placeholder="Nº..."></div>
-  </div>
+  <div class="sec-title"><span class="badge">9</span>Roles de los Agentes</div>
+
+  <div class="sublabel" style="margin-top:0">Entrevistas con Autores</div>
+  <div class="role-list" id="list-entAutor"></div>
+  <button class="btn-add" id="add-entAutor" onclick="addRoleRow('entAutor','Autor')" style="margin-top:8px">+ Añadir entrevista autor</button>
+
+  <div class="sublabel">Entrevistas con Víctimas</div>
+  <div class="role-list" id="list-entVictima"></div>
+  <button class="btn-add" id="add-entVictima" onclick="addRoleRow('entVictima','Víctima')" style="margin-top:8px">+ Añadir entrevista víctima</button>
+
+  <div class="sublabel">Cacheos de Autores</div>
+  <div class="role-list" id="list-cacheoAutor"></div>
+  <button class="btn-add" id="add-cacheoAutor" onclick="addRoleRow('cacheoAutor','Autor')" style="margin-top:8px">+ Añadir cacheo autor</button>
+
+  <div class="sublabel">Cacheos de Víctimas</div>
+  <div class="role-list" id="list-cacheoVictima"></div>
+  <button class="btn-add" id="add-cacheoVictima" onclick="addRoleRow('cacheoVictima','Víctima')" style="margin-top:8px">+ Añadir cacheo víctima</button>
+
   <div class="sublabel">Custodias y Actuaciones</div>
   <div class="g2">
     <div class="field"><label>Custodia droga/sustancia</label><input type="text" id="custDroga" placeholder="Nº..."></div>
@@ -166,49 +214,11 @@ select option{background:var(--bg3)}
   <div class="field"><label>Describir otro efecto custodiado</label><input type="text" id="custOtroDesc" placeholder="Qué custodia..."></div>
 </div>
 
-<!-- 6 INCIDENCIAS -->
+<!-- 10 INCIDENCIAS -->
 <div class="sec">
-  <div class="sec-title"><span class="badge">6</span>Incidencias de los Agentes</div>
+  <div class="sec-title"><span class="badge">10</span>Incidencias de los Agentes</div>
   <div class="dyn-list" id="list-incidencias"></div>
-  <button class="btn-add" id="add-incidencias" onclick="addBlock('incidencias')">
-    <span class="btn-add-icon">+</span> Añadir incidencia
-  </button>
-</div>
-
-<!-- 7 VEHÍCULOS -->
-<div class="sec">
-  <div class="sec-title"><span class="badge">7</span>Vehículos Implicados</div>
-  <div class="dyn-list" id="list-vehiculos"></div>
-  <button class="btn-add" id="add-vehiculos" onclick="addBlock('vehiculos')">
-    <span class="btn-add-icon">+</span> Añadir vehículo
-  </button>
-</div>
-
-<!-- 8 AUTORES -->
-<div class="sec">
-  <div class="sec-title"><span class="badge">8</span>Autor/es — Detenido/s</div>
-  <div class="dyn-list" id="list-autores"></div>
-  <button class="btn-add" id="add-autores" onclick="addBlock('autores')">
-    <span class="btn-add-icon">+</span> Añadir autor / detenido
-  </button>
-</div>
-
-<!-- 9 VÍCTIMAS -->
-<div class="sec">
-  <div class="sec-title"><span class="badge">9</span>Víctima/s</div>
-  <div class="dyn-list" id="list-victimas"></div>
-  <button class="btn-add" id="add-victimas" onclick="addBlock('victimas')">
-    <span class="btn-add-icon">+</span> Añadir víctima
-  </button>
-</div>
-
-<!-- 10 TESTIGOS -->
-<div class="sec">
-  <div class="sec-title"><span class="badge">10</span>Testigos</div>
-  <div class="dyn-list" id="list-testigos"></div>
-  <button class="btn-add" id="add-testigos" onclick="addBlock('testigos')">
-    <span class="btn-add-icon">+</span> Añadir testigo
-  </button>
+  <button class="btn-add" id="add-incidencias" onclick="addBlock('incidencias')">+ Añadir incidencia</button>
 </div>
 
 <!-- 11 HECHOS -->
@@ -222,7 +232,14 @@ select option{background:var(--bg3)}
 <!-- 12 CALIFICACIÓN -->
 <div class="sec">
   <div class="sec-title"><span class="badge">12</span>Calificación y Actuación</div>
-  <div class="field"><label>Posible delito</label><textarea id="posibleDelito" rows="2" placeholder="Tipo penal o infracción..."></textarea></div>
+  <div class="field">
+    <label>Posible delito / descripción breve</label>
+    <textarea id="posibleDelito" rows="3" placeholder="Escribe el tipo de delito o una descripción breve de los hechos — los artículos aplicables aparecerán automáticamente..." oninput="detectarDelitos(this.value)"></textarea>
+    <div class="crime-box" id="crimeBox">
+      <div class="crime-title">⚖ Legislación detectada automáticamente</div>
+      <div id="crimeList"></div>
+    </div>
+  </div>
   <div class="field"><label>Actuación policial</label><textarea id="actuacionPolicial" rows="3" placeholder="Diligencias, traslados, identificaciones..."></textarea></div>
   <div class="g2">
     <div class="field"><label>Asistencia médica ofrecida</label>
@@ -239,12 +256,94 @@ select option{background:var(--bg3)}
 </button>
 
 <script>
+// ── CÓDIGO PENAL — DETECCIÓN AUTOMÁTICA ───────────────────────────────────
+const CP = [
+  {titulo:"Homicidio y Asesinato — Tít. I CP", kw:["homicidio","asesinato","matar","muerte","fallecido","cadáver","suicidio"],
+   normas:[["Art. 138 CP","Homicidio doloso. Pena: 10-15 años."],["Art. 139 CP","Asesinato (alevosía, precio, ensañamiento). Pena: 15-25 años."],["Art. 140 CP","Asesinato hiperagravado. Pena: prisión permanente revisable."],["Art. 142 CP","Homicidio imprudente. Pena: 1-4 años."]]},
+  {titulo:"Lesiones — Tít. III CP", kw:["lesion","lesión","golpe","herida","paliza","fractura","contusión","agresión física","traumatismo","herido","lesionado","corte","sangre"],
+   normas:[["Art. 147.1 CP","Lesiones con tratamiento médico. Pena: 3 meses-3 años."],["Art. 148 CP","Lesiones agravadas (armas, víctima menor). Pena: 2-5 años."],["Art. 149 CP","Lesiones gravísimas (pérdida de órgano). Pena: 6-12 años."],["Art. 153 CP","Lesiones en ámbito de pareja. Pena: 3 meses-1 año."]]},
+  {titulo:"Libertad — Tít. VI CP", kw:["detención ilegal","secuestro","privación de libertad","amenaza","amenazas","coacción","coacciones","retención","intimidación","acoso","stalking","matrimonio forzado"],
+   normas:[["Art. 163 CP","Detención ilegal. Pena: 4-6 años."],["Art. 164 CP","Secuestro. Pena: 6-10 años."],["Art. 169 CP","Amenazas graves. Pena: 1-5 años."],["Art. 172 CP","Coacciones. Pena: 6 meses-3 años."],["Art. 172 ter CP","Acoso/stalking. Pena: 3 meses-2 años."]]},
+  {titulo:"Torturas e Integridad Moral — Tít. VII CP", kw:["tortura","trato degradante","vejación","humillación","trato inhumano","acoso laboral","acoso moral"],
+   normas:[["Art. 173 CP","Trato degradante o acoso laboral. Pena: 6 meses-2 años."],["Art. 174 CP","Tortura por autoridad. Pena: 2-6 años + inhabilitación."]]},
+  {titulo:"Trata de Seres Humanos — Tít. VII bis CP", kw:["trata","tráfico de personas","explotación sexual","explotación laboral","esclavitud","servidumbre"],
+   normas:[["Art. 177 bis CP","Trata de seres humanos. Pena: 5-8 años (agravada: 6-12 años)."]]},
+  {titulo:"Libertad e Indemnidad Sexuales — Tít. VIII CP", kw:["agresión sexual","violación","abuso sexual","acoso sexual","exhibicionismo","prostitución forzada","pornografía infantil","grooming","tocamiento","indemnidad sexual"],
+   normas:[["Art. 178 CP","Agresión sexual. Pena: 1-4 años."],["Art. 179 CP","Violación. Pena: 4-12 años."],["Art. 181 CP","Actos sexuales con menor de 16. Pena: 2-6 años."],["Art. 183 ter CP","Grooming. Pena: 1-3 años."],["Art. 189 CP","Pornografía infantil. Pena: 1-5 años."]]},
+  {titulo:"Intimidad e Inviolabilidad del Domicilio — Tít. IX CP", kw:["intimidad","escucha","grabación ilegal","espionaje","interceptación","allanamiento","domicilio","morada","hackeo","acceso informático","cámara oculta","imágenes íntimas"],
+   normas:[["Art. 197 CP","Descubrimiento de secretos. Pena: 1-4 años."],["Art. 197 bis CP","Acceso ilegítimo a sistemas. Pena: 6 meses-2 años."],["Art. 202 CP","Allanamiento de morada. Pena: 1-4 años."]]},
+  {titulo:"Delitos contra el Honor — Tít. X CP", kw:["calumnia","injuria","difamación","honor","falsa imputación","insulto público"],
+   normas:[["Art. 205 CP","Calumnia. Pena: 6 meses-2 años."],["Art. 208 CP","Injuria grave y pública. Pena: multa 3-7 meses."]]},
+  {titulo:"Relaciones Familiares — Tít. XI CP", kw:["bigamia","abandono de familia","impago de pensión","sustracción de menores","abandono de menor"],
+   normas:[["Art. 217 CP","Bigamia. Pena: 6 meses-1 año."],["Art. 223 CP","Sustracción de menores. Pena: 2-4 años."],["Art. 227 CP","Impago de pensión. Pena: 3 meses-1 año."]]},
+  {titulo:"Robo y Hurto — Tít. XII CP", kw:["robo","hurto","sustracción","carterista","tirón","bolso","arrebato","fuerza en las cosas","escalada","llave falsa","forzar"],
+   normas:[["Art. 234 CP","Hurto. Pena: multa o 6-18 meses (≥400€)."],["Art. 237/240 CP","Robo con fuerza. Pena: 1-5 años."],["Art. 242 CP","Robo con violencia o intimidación. Pena: 2-5 años."]]},
+  {titulo:"Estafa, Extorsión, Daños — Tít. XII CP", kw:["estafa","fraude","engaño","timo","extorsión","chantaje","apropiación indebida","daños","destrozo","vandalismo","pintada","grafiti","sabotaje","usurpación","okupa","ocupación ilegal"],
+   normas:[["Art. 248 CP","Estafa. Pena: 6 meses-3 años."],["Art. 243 CP","Extorsión. Pena: 1-5 años."],["Art. 253 CP","Apropiación indebida. Pena: 6 meses-3 años."],["Art. 263 CP","Daños dolosos. Pena: 1-3 años."],["Art. 245 CP","Usurpación de inmueble. Pena: multa o 1-2 años."]]},
+  {titulo:"Blanqueo de Capitales — Tít. XIII CP", kw:["blanqueo","lavado de dinero","blanqueo de capitales","origen ilícito","dinero negro"],
+   normas:[["Art. 301 CP","Blanqueo de capitales. Pena: 6 meses-6 años y multa."]]},
+  {titulo:"Receptación — Tít. XIII CP", kw:["receptación","objeto robado","objeto sustraído","compra robado","mercancía robada","efecto procedente de delito"],
+   normas:[["Art. 298 CP","Receptación. Pena: 6 meses-2 años."],["Art. 299 CP","Tipo agravado. Pena: 1-3 años."]]},
+  {titulo:"Hacienda Pública y SS — Tít. XIV CP", kw:["fraude fiscal","evasión fiscal","hacienda","seguridad social","impuestos","defraudación tributaria"],
+   normas:[["Art. 305 CP","Defraudación tributaria >120.000€. Pena: 1-5 años."],["Art. 307 CP","Fraude SS >50.000€. Pena: 1-5 años."]]},
+  {titulo:"Derechos de los Trabajadores — Tít. XV CP", kw:["explotación laboral","trabajo ilegal","condiciones laborales ilegales","discriminación laboral","trabajo de menor"],
+   normas:[["Art. 311 CP","Condiciones laborales ilegales. Pena: 6 meses-6 años."],["Art. 316 CP","Riesgo grave en el trabajo. Pena: 6 meses-3 años."]]},
+  {titulo:"Inmigración ilegal — Tít. XV bis CP", kw:["inmigración ilegal","tráfico de inmigrantes","pateras","coyote","extranjeros en situación irregular"],
+   normas:[["Art. 318 bis CP","Tráfico ilegal de personas. Pena: 1-5 años."]]},
+  {titulo:"Medio Ambiente — Tít. XVI CP", kw:["contaminación","vertido","medio ambiente","especie protegida","caza furtiva","pesca ilegal","residuos tóxicos"],
+   normas:[["Art. 325 CP","Contaminación grave. Pena: 2-5 años."],["Art. 334 CP","Caza/pesca de especie protegida. Pena: 6 meses-2 años."]]},
+  {titulo:"Incendios — Tít. XVII CP", kw:["incendio","fuego intencionado","incendio forestal","pirómano","quema forestal"],
+   normas:[["Art. 351 CP","Incendio con peligro para personas. Pena: 10-20 años."],["Art. 352 CP","Incendio forestal. Pena: 1-5 años."]]},
+  {titulo:"Salud Pública — Tít. XVII CP", kw:["salud pública","droga","estupefaciente","narcotráfico","sustancia","tráfico de drogas","cocaína","heroína","hachís","marihuana","cannabis","anfetamina","mdma","éxtasis","trapicheo","camello","dealer","rivotril","benzodiacepina","medicamento falsificado","veneno","bolsa","papelina","grifa","dosis","papela"],
+   normas:[["Art. 368 CP","Tráfico de drogas que causan grave daño. Pena: 3-6 años (escasa entidad: 1-3 años)."],["Art. 369 CP","Tipos agravados: organización, notoria importancia, menores, establecimiento público."],["Art. 370 CP","Tipo hiperagravado: jefatura de organización. Pena: 9-13 años y medio."],["Art. 371 CP","Precursores de drogas. Pena: 3-6 años."]]},
+  {titulo:"Seguridad Vial — Tít. XVII CP", kw:["conducción temeraria","alcohol al volante","drogas al volante","atropello","fuga accidente","delito de tráfico","negativa prueba alcoholemia","conducción sin permiso","velocidad excesiva"],
+   normas:[["Art. 379.2 CP","Conducción bajo influencia de alcohol/drogas. Pena: multa + privación carné 1-4 años."],["Art. 380 CP","Conducción temeraria. Pena: 6 meses-2 años."],["Art. 383 CP","Negativa a alcoholemia. Pena: 6 meses-1 año."]]},
+  {titulo:"Falsedades — Tít. XVIII CP", kw:["falsedad","falsificación","documento falso","dni falso","pasaporte falso","moneda falsa","firma falsa","usurpación de identidad","certificado falso","nombre falso"],
+   normas:[["Art. 390 CP","Falsificación de documentos públicos. Pena: 3-6 años."],["Art. 392 CP","Falsificación por particular. Pena: 6 meses-3 años."],["Art. 401 CP","Usurpación del estado civil. Pena: 6 meses-3 años."]]},
+  {titulo:"Administración Pública — Tít. XIX CP", kw:["prevaricación","cohecho","soborno","tráfico de influencias","malversación","corrupción","funcionario corrupto"],
+   normas:[["Art. 404 CP","Prevaricación. Pena: inhabilitación 7-10 años."],["Art. 419 CP","Cohecho propio. Pena: 2-6 años."],["Art. 432 CP","Malversación. Pena: 2-6 años."]]},
+  {titulo:"Administración de Justicia — Tít. XX CP", kw:["falso testimonio","perjurio","obstrucción a la justicia","encubrimiento","acusación falsa","denuncia falsa","simulación de delito","quebrantamiento de condena","quebrantamiento de alejamiento"],
+   normas:[["Art. 456 CP","Denuncia falsa. Pena: multa 12-24 meses."],["Art. 458 CP","Falso testimonio. Pena: 1-3 años."],["Art. 468 CP","Quebrantamiento de condena/alejamiento. Pena: 6 meses-1 año."]]},
+  {titulo:"Orden Público — Tít. XXII CP", kw:["atentado","resistencia","desobediencia","desórdenes públicos","manifestación violenta","agresión a policía","agresión a agente","coacción a autoridad"],
+   normas:[["Art. 550 CP","Atentado a autoridad o agente. Pena: 1-4 años (con armas: 2-6 años)."],["Art. 556 CP","Resistencia/desobediencia grave. Pena: 3 meses-1 año."],["Art. 557 CP","Desórdenes públicos. Pena: 6 meses-3 años."]]},
+  {titulo:"Terrorismo — Tít. XXII bis CP", kw:["terrorismo","yihadismo","terrorista","bomba","explosivo","adoctrinamiento terrorista","financiación terrorismo"],
+   normas:[["Art. 571-580 CP","Delitos de terrorismo. Pena: hasta prisión permanente revisable."],["Art. 578 CP","Enaltecimiento del terrorismo. Pena: 1-3 años."]]},
+  {titulo:"Violencia de Género y Doméstica — LO 1/2004 / CP", kw:["violencia de género","violencia doméstica","maltrato","pareja","cónyuge","ex pareja","orden de alejamiento","orden de protección","violencia habitual","ciclo de violencia","maltratador"],
+   normas:[["LO 1/2004","Protección Integral contra la Violencia de Género."],["Art. 153 CP","Maltrato no habitual en ámbito familiar. Pena: 3 meses-1 año."],["Art. 173.2 CP","Violencia habitual. Pena: 6 meses-3 años."],["Art. 468 CP","Quebrantamiento de orden de alejamiento. Pena: 6 meses-1 año."]]},
+  {titulo:"Tenencia y Porte de Armas — CP / RD 137/1993", kw:["arma","pistola","navaja","cuchillo","arma blanca","arma de fuego","porte de arma","tenencia de arma","escopeta","revólver","puño americano","arma prohibida","defensa eléctrica","spray pimienta","nunchaku"],
+   normas:[["Art. 563 CP","Tenencia de armas prohibidas. Pena: 1-2 años."],["Art. 564 CP","Tenencia sin licencia. Pena: 1-2 años."],["RD 137/1993","Reglamento de Armas: clasificación y licencias."]]},
+  {titulo:"Ley de Seguridad Ciudadana — LO 4/2015", kw:["infracción administrativa","seguridad ciudadana","desobediencia leve","consumo de alcohol","negativa identificación","reunión ilegal","alteración del orden"],
+   normas:[["LO 4/2015 Art. 36","Infracciones graves: resistencia, desobediencia a la autoridad."],["LO 4/2015 Art. 37","Infracciones leves: consumo de alcohol en vía pública, falta de respeto."],["LO 4/2015 Art. 16","Identificación de personas en vía pública."]]},
+];
+
+let crimeTimer = null;
+function detectarDelitos(txt) {
+  clearTimeout(crimeTimer);
+  crimeTimer = setTimeout(() => {
+    const lower = (txt || '').toLowerCase();
+    const detected = CP.filter(c => c.kw.some(k => lower.includes(k)));
+    const box = document.getElementById('crimeBox');
+    const list = document.getElementById('crimeList');
+    if (!detected.length || txt.trim().length < 4) { box.classList.remove('show'); return; }
+    box.classList.add('show');
+    list.innerHTML = detected.map(c =>
+      `<div class="crime-item">
+        <div class="crime-name">► ${c.titulo}</div>
+        ${c.normas.map(([ref,desc]) =>
+          `<div class="crime-norm"><span class="crime-ref">${ref}</span> — ${desc}</div>`
+        ).join('')}
+      </div>`
+    ).join('');
+  }, 350);
+}
+
+// ── BLOQUES DINÁMICOS (autores, víctimas, testigos, vehículos, incidencias) ─
 const CFGS = {
-  autores:    { label:'Autor',      max:4, fields:[{id:'nombre',l:'Nombre y apellidos',ta:0},{id:'doc',l:'DNI / NIE / Pasaporte',ta:0},{id:'nacimiento',l:'Fecha nacimiento',ta:0,ph:'DD-MM-AAAA'},{id:'nacionalidad',l:'Nacionalidad',ta:0},{id:'domicilio',l:'Domicilio completo',ta:0},{id:'telefono',l:'Teléfono',ta:0},{id:'alegaciones',l:'Alegaciones',ta:1},{id:'efectos',l:'Efectos intervenidos',ta:1}] },
-  victimas:   { label:'Víctima',    max:4, fields:[{id:'nombre',l:'Nombre y apellidos',ta:0},{id:'doc',l:'DNI / NIE / Pasaporte',ta:0},{id:'nacimiento',l:'Fecha nacimiento',ta:0,ph:'DD-MM-AAAA'},{id:'nacionalidad',l:'Nacionalidad',ta:0},{id:'domicilio',l:'Domicilio completo',ta:0},{id:'telefono',l:'Teléfono',ta:0},{id:'alegaciones',l:'Alegaciones',ta:1},{id:'efectos',l:'Efectos intervenidos',ta:1}] },
-  testigos:   { label:'Testigo',    max:4, fields:[{id:'nombre',l:'Nombre y apellidos',ta:0},{id:'dni',l:'DNI / NIE',ta:0},{id:'domicilio',l:'Domicilio',ta:0},{id:'telefono',l:'Teléfono',ta:0},{id:'manifestacion',l:'Manifestación',ta:1}] },
-  vehiculos:  { label:'Vehículo',   max:4, fields:[{id:'matricula',l:'Matrícula',ta:0},{id:'marca',l:'Marca / Modelo',ta:0},{id:'color',l:'Color',ta:0},{id:'titular',l:'Titular / Conductor',ta:0},{id:'relacion',l:'Relación con los hechos',ta:1}] },
-  incidencias:{ label:'Incidencia', max:4, fields:[{id:'agente',l:'Agente Nº',ta:0},{id:'tipo',l:'Tipo',ta:0,ph:'Daño físico / material / actuación relevante'},{id:'descripcion',l:'Descripción',ta:1}] },
+  autores:    {label:'Autor',      max:4, fields:[{id:'nombre',l:'Nombre y apellidos',ta:0},{id:'doc',l:'DNI/NIE/Pasaporte',ta:0},{id:'nacimiento',l:'Fecha nacimiento',ta:0,ph:'DD-MM-AAAA'},{id:'nacionalidad',l:'Nacionalidad',ta:0},{id:'domicilio',l:'Domicilio completo',ta:0},{id:'telefono',l:'Teléfono',ta:0},{id:'alegaciones',l:'Alegaciones',ta:1},{id:'efectos',l:'Efectos intervenidos',ta:1}]},
+  victimas:   {label:'Víctima',    max:4, fields:[{id:'nombre',l:'Nombre y apellidos',ta:0},{id:'doc',l:'DNI/NIE/Pasaporte',ta:0},{id:'nacimiento',l:'Fecha nacimiento',ta:0,ph:'DD-MM-AAAA'},{id:'nacionalidad',l:'Nacionalidad',ta:0},{id:'domicilio',l:'Domicilio completo',ta:0},{id:'telefono',l:'Teléfono',ta:0},{id:'alegaciones',l:'Alegaciones',ta:1},{id:'efectos',l:'Efectos intervenidos',ta:1}]},
+  testigos:   {label:'Testigo',    max:4, fields:[{id:'nombre',l:'Nombre y apellidos',ta:0},{id:'dni',l:'DNI/NIE',ta:0},{id:'domicilio',l:'Domicilio',ta:0},{id:'telefono',l:'Teléfono',ta:0},{id:'manifestacion',l:'Manifestación',ta:1}]},
+  vehiculos:  {label:'Vehículo',   max:4, fields:[{id:'matricula',l:'Matrícula',ta:0},{id:'marca',l:'Marca/Modelo',ta:0},{id:'color',l:'Color',ta:0},{id:'titular',l:'Titular/Conductor',ta:0},{id:'relacion',l:'Relación con los hechos',ta:1}]},
+  incidencias:{label:'Incidencia', max:4, fields:[{id:'agente',l:'Agente Nº',ta:0},{id:'tipo',l:'Tipo (daño físico/material/actuación relevante)',ta:0},{id:'descripcion',l:'Descripción',ta:1}]},
 };
 const CNT = {autores:0,victimas:0,testigos:0,vehiculos:0,incidencias:0};
 
@@ -255,93 +354,116 @@ function addBlock(type, saved) {
   const n = CNT[type];
   const list = document.getElementById('list-'+type);
   const addBtn = document.getElementById('add-'+type);
-
   const div = document.createElement('div');
-  div.className = 'dyn-block';
-  div.dataset.type = type;
-  div.dataset.n = n;
-
-  const shorts = cfg.fields.filter(f=>!f.ta);
-  const longs  = cfg.fields.filter(f=> f.ta);
-
-  let h = `<div class="dyn-header"><span class="dyn-label">${cfg.label} ${n}</span><button class="btn-remove" onclick="removeBlock(this)">✕ Quitar</button></div>`;
-
-  if(shorts.length) {
-    h += '<div class="g2">';
-    shorts.forEach(f => {
-      const fid = `${type}_${n}_${f.id}`;
-      const val = saved ? (saved[f.id]||'') : '';
-      h += `<div class="field"><label>${f.l}</label><input type="text" id="${fid}" placeholder="${f.ph||'...'}" value="${esc(val)}"></div>`;
-    });
-    h += '</div>';
-  }
-  longs.forEach(f => {
-    const fid = `${type}_${n}_${f.id}`;
-    const val = saved ? (saved[f.id]||'') : '';
-    h += `<div class="field" style="margin-top:8px"><label>${f.l}</label><textarea id="${fid}" rows="2" placeholder="...">${esc(val)}</textarea></div>`;
-  });
-
-  div.innerHTML = h;
+  div.className='dyn-block'; div.dataset.type=type; div.dataset.n=n;
+  const shorts=cfg.fields.filter(f=>!f.ta), longs=cfg.fields.filter(f=>f.ta);
+  let h=`<div class="dyn-header"><span class="dyn-label">${cfg.label} ${n}</span><button class="btn-remove" onclick="removeBlock(this)">✕ Quitar</button></div>`;
+  if(shorts.length){h+='<div class="g2">';shorts.forEach(f=>{const fid=`${type}_${n}_${f.id}`;const val=saved?(saved[f.id]||''):'';h+=`<div class="field"><label>${f.l}</label><input type="text" id="${fid}" placeholder="${f.ph||'...'}" value="${esc(val)}"></div>`;});h+='</div>';}
+  longs.forEach(f=>{const fid=`${type}_${n}_${f.id}`;const val=saved?(saved[f.id]||''):'';h+=`<div class="field" style="margin-top:8px"><label>${f.l}</label><textarea id="${fid}" rows="2" placeholder="...">${esc(val)}</textarea></div>`;});
+  div.innerHTML=h;
   list.appendChild(div);
-  if(CNT[type] >= cfg.max) addBtn.style.display='none';
-  div.addEventListener('input', guardar);
-  div.addEventListener('change', guardar);
+  if(CNT[type]>=cfg.max) addBtn.style.display='none';
+  div.addEventListener('input',guardar); div.addEventListener('change',guardar);
   setTimeout(()=>div.scrollIntoView({behavior:'smooth',block:'nearest'}),80);
 }
 
 function removeBlock(btn) {
-  const block = btn.closest('.dyn-block');
-  const type  = block.dataset.type;
-  const list  = document.getElementById('list-'+type);
-  block.remove();
-  CNT[type]--;
+  const block=btn.closest('.dyn-block'), type=block.dataset.type;
+  const list=document.getElementById('list-'+type);
+  block.remove(); CNT[type]--;
   list.querySelectorAll('.dyn-block').forEach((b,i)=>{
-    b.dataset.n = i+1;
-    b.querySelector('.dyn-label').textContent = CFGS[type].label + ' ' + (i+1);
-    b.querySelectorAll('input,textarea').forEach(el=>{
-      const p=el.id.split('_'); p[1]=String(i+1); el.id=p.join('_');
-    });
+    b.dataset.n=i+1;
+    b.querySelector('.dyn-label').textContent=CFGS[type].label+' '+(i+1);
+    b.querySelectorAll('input,textarea').forEach(el=>{const p=el.id.split('_');p[1]=String(i+1);el.id=p.join('_');});
   });
   document.getElementById('add-'+type).style.display='';
   guardar();
 }
 
-// IDs estáticos
-const SID=['fecha','hora','lugar','ordenServicio','indicativo','ag1','ag2','ag3','ag4','ag5','ag6','ag7','ag8','p1ind','p1num','p2ind','p2num','p3ind','p3num','trasVeh','trasNum','trasDst','entAu1','entAu2','entAu3','entAu4','entVi1','entVi2','entVi3','entVi4','cacheAu1','cacheAu2','cacheAu3','cacheAu4','cacheVi1','cacheVi2','cacheVi3','cacheVi4','custDroga','custArma','custDet','leeDerechos','engrilla','custOtroNr','custOtroDesc','descripcion','danosFisicos','danosMateriales','posibleDelito','actuacionPolicial','asistenciaOfrecida','asistenciaAceptada'];
+// ── FILAS DE ROLES DINÁMICAS ──────────────────────────────────────────────
+const ROLE_CNT = {entAutor:0, entVictima:0, cacheoAutor:0, cacheoVictima:0};
+const ROLE_MAX = 4;
+const ROLE_LABELS = {
+  entAutor:    {persona:'Autor',   accion:'Entrevista'},
+  entVictima:  {persona:'Víctima', accion:'Entrevista'},
+  cacheoAutor: {persona:'Autor',   accion:'Cacheo'},
+  cacheoVictima:{persona:'Víctima',accion:'Cacheo'},
+};
+
+function addRoleRow(type, personaLabel, savedAgente, savedPersona) {
+  if(ROLE_CNT[type] >= ROLE_MAX) return;
+  ROLE_CNT[type]++;
+  const n = ROLE_CNT[type];
+  const list = document.getElementById('list-'+type);
+  const addBtn = document.getElementById('add-'+type);
+  const row = document.createElement('div');
+  row.className='dyn-block'; row.dataset.rtype=type; row.dataset.rn=n;
+  row.style.marginBottom='8px';
+  const agenteVal = savedAgente||'';
+  const personaVal = savedPersona||'';
+  row.innerHTML=`
+    <div class="dyn-header" style="margin-bottom:8px">
+      <span class="dyn-label">${ROLE_LABELS[type].accion} ${personaLabel} ${n}</span>
+      <button class="btn-remove" onclick="removeRoleRow(this)">✕</button>
+    </div>
+    <div class="g2">
+      <div class="field"><label>Agente Nº</label><input type="text" id="r_${type}_${n}_agente" placeholder="Nº policial..." value="${esc(agenteVal)}"></div>
+      <div class="field"><label>${personaLabel} Nº</label><input type="text" id="r_${type}_${n}_persona" placeholder="${personaLabel} 1, 2..." value="${esc(personaVal)}"></div>
+    </div>`;
+  list.appendChild(row);
+  if(ROLE_CNT[type]>=ROLE_MAX) addBtn.style.display='none';
+  row.addEventListener('input',guardar); row.addEventListener('change',guardar);
+  setTimeout(()=>row.scrollIntoView({behavior:'smooth',block:'nearest'}),80);
+}
+
+function removeRoleRow(btn) {
+  const row=btn.closest('[data-rtype]'), type=row.dataset.rtype;
+  const list=document.getElementById('list-'+type);
+  const pLabel=ROLE_LABELS[type].persona, aLabel=ROLE_LABELS[type].accion;
+  row.remove(); ROLE_CNT[type]--;
+  list.querySelectorAll('[data-rtype]').forEach((r,i)=>{
+    r.dataset.rn=i+1;
+    r.querySelector('.dyn-label').textContent=`${aLabel} ${pLabel} ${i+1}`;
+    r.querySelectorAll('input').forEach(el=>{const p=el.id.split('_');p[2]=String(i+1);el.id=p.join('_');});
+  });
+  document.getElementById('add-'+type).style.display='';
+  guardar();
+}
+
+// ── PERSISTENCIA ──────────────────────────────────────────────────────────
+const SID=['fecha','hora','lugar','ordenServicio','indicativo','ag1','ag2','ag3','ag4','ag5','ag6','ag7','ag8','p1ind','p1num','p2ind','p2num','p3ind','p3num','trasVeh','trasNum','trasDst','custDroga','custArma','custDet','leeDerechos','engrilla','custOtroNr','custOtroDesc','descripcion','danosFisicos','danosMateriales','posibleDelito','actuacionPolicial','asistenciaOfrecida','asistenciaAceptada'];
 
 function guardar(){
-  const d={_b:{}};
+  const d={_b:{},_r:{}};
   SID.forEach(id=>{const el=document.getElementById(id);if(el)d[id]=el.value;});
-  Object.keys(CFGS).forEach(type=>{
-    d._b[type]=[];
-    document.querySelectorAll(`[data-type="${type}"]`).forEach(b=>{
-      const o={};
-      CFGS[type].fields.forEach(f=>{const el=document.getElementById(`${type}_${b.dataset.n}_${f.id}`);if(el)o[f.id]=el.value;});
-      d._b[type].push(o);
-    });
-  });
-  localStorage.setItem('fp2',JSON.stringify(d));
+  Object.keys(CFGS).forEach(type=>{d._b[type]=[];document.querySelectorAll(`[data-type="${type}"]`).forEach(b=>{const o={};CFGS[type].fields.forEach(f=>{const el=document.getElementById(`${type}_${b.dataset.n}_${f.id}`);if(el)o[f.id]=el.value;});d._b[type].push(o);});});
+  ['entAutor','entVictima','cacheoAutor','cacheoVictima'].forEach(type=>{d._r[type]=[];document.querySelectorAll(`[data-rtype="${type}"]`).forEach(r=>{const n=r.dataset.rn;d._r[type].push({agente:(document.getElementById(`r_${type}_${n}_agente`)||{}).value||'',persona:(document.getElementById(`r_${type}_${n}_persona`)||{}).value||'',});});});
+  localStorage.setItem('fp3',JSON.stringify(d));
 }
 
 function restaurar(){
-  const raw=localStorage.getItem('fp2');
+  const raw=localStorage.getItem('fp3');
   if(!raw)return;
   const d=JSON.parse(raw);
   SID.forEach(id=>{const el=document.getElementById(id);if(el&&d[id]!==undefined)el.value=d[id];});
   if(d._b)Object.keys(CFGS).forEach(type=>{(d._b[type]||[]).forEach(o=>addBlock(type,o));});
+  if(d._r){
+    const rLabels={entAutor:'Autor',entVictima:'Víctima',cacheoAutor:'Autor',cacheoVictima:'Víctima'};
+    ['entAutor','entVictima','cacheoAutor','cacheoVictima'].forEach(type=>{(d._r[type]||[]).forEach(o=>addRoleRow(type,rLabels[type],o.agente,o.persona));});
+  }
+  if(d.posibleDelito) detectarDelitos(d.posibleDelito);
 }
 
 function limpiarTodo(){
   if(!confirm('¿Limpiar toda la ficha? Se perderán todos los datos.'))return;
-  localStorage.removeItem('fp2');
+  localStorage.removeItem('fp3');
   SID.forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  Object.keys(CFGS).forEach(type=>{
-    document.getElementById('list-'+type).innerHTML='';
-    CNT[type]=0;
-    document.getElementById('add-'+type).style.display='';
-  });
+  Object.keys(CFGS).forEach(type=>{document.getElementById('list-'+type).innerHTML='';CNT[type]=0;document.getElementById('add-'+type).style.display='';});
+  ['entAutor','entVictima','cacheoAutor','cacheoVictima'].forEach(type=>{document.getElementById('list-'+type).innerHTML='';ROLE_CNT[type]=0;document.getElementById('add-'+type).style.display='';});
+  document.getElementById('crimeBox').classList.remove('show');
 }
 
+// ── GENERADOR DE TEXTO ────────────────────────────────────────────────────
 function v(id){const el=document.getElementById(id);return el?el.value.trim():'';}
 function lin(l,val){return val?`  ${l}: ${val}\n`:''}
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
@@ -353,14 +475,34 @@ function generarTexto(){
   t+='\n── AGENTES ACTUANTES ──────────────────────────\n';
   t+=lin('Indicativo',v('indicativo'));
   for(let i=1;i<=8;i++){const n=v(`ag${i}`);if(n)t+=`  Agente ${i} · Nº Policial: ${n}\n`;}
+
+  // bloques dinámicos vehículos, autores, víctimas, testigos
+  function dynBloque(type,titulo){
+    const blocks=document.querySelectorAll(`[data-type="${type}"]`);if(!blocks.length)return;
+    t+=`\n── ${titulo} ──────────────────────────────────\n`;
+    blocks.forEach((b,i)=>{t+=`${CFGS[type].label} ${i+1}\n`;CFGS[type].fields.forEach(f=>{const el=document.getElementById(`${type}_${b.dataset.n}_${f.id}`);const val=el?el.value.trim():'';if(val)t+=lin(f.l,val);});});
+  }
+  dynBloque('vehiculos','VEHÍCULOS IMPLICADOS');
+  dynBloque('autores','AUTOR/ES (DETENIDO/S)');
+  dynBloque('victimas','VÍCTIMA/S');
+  dynBloque('testigos','TESTIGOS');
+
   const p1=v('p1ind')||v('p1num'),p2=v('p2ind')||v('p2num'),p3=v('p3ind')||v('p3num');
   if(p1||p2||p3){t+='\n── PATRULLAS COLABORADORAS ────────────────────\n';if(p1)t+=`  Patrulla 1 · Indicativo: ${v('p1ind')} | Nº Policiales: ${v('p1num')}\n`;if(p2)t+=`  Patrulla 2 · Indicativo: ${v('p2ind')} | Nº Policiales: ${v('p2num')}\n`;if(p3)t+=`  Patrulla 3 · Indicativo: ${v('p3ind')} | Nº Policiales: ${v('p3num')}\n`;}
   if(v('trasVeh')||v('trasNum')||v('trasDst')){t+='\n── PATRULLA DE TRASLADO DEL DETENIDO ──────────\n';t+=lin('Indicativo/Vehículo',v('trasVeh'));t+=lin('Nº Policiales',v('trasNum'));t+=lin('Destino del traslado',v('trasDst'));}
+
+  // roles dinámicos
   const roles=[];
-  for(let i=1;i<=4;i++){if(v(`entAu${i}`))roles.push(`  · Agente que se entrevista con Autor ${i}: Nº: ${v(`entAu${i}`)}`);}
-  for(let i=1;i<=4;i++){if(v(`entVi${i}`))roles.push(`  · Agente que se entrevista con Víctima ${i}: Nº: ${v(`entVi${i}`)}`);}
-  for(let i=1;i<=4;i++){if(v(`cacheAu${i}`))roles.push(`  · Agente que cachea a Autor ${i}: Nº: ${v(`cacheAu${i}`)}`);}
-  for(let i=1;i<=4;i++){if(v(`cacheVi${i}`))roles.push(`  · Agente que cachea a Víctima ${i}: Nº: ${v(`cacheVi${i}`)}`);}
+  const rLabels={entAutor:'entrevista con',entVictima:'entrevista con',cacheoAutor:'cacheo a',cacheoVictima:'cacheo a'};
+  const rPersonas={entAutor:'Autor',entVictima:'Víctima',cacheoAutor:'Autor',cacheoVictima:'Víctima'};
+  ['entAutor','entVictima','cacheoAutor','cacheoVictima'].forEach(type=>{
+    document.querySelectorAll(`[data-rtype="${type}"]`).forEach((r,i)=>{
+      const n=r.dataset.rn;
+      const ag=(document.getElementById(`r_${type}_${n}_agente`)||{}).value||'';
+      const per=(document.getElementById(`r_${type}_${n}_persona`)||{}).value||'';
+      if(ag) roles.push(`  · Agente que realiza ${rLabels[type]} ${rPersonas[type]} ${per||i+1}: Nº: ${ag}`);
+    });
+  });
   if(v('custDroga'))roles.push(`  · Custodia de droga/sustancia: Nº: ${v('custDroga')}`);
   if(v('custArma'))roles.push(`  · Custodia de arma: Nº: ${v('custArma')}`);
   if(v('custDet'))roles.push(`  · Custodia del/los detenido/s: Nº: ${v('custDet')}`);
@@ -369,24 +511,7 @@ function generarTexto(){
   if(v('engrilla'))roles.push(`  · Agente que realiza el engrilletamiento: Nº: ${v('engrilla')}`);
   if(roles.length){t+='\n── ROLES DE LOS AGENTES ───────────────────────\n';t+=roles.join('\n')+'\n';}
 
-  function dynBloque(type,titulo){
-    const blocks=document.querySelectorAll(`[data-type="${type}"]`);
-    if(!blocks.length)return;
-    t+=`\n── ${titulo} ──────────────────────────────────\n`;
-    blocks.forEach((b,i)=>{
-      t+=`${CFGS[type].label} ${i+1}\n`;
-      CFGS[type].fields.forEach(f=>{
-        const el=document.getElementById(`${type}_${b.dataset.n}_${f.id}`);
-        const val=el?el.value.trim():'';
-        if(val)t+=lin(f.l,val);
-      });
-    });
-  }
   dynBloque('incidencias','INCIDENCIAS DE LOS AGENTES');
-  dynBloque('vehiculos','VEHÍCULOS IMPLICADOS');
-  dynBloque('autores','AUTOR/ES (DETENIDO/S)');
-  dynBloque('victimas','VÍCTIMA/S');
-  dynBloque('testigos','TESTIGOS');
 
   t+='\n── HECHOS ─────────────────────────────────────\n';
   t+=lin('Descripción',v('descripcion'));t+=lin('Daños físicos',v('danosFisicos'));t+=lin('Daños materiales',v('danosMateriales'));
@@ -399,8 +524,7 @@ function generarTexto(){
 
 function copiarFicha(){
   const txt=generarTexto();
-  const btn=document.getElementById('btnCopy');
-  const toast=document.getElementById('toast');
+  const btn=document.getElementById('btnCopy'),toast=document.getElementById('toast');
   const ok=()=>{btn.textContent='✓ Ficha copiada — pégala en el chat';btn.classList.add('ok');toast.classList.add('show');setTimeout(()=>{btn.textContent='⎘ Copiar ficha para generar comparecencia';btn.classList.remove('ok');toast.classList.remove('show');},3000);};
   if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(txt).then(ok).catch(()=>fallback(txt,ok));}else{fallback(txt,ok);}
 }

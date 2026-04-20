@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0a1628">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FichaPolicial">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<title>Ficha de Actuación Policial</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#030b14;--bg2:#06101f;--bg3:#0a1628;
+    --border:#1a3050;--border2:#1e3a5f;
+    --blue:#4a90d9;--blue2:#357abd;
+    --text:#c8d8f0;--muted:#7aafd4;--dim:#3a5070;
+    --gold:#f0c040;--green:#27ae60;--red:#c0392b;
+    --font:'Courier New',Courier,monospace;
+  }
+  html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px}
+  body{overflow-x:hidden}
+
+  /* ── HEADER ── */
+  .header{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 16px;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between}
+  .header-left{display:flex;align-items:center;gap:10px}
+  .logo{width:34px;height:34px;border-radius:50%;border:2px solid var(--blue);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--blue);flex-shrink:0}
+  .header-title{font-size:13px;font-weight:bold;color:#fff;letter-spacing:.5px}
+  .header-sub{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.5px}
+  .btn-clear{background:none;border:1px solid var(--red);color:var(--red);border-radius:6px;padding:6px 10px;font-size:10px;font-family:var(--font);cursor:pointer;text-transform:uppercase;letter-spacing:.5px}
+  .btn-clear:active{background:var(--red);color:#fff}
+
+  /* ── MAIN ── */
+  main{padding:12px 12px 120px;max-width:700px;margin:0 auto}
+
+  /* ── SECTION ── */
+  .sec{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px}
+  .sec-title{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;color:var(--blue);border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:14px}
+  .badge{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--blue);color:#fff;font-size:10px;font-weight:bold;flex-shrink:0}
+
+  /* ── FIELDS ── */
+  .field{margin-bottom:10px}
+  .field:last-child{margin-bottom:0}
+  label{display:block;font-size:10px;font-weight:bold;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:4px}
+  input,textarea,select{
+    width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;
+    padding:8px 10px;color:var(--text);font-family:var(--font);font-size:13px;
+    outline:none;transition:border-color .2s;-webkit-appearance:none;
+  }
+  input:focus,textarea:focus,select:focus{border-color:var(--blue)}
+  textarea{resize:vertical;min-height:60px}
+  select option{background:var(--bg3)}
+  ::placeholder{color:var(--dim)}
+
+  /* ── GRID ── */
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+  .g1{display:grid;grid-template-columns:1fr;gap:8px}
+
+  /* ── PERSONA BLOCK ── */
+  .persona{border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:10px}
+  .persona-title{font-size:10px;font-weight:bold;text-transform:uppercase;color:var(--muted);margin-bottom:10px;letter-spacing:.8px}
+  .persona:last-child{margin-bottom:0}
+
+  /* ── SUBSECTION LABEL ── */
+  .sub-label{font-size:10px;font-weight:bold;text-transform:uppercase;letter-spacing:.8px;color:var(--gold);margin:12px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+
+  /* ── COPY BUTTON ── */
+  .btn-copy{
+    position:fixed;bottom:0;left:0;right:0;z-index:200;
+    background:var(--blue);color:#fff;border:none;
+    padding:18px;font-family:var(--font);font-size:13px;font-weight:bold;
+    text-transform:uppercase;letter-spacing:1px;cursor:pointer;
+    transition:background .2s;
+  }
+  .btn-copy.ok{background:var(--green)}
+  .btn-copy:active{background:var(--blue2)}
+
+  /* ── SAVED INDICATOR ── */
+  .saved-dot{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;margin-left:6px;opacity:0;transition:opacity .3s}
+  .saved-dot.show{opacity:1}
+
+  /* ── DIVIDER ── */
+  hr{border:none;border-top:1px solid var(--border);margin:12px 0}
+
+  /* ── INCIDENCIA ROW ── */
+  .inc-row{display:grid;grid-template-columns:80px 1fr 1fr;gap:6px;margin-bottom:8px}
+  .inc-row:last-child{margin-bottom:0}
+
+  /* ── TOAST ── */
+  .toast{
+    position:fixed;top:70px;left:50%;transform:translateX(-50%);
+    background:var(--green);color:#fff;padding:10px 20px;border-radius:8px;
+    font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:.5px;
+    opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;z-index:300;
+  }
+  .toast.show{opacity:1}
+
+  @media(min-width:600px){
+    main{padding:16px 20px 100px}
+    .btn-copy{font-size:14px;padding:20px}
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-left">
+    <div class="logo">⚖</div>
+    <div>
+      <div class="header-title">Ficha de Actuación Policial</div>
+      <div class="header-sub">Policía Municipal · Com. Central Seguridad</div>
+    </div>
+  </div>
+  <button class="btn-clear" onclick="limpiarFicha()">Limpiar</button>
+</header>
+
+<div class="toast" id="toast">✓ Ficha copiada — pégala en el chat</div>
+
+<main>
+
+<!-- 1. DATOS DE LA ACTUACIÓN -->
+<div class="sec">
+  <div class="sec-title"><span class="badge">1</span>Datos de la Actuación</div>
+  <div class="g2">
+    <div class="field"><label>Fecha</label><input type="date" id="fecha"></div>
+    <div class="field"><label>Hora</label><input type="time" id="hora"></div>
+  </div>
+  <div class="field" style="margin-top:8px"><label>Lugar exacto</label><input type="text" id="lugar" placeholder="Dirección, espacio, zona..."></div>
+  <div class="field"><label>Orden de servicio</label><input type="text" id="ordenServicio" placeholder="Nº/referencia o dejar en blanco"></div>
+</div>
+
+<!-- 2. AGENTES ACTUANTES -->
+<div class="sec">
+  <div class="sec-title"><span class="badge">2</span>Agentes Actuantes</div>
+  <div class="field"><label>Indicativo (todos los agentes)</label><input type="text" id="indicativo" placeholder="Ej: Omega 5234"></div>
+  <div class="g2" style="margin-top:8px">
+    <div class="field"><label>Agente 1 · Nº</label><input type="text" id="ag1" placeholder="Nº policial..."></div>
+    <div class="field"><label>Agente 2 · Nº</label><input type="text" id="ag2" placeholder="Nº policial..."></div>
+    <div class="field"><label>Agente 3 · Nº</label><input type="text" id="ag3" placeholder="Nº policial..."></div>
+    <div class="field"><label>Agente 4 · Nº</label><input type="text" id="ag4" placeholder="Nº policial..."></div>
+    <div class="field"><label>Agente 5 · Nº</label><input type="text" id="ag5" placeholder="Nº policial..."></div>
+    <div class="field"><label>Agente 6 · Nº</label><input type="text" id="ag6" placeholder="Nº policial..."></div>
+    <div class="field"><label>Agente 7 · Nº</label><input type="text" id="ag7" placeholder="Nº policial..."></div>
+    <div class="field"><label>Agente 8 · Nº</label><input type="text" id="ag8" placeholder="Nº policial..."></div>
+  </div>
+</div>
+
+<!-- 3. PATRULLAS COLABORADORAS -->
+<div class="sec">
+  <div class="sec-title"><span class="badge">3</span>Patrullas Colaboradoras</div>
+  <div id="patrullas">
+    <div class="g2"><div class="field"><label>Patrulla 1 · Indicativo</label><input type="text" id="p1ind" placeholder="Indicativo..."></div><div class="field"><label>Nº Policiales</label><input type="text" id="p1num" placeholder="Separados por coma..."></div></div>
+    <div class="g2"><div class="field"><label>Patrulla 2 · Indicativo</label><input type="text" id="p2ind" placeholder="Indicativo..."></div><div class="field"><label>Nº Policiales</label><input type="text" id="p2num" placeholder="Separados por coma..."></div></div>
+    <div class="g2"><div class="field"><label>Patrulla 3 · Indicativo</label><input type="text" id="p3ind" placeholder="Indicativo..."></div><div class="field"><label>Nº Policiales</label><input type="text" id="p3num" placeholder="Separados por coma..."></div></div>
+  </div>
+</div>
+
+<!-- 4. PATRULLA DE TRASLADO -->
+<div class="sec">
+  <div class="sec-title"><span class="badge">4</span>Patrulla de Traslado del Detenido</div>
+  <div class="field"><label>Indicativo / Nº Vehículo</label><input type="text" id="trasladoVehiculo" placeholder="Ej: P-543, Omega 1234..."></div>
+  <div class="field"><label>Nº Policiales</label><input type="text" id="trasladoNumeros" placeholder="Números de los agentes..."></div>
+  <div class="field"><label>Destino del traslado</label><input type="text" id="trasladoDestino" placeholder="Comisaría / dependencias..."></div>
+</div>
+
+<!-- 5. ROLES DE LOS AGENTES -->
+<div class="sec">
+  <div class="sec-title"><span class="badge">5</span>Roles de los Agentes</div>
+
+  <div class="sub-label">Entrevistas</div>
+  <div class="g2">
+    <div class="field"><label>Entrevista Autor 1</label><input type="text" id="entAu1" placeholder="Nº..."></div>
+    <div class="field"><label>Entrevista Autor 2</label><input type="text" id="entAu2" placeholder="Nº..."></div>
+    <div class="field"><label>Entrevista Autor 3</label><input type="text" id="entAu3" placeholder="Nº..."></div>
+    <div class="field"><label>Entrevista Autor 4</label><input type="text" id="entAu4" placeholder="Nº..."></div>
+    <div class="field"><label>Entrevista Víctima 1</label><input type="text" id="entVi1" placeholder="Nº..."></div>
+    <div class="field"><label>Entrevista Víctima 2</label><input type="text" id="entVi2" placeholder="Nº..."></div>
+    <div class="field"><label>Entrevista Víctima 3</label><input type="text" id="entVi3" placeholder="Nº..."></div>
+    <div class="field"><label>Entrevista Víctima 4</label><input type="text" id="entVi4" placeholder="Nº..."></div>
+  </div>
+
+  <div class="sub-label">Cacheos</div>
+  <div class="g2">
+    <div class="field"><label>Cacheo Autor 1</label><input type="text" id="cacheAu1" placeholder="Nº..."></div>
+    <div class="field"><label>Cacheo Autor 2</label><input type="text" id="cacheAu2" placeholder="Nº..."></div>
+    <div class="field"><label>Cacheo Autor 3</label><input type="text" id="cacheAu3" placeholder="Nº..."></div>
+    <div class="field"><label>Cacheo Autor 4</label><input type="text" id="cacheAu4" placeholder="Nº..."></div>
+    <div class="field"><label>Cacheo Víctima 1</label><input type="text" id="cacheVi1" placeholder="Nº..."></div>
+    <div class="field"><label>Cacheo Víctima 2</label><input type="text" id="cacheVi2" placeholder="Nº..."></div>
+    <div class="field"><label>Cacheo Víctima 3</label><input type="text" id="cacheVi3" placeholder="Nº..."></div>
+    <div class="field"><label>Cacheo Víctima 4</label><input type="text" id="cacheVi4" placeholder="Nº..."></div>
+  </div>
+
+  <div class="sub-label">Custodias y Actuaciones</div>
+  <div class="g2">
+    <div class="field"><label>Custodia droga/sustancia</label><input type="text" id="custDroga" placeholder="Nº..."></div>
+    <div class="field"><label>Custodia arma</label><input type="text" id="custArma" placeholder="Nº..."></div>
+    <div class="field"><label>Custodia detenido/s</label><input type="text" id="custDetenido" placeholder="Nº..."></div>
+    <div class="field"><label>Lee los derechos</label><input type="text" id="lecturaDerechos" placeholder="Nº..."></div>
+    <div class="field"><label>Engrilletamiento</label><input type="text" id="engrilletamiento" placeholder="Nº..."></div>
+    <div class="field"><label>Custodia otro efecto</label><input type="text" id="custOtroNr" placeholder="Nº..."></div>
+  </div>
+  <div class="field"><label>Describir otro efecto custodiado</label><input type="text" id="custOtroDesc" placeholder="Qué custodia..."></div>
+</div>
+
+<!-- 6. INCIDENCIAS -->
+<div class="sec">
+  <div class="sec-title"><span class="badge">6</span>Incidencias de los Agentes</div>
+  <div class="inc-row"><div class="field"><label>Agente Nº</label><input type="text" id="inc1ag" placeholder="Nº..."></div><div class="field"><label>Tipo</label><input type="text" id="inc1tipo" placeholder="Daño físico / material / relevante..."></div><div class="field"><label>Descripción</label><input type="text" id="inc1desc" placeholder="Detalle..."></div></div>
+  <div class="inc-row"><div class="field"><label>Agente Nº</label><input type="text" id="inc2ag" placeholder="Nº..."></div><div class="field"><label>Tipo</label><input type="text" id="inc2tipo" placeholder="Daño físico / material / relevante..."></div><div class="field"><label>Descripción</label><input type="text" id="inc2desc" placeholder="Detalle..."></div></div>
+  <div class="inc-row"><div class="field"><label>Agente Nº</label><input type="text" id="inc3ag" placeholder="Nº..."></div><div class="field"><label>Tipo</label><input type="text" id="inc3tipo" placeholder="Daño físico / material / relevante..."></div><div class="field"><label>Descripción</label><input type="text" id="inc3desc" placeholder="Detalle..."></div></div>
+  <div class="inc-row"><div class="field"><label>Agente Nº</label><input type="text" id="inc4ag" placeholder="Nº..."></div><div class="field"><label>Tipo</label><input type="text" id="inc4tipo" placeholder="Daño físico / material / relevante..."></div><div class="field"><label>Descripción</label><input type="text" id="inc4desc" placeholder="Detalle..."></div></div>
+</div>
+
+<!-- 7. VEHÍCULOS -->
+<div class="sec">
+  <div class="sec-title"><span class="badge">7</span>Vehículos Implicados</div>
+  <div id="vehiculos-container"></div>
+</div>
+
+<!-- 8. AUTORES -->
+<div class="sec">
+  <div class="sec-title"><span class="badge">8</span>Autor/es — Detenido/s</div>
+  <div id="autores-container"></div>
+</div>
+
+<!-- 9. VÍCTIMAS -->
+<div class="sec">
+  <div class="sec-title"><span class="badge">9</span>Víctima/s</div>
+  <div id="victimas-container"></div>
+</div>
+
+<!-- 10. TESTIGOS -->
+<div class="sec">
+  <div class="sec-title"><span class="badge">10</span>Testigos</div>
+  <div id="testigos-container"></div>
+</div>
+
+<!-- 11. HECHOS -->
+<div class="sec">
+  <div class="sec-title"><span class="badge">11</span>Hechos</div>
+  <div class="field"><label>Descripción de los hechos</label><textarea id="descripcion" rows="5" placeholder="Narración de los hechos tal como ocurrieron..."></textarea></div>
+  <div class="field"><label>Daños físicos</label><textarea id="danosFisicos" rows="2" placeholder="Lesiones observadas, asistencia médica..."></textarea></div>
+  <div class="field"><label>Daños materiales</label><textarea id="danosMateriales" rows="2" placeholder="Bienes dañados, valoración..."></textarea></div>
+</div>
+
+<!-- 12. CALIFICACIÓN Y ACTUACIÓN -->
+<div class="sec">
+  <div class="sec-title"><span class="badge">12</span>Calificación y Actuación</div>
+  <div class="field"><label>Posible delito</label><textarea id="posibleDelito" rows="2" placeholder="Tipo penal o infracción..."></textarea></div>
+  <div class="field"><label>Actuación policial</label><textarea id="actuacionPolicial" rows="3" placeholder="Diligencias, traslados, identificaciones..."></textarea></div>
+  <div class="g2">
+    <div class="field">
+      <label>Asistencia médica ofrecida</label>
+      <select id="asistenciaOfrecida">
+        <option value="">— Seleccionar —</option>
+        <option value="SÍ">SÍ</option>
+        <option value="NO">NO</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Asistencia médica aceptada</label>
+      <select id="asistenciaAceptada">
+        <option value="">— Seleccionar —</option>
+        <option value="SÍ">SÍ</option>
+        <option value="NO">NO</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- BOTÓN COPIAR FIJO -->
+<button class="btn-copy" id="btnCopy" onclick="copiarFicha()">
+  ⎘ Copiar ficha para generar comparecencia
+</button>
+
+<script>
+// ── RENDERIZAR BLOQUES DINÁMICOS ──────────────────────────────────────────
+
+function renderVehiculos() {
+  const c = document.getElementById('vehiculos-container');
+  let h = '';
+  for(let i=1;i<=4;i++){
+    h += `<div class="persona">
+      <div class="persona-title">Vehículo ${i}</div>
+      <div class="g2">
+        <div class="field"><label>Matrícula</label><input type="text" id="veh${i}mat" placeholder="0000 XXX..."></div>
+        <div class="field"><label>Marca / Modelo</label><input type="text" id="veh${i}marca" placeholder="Seat Ibiza..."></div>
+        <div class="field"><label>Color</label><input type="text" id="veh${i}color" placeholder="Blanco..."></div>
+        <div class="field"><label>Titular / Conductor</label><input type="text" id="veh${i}titular" placeholder="Nombre..."></div>
+      </div>
+      <div class="field" style="margin-top:8px"><label>Relación con los hechos</label><textarea id="veh${i}rel" rows="2" placeholder="Cómo se relaciona con la actuación..."></textarea></div>
+    </div>`;
+  }
+  c.innerHTML = h;
+}
+
+function renderPersonas(containerId, prefix, label, fields) {
+  const c = document.getElementById(containerId);
+  let h = '';
+  for(let i=1;i<=4;i++){
+    h += `<div class="persona"><div class="persona-title">${label} ${i}</div><div class="g1">`;
+    fields.forEach(([id, lbl]) => {
+      const fid = prefix + i + id;
+      const isArea = ['alegaciones','efectos','manifestacion'].includes(id);
+      h += `<div class="field"><label>${lbl}</label>`;
+      if(isArea) h += `<textarea id="${fid}" rows="2" placeholder="..."></textarea>`;
+      else h += `<input type="text" id="${fid}" placeholder="...">`;
+      h += `</div>`;
+    });
+    h += `</div></div>`;
+  }
+  c.innerHTML = h;
+}
+
+// ── PERSISTENCIA localStorage ─────────────────────────────────────────────
+
+const IDS = [
+  'fecha','hora','lugar','ordenServicio','indicativo',
+  'ag1','ag2','ag3','ag4','ag5','ag6','ag7','ag8',
+  'p1ind','p1num','p2ind','p2num','p3ind','p3num',
+  'trasladoVehiculo','trasladoNumeros','trasladoDestino',
+  'entAu1','entAu2','entAu3','entAu4',
+  'entVi1','entVi2','entVi3','entVi4',
+  'cacheAu1','cacheAu2','cacheAu3','cacheAu4',
+  'cacheVi1','cacheVi2','cacheVi3','cacheVi4',
+  'custDroga','custArma','custDetenido','lecturaDerechos',
+  'engrilletamiento','custOtroNr','custOtroDesc',
+  'inc1ag','inc1tipo','inc1desc','inc2ag','inc2tipo','inc2desc',
+  'inc3ag','inc3tipo','inc3desc','inc4ag','inc4tipo','inc4desc',
+  'descripcion','danosFisicos','danosMateriales',
+  'posibleDelito','actuacionPolicial','asistenciaOfrecida','asistenciaAceptada',
+];
+
+const PERSONA_AUTORES  = [['nombre','Nombre y apellidos'],['doc','DNI/NIE/Pasaporte'],['nacimiento','Fecha nacimiento'],['nacionalidad','Nacionalidad'],['domicilio','Domicilio'],['telefono','Teléfono'],['alegaciones','Alegaciones'],['efectos','Efectos intervenidos']];
+const PERSONA_VICTIMAS = PERSONA_AUTORES;
+const PERSONA_TESTIGOS = [['nombre','Nombre y apellidos'],['dni','DNI/NIE'],['domicilio','Domicilio'],['telefono','Teléfono'],['manifestacion','Manifestación']];
+
+function getDynamicIds() {
+  const ids = [];
+  for(let i=1;i<=4;i++){
+    ids.push(`veh${i}mat`,`veh${i}marca`,`veh${i}color`,`veh${i}titular`,`veh${i}rel`);
+    PERSONA_AUTORES.forEach(([f])=>ids.push(`au${i}${f}`));
+    PERSONA_VICTIMAS.forEach(([f])=>ids.push(`vi${i}${f}`));
+    PERSONA_TESTIGOS.forEach(([f])=>ids.push(`te${i}${f}`));
+  }
+  return ids;
+}
+
+function guardar() {
+  const allIds = [...IDS, ...getDynamicIds()];
+  const data = {};
+  allIds.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) data[id] = el.value;
+  });
+  localStorage.setItem('ficha_policial', JSON.stringify(data));
+}
+
+function restaurar() {
+  const raw = localStorage.getItem('ficha_policial');
+  if(!raw) return;
+  const data = JSON.parse(raw);
+  Object.keys(data).forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.value = data[id] || '';
+  });
+}
+
+function limpiarFicha() {
+  if(!confirm('¿Limpiar toda la ficha? Se perderán los datos actuales.')) return;
+  const allIds = [...IDS, ...getDynamicIds()];
+  allIds.forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  localStorage.removeItem('ficha_policial');
+}
+
+// Autoguardar al escribir
+document.addEventListener('input', guardar);
+document.addEventListener('change', guardar);
+
+// ── GENERADOR DE TEXTO ────────────────────────────────────────────────────
+
+function v(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function lin(label, val) { return val ? `  ${label}: ${val}\n` : ''; }
+
+function generarTexto() {
+  let t = '';
+  t += '═══════════════════════════════════════════════\n';
+  t += '    FICHA DE ACTUACIÓN POLICIAL — DATOS\n';
+  t += '═══════════════════════════════════════════════\n\n';
+
+  t += '── DATOS DE LA ACTUACIÓN ──────────────────────\n';
+  t += lin('Fecha', v('fecha'));
+  t += lin('Hora', v('hora'));
+  t += lin('Lugar exacto', v('lugar'));
+  t += lin('Orden de servicio', v('ordenServicio'));
+
+  t += '\n── AGENTES ACTUANTES ──────────────────────────\n';
+  t += lin('Indicativo', v('indicativo'));
+  for(let i=1;i<=8;i++) { const n=v(`ag${i}`); if(n) t+=`  Agente ${i} · Nº Policial: ${n}\n`; }
+
+  const p1=v('p1ind')||v('p1num'), p2=v('p2ind')||v('p2num'), p3=v('p3ind')||v('p3num');
+  if(p1||p2||p3) {
+    t += '\n── PATRULLAS COLABORADORAS ────────────────────\n';
+    if(p1) t += `  Patrulla 1 · Indicativo: ${v('p1ind')} | Nº Policiales: ${v('p1num')}\n`;
+    if(p2) t += `  Patrulla 2 · Indicativo: ${v('p2ind')} | Nº Policiales: ${v('p2num')}\n`;
+    if(p3) t += `  Patrulla 3 · Indicativo: ${v('p3ind')} | Nº Policiales: ${v('p3num')}\n`;
+  }
+
+  if(v('trasladoVehiculo')||v('trasladoNumeros')||v('trasladoDestino')) {
+    t += '\n── PATRULLA DE TRASLADO DEL DETENIDO ──────────\n';
+    t += lin('Indicativo/Vehículo', v('trasladoVehiculo'));
+    t += lin('Nº Policiales', v('trasladoNumeros'));
+    t += lin('Destino del traslado', v('trasladoDestino'));
+  }
+
+  const roles = [];
+  for(let i=1;i<=4;i++) { if(v(`entAu${i}`)) roles.push(`  · Agente que se entrevista con Autor ${i}: Nº: ${v(`entAu${i}`)}`); }
+  for(let i=1;i<=4;i++) { if(v(`entVi${i}`)) roles.push(`  · Agente que se entrevista con Víctima ${i}: Nº: ${v(`entVi${i}`)}`); }
+  for(let i=1;i<=4;i++) { if(v(`cacheAu${i}`)) roles.push(`  · Agente que cachea a Autor ${i}: Nº: ${v(`cacheAu${i}`)}`); }
+  for(let i=1;i<=4;i++) { if(v(`cacheVi${i}`)) roles.push(`  · Agente que cachea a Víctima ${i}: Nº: ${v(`cacheVi${i}`)}`); }
+  if(v('custDroga')) roles.push(`  · Custodia de droga/sustancia: Nº: ${v('custDroga')}`);
+  if(v('custArma')) roles.push(`  · Custodia de arma: Nº: ${v('custArma')}`);
+  if(v('custDetenido')) roles.push(`  · Custodia del/los detenido/s: Nº: ${v('custDetenido')}`);
+  if(v('custOtroNr')) roles.push(`  · Custodia de otro efecto (${v('custOtroDesc')||'—'}): Nº: ${v('custOtroNr')}`);
+  if(v('lecturaDerechos')) roles.push(`  · Agente que lee los derechos: Nº: ${v('lecturaDerechos')}`);
+  if(v('engrilletamiento')) roles.push(`  · Agente que realiza el engrilletamiento: Nº: ${v('engrilletamiento')}`);
+  if(roles.length) { t += '\n── ROLES DE LOS AGENTES ───────────────────────\n'; t += roles.join('\n')+'\n'; }
+
+  const incs = [];
+  for(let i=1;i<=4;i++) { if(v(`inc${i}ag`)) incs.push(`  · Agente Nº: ${v(`inc${i}ag`)} | ${v(`inc${i}tipo`)}: ${v(`inc${i}desc`)}`); }
+  if(incs.length) { t += '\n── INCIDENCIAS DE LOS AGENTES ─────────────────\n'; t += incs.join('\n')+'\n'; }
+
+  let hayVeh = false;
+  for(let i=1;i<=4;i++) { if(v(`veh${i}mat`)||v(`veh${i}marca`)) { if(!hayVeh){ t+='\n── VEHÍCULOS IMPLICADOS ───────────────────────\n'; hayVeh=true; } t+=`Vehículo ${i}\n`; t+=lin('Matrícula',v(`veh${i}mat`)); t+=lin('Marca/Modelo',v(`veh${i}marca`)); t+=lin('Color',v(`veh${i}color`)); t+=lin('Titular/Conductor',v(`veh${i}titular`)); t+=lin('Relación con los hechos',v(`veh${i}rel`)); } }
+
+  let hayAut = false;
+  for(let i=1;i<=4;i++) { if(v(`au${i}nombre`)) { if(!hayAut){ t+='\n── AUTOR/ES (DETENIDO/S) ──────────────────────\n'; hayAut=true; } t+=`Autor ${i}\n`; PERSONA_AUTORES.forEach(([f,l])=>{ t+=lin(l,v(`au${i}${f}`)); }); } }
+
+  let hayVic = false;
+  for(let i=1;i<=4;i++) { if(v(`vi${i}nombre`)) { if(!hayVic){ t+='\n── VÍCTIMA/S ──────────────────────────────────\n'; hayVic=true; } t+=`Víctima ${i}\n`; PERSONA_VICTIMAS.forEach(([f,l])=>{ t+=lin(l,v(`vi${i}${f}`)); }); } }
+
+  let hayTes = false;
+  for(let i=1;i<=4;i++) { if(v(`te${i}nombre`)) { if(!hayTes){ t+='\n── TESTIGOS ───────────────────────────────────\n'; hayTes=true; } t+=`Testigo ${i}\n`; PERSONA_TESTIGOS.forEach(([f,l])=>{ t+=lin(l,v(`te${i}${f}`)); }); } }
+
+  t += '\n── HECHOS ─────────────────────────────────────\n';
+  t += lin('Descripción', v('descripcion'));
+  t += lin('Daños físicos', v('danosFisicos'));
+  t += lin('Daños materiales', v('danosMateriales'));
+
+  t += '\n── CALIFICACIÓN Y ACTUACIÓN ───────────────────\n';
+  t += lin('Posible delito', v('posibleDelito'));
+  t += lin('Actuación policial', v('actuacionPolicial'));
+  t += lin('Asistencia médica ofrecida', v('asistenciaOfrecida'));
+  t += lin('Asistencia médica aceptada', v('asistenciaAceptada'));
+
+  t += '\n═══════════════════════════════════════════════\n';
+  return t;
+}
+
+function copiarFicha() {
+  const txt = generarTexto();
+  const btn = document.getElementById('btnCopy');
+  const toast = document.getElementById('toast');
+
+  if(navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(txt).then(() => mostrarOK(btn, toast));
+  } else {
+    // Fallback para Android sin HTTPS
+    const ta = document.createElement('textarea');
+    ta.value = txt;
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    mostrarOK(btn, toast);
+  }
+}
+
+function mostrarOK(btn, toast) {
+  btn.textContent = '✓ Ficha copiada — pégala en el chat';
+  btn.classList.add('ok');
+  toast.classList.add('show');
+  setTimeout(() => {
+    btn.textContent = '⎘ Copiar ficha para generar comparecencia';
+    btn.classList.remove('ok');
+    toast.classList.remove('show');
+  }, 3000);
+}
+
+// ── SERVICE WORKER ────────────────────────────────────────────────────────
+if('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+renderVehiculos();
+renderPersonas('autores-container',  'au', 'Autor',   PERSONA_AUTORES);
+renderPersonas('victimas-container', 'vi', 'Víctima', PERSONA_VICTIMAS);
+renderPersonas('testigos-container', 'te', 'Testigo', PERSONA_TESTIGOS);
+restaurar();
+</script>
+</body>
+</html>

@@ -229,9 +229,23 @@ select option{background:var(--bg3)}
   <div class="field"><label>Daños materiales</label><textarea id="danosMateriales" rows="2" placeholder="Bienes dañados, valoración..."></textarea></div>
 </div>
 
-<!-- 12 CALIFICACIÓN -->
+<!-- 12 INFRACCIONES ADMINISTRATIVAS -->
 <div class="sec">
-  <div class="sec-title"><span class="badge">12</span>Calificación y Actuación</div>
+  <div class="sec-title"><span class="badge">12</span>Infracciones Administrativas</div>
+  <div class="dyn-list" id="list-infracciones"></div>
+  <button class="btn-add" id="add-infracciones" onclick="addBlock('infracciones')">+ Añadir infracción administrativa</button>
+</div>
+
+<!-- 13 INTERVENCIÓN CON DEC -->
+<div class="sec">
+  <div class="sec-title"><span class="badge">13</span>Intervención con DEC (Dispositivo Eléctrico de Control)</div>
+  <div class="dyn-list" id="list-dec"></div>
+  <button class="btn-add" id="add-dec" onclick="addBlock('dec')">+ Añadir intervención DEC</button>
+</div>
+
+<!-- 14 CALIFICACIÓN -->
+<div class="sec">
+  <div class="sec-title"><span class="badge">14</span>Calificación y Actuación</div>
   <div class="field">
     <label>Posible delito / descripción breve</label>
     <textarea id="posibleDelito" rows="3" placeholder="Escribe el tipo de delito o una descripción breve de los hechos — los artículos aplicables aparecerán automáticamente..." oninput="detectarDelitos(this.value)"></textarea>
@@ -344,8 +358,19 @@ const CFGS = {
   testigos:   {label:'Testigo',    max:4, fields:[{id:'nombre',l:'Nombre y apellidos',ta:0},{id:'dni',l:'DNI/NIE',ta:0},{id:'domicilio',l:'Domicilio',ta:0},{id:'telefono',l:'Teléfono',ta:0},{id:'manifestacion',l:'Manifestación',ta:1}]},
   vehiculos:  {label:'Vehículo',   max:4, fields:[{id:'matricula',l:'Matrícula',ta:0},{id:'marca',l:'Marca/Modelo',ta:0},{id:'color',l:'Color',ta:0},{id:'titular',l:'Titular/Conductor',ta:0},{id:'relacion',l:'Relación con los hechos',ta:1}]},
   incidencias:{label:'Incidencia', max:4, fields:[{id:'agente',l:'Agente Nº',ta:0},{id:'tipo',l:'Tipo (daño físico/material/actuación relevante)',ta:0},{id:'descripcion',l:'Descripción',ta:1}]},
+  infracciones:{label:'Infracción', max:8, fields:[{id:'precepto',l:'Precepto infringido (art. / ley)',ta:0},{id:'denunciado',l:'Nombre del denunciado',ta:0},{id:'descripcion',l:'Descripción de la infracción',ta:1},{id:'sancion',l:'Sanción propuesta',ta:0}]},
+  dec:{label:'DEC', max:4, fields:[
+    {id:'agente',   l:'Agente e indicativo',ta:0},
+    {id:'codDEC',   l:'Código identificativo del DEC (nº fabricante)',ta:0},
+    {id:'codCCP',   l:'Código identificativo de la CCP',ta:0},
+    {id:'disparos', l:'Número de disparos y ciclos NMI activados',ta:0},
+    {id:'impacto',  l:'Zona de impacto',ta:0},
+    {id:'avisoV0',  l:'Aviso a V-0',ta:0,ph:'SÍ / NO'},
+    {id:'resultado',l:'Resultado de la intervención y estado del sujeto',ta:1},
+    {id:'samur',    l:'SAMUR — descripción breve de la asistencia',ta:1},
+  ]},
 };
-const CNT = {autores:0,victimas:0,testigos:0,vehiculos:0,incidencias:0};
+const CNT = {autores:0,victimas:0,testigos:0,vehiculos:0,incidencias:0,infracciones:0,dec:0};
 
 function addBlock(type, saved) {
   const cfg = CFGS[type];
@@ -458,7 +483,7 @@ function limpiarTodo(){
   if(!confirm('¿Limpiar toda la ficha? Se perderán todos los datos.'))return;
   localStorage.removeItem('fp3');
   SID.forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  Object.keys(CFGS).forEach(type=>{document.getElementById('list-'+type).innerHTML='';CNT[type]=0;document.getElementById('add-'+type).style.display='';});
+  Object.keys(CFGS).forEach(type=>{const l=document.getElementById('list-'+type);if(l)l.innerHTML='';CNT[type]=0;const b=document.getElementById('add-'+type);if(b)b.style.display='';});
   ['entAutor','entVictima','cacheoAutor','cacheoVictima'].forEach(type=>{document.getElementById('list-'+type).innerHTML='';ROLE_CNT[type]=0;document.getElementById('add-'+type).style.display='';});
   document.getElementById('crimeBox').classList.remove('show');
 }
@@ -512,6 +537,8 @@ function generarTexto(){
   if(roles.length){t+='\n── ROLES DE LOS AGENTES ───────────────────────\n';t+=roles.join('\n')+'\n';}
 
   dynBloque('incidencias','INCIDENCIAS DE LOS AGENTES');
+  dynBloque('infracciones','INFRACCIONES ADMINISTRATIVAS');
+  dynBloque('dec','INTERVENCIÓN CON DEC');
 
   t+='\n── HECHOS ─────────────────────────────────────\n';
   t+=lin('Descripción',v('descripcion'));t+=lin('Daños físicos',v('danosFisicos'));t+=lin('Daños materiales',v('danosMateriales'));

@@ -361,7 +361,6 @@ const CFGS = {
   infracciones:{label:'Infracción', max:8, fields:[{id:'numActa',l:'Número de denuncia / acta',ta:0},{id:'denunciado',l:'Nombre del denunciado',ta:0},{id:'descripcion',l:'Descripción de la infracción / motivo del acta',ta:1}]},
   dec:{label:'DEC', max:4, fields:[
     {id:'agente',   l:'Agente e indicativo',ta:0},
-    {id:'codDEC',   l:'Código identificativo del DEC (nº fabricante)',ta:0},
     {id:'codCCP',   l:'Código identificativo de la CCP',ta:0},
     {id:'disparos', l:'Número de disparos y ciclos NMI activados',ta:0},
     {id:'impacto',  l:'Zona de impacto',ta:0},
@@ -383,9 +382,19 @@ function addBlock(type, saved) {
   div.className='dyn-block'; div.dataset.type=type; div.dataset.n=n;
   const shorts=cfg.fields.filter(f=>!f.ta), longs=cfg.fields.filter(f=>f.ta);
   let h=`<div class="dyn-header"><span class="dyn-label">${cfg.label} ${n}</span><button class="btn-remove" onclick="removeBlock(this)">✕ Quitar</button></div>`;
-  if(shorts.length){h+='<div class="g2">';shorts.forEach(f=>{const fid=`${type}_${n}_${f.id}`;const val=saved?(saved[f.id]||''):'';h+=`<div class="field"><label>${f.l}</label><input type="text" id="${fid}" placeholder="${f.ph||'...'}" value="${esc(val)}"></div>`;});h+='</div>';}
+  if(shorts.length){h+='<div class="g2">';shorts.forEach(f=>{const fid=`${type}_${n}_${f.id}`;const val=saved?(saved[f.id]||''):'';const needsX=(type==='dec'&&f.id==='codCCP');if(needsX){h+=`<div class="field"><label>${f.l}</label><div style="display:flex;align-items:center;gap:6px"><span style="color:var(--text);font-family:var(--font);font-size:13px;font-weight:bold;flex-shrink:0">X</span><input type="text" id="${fid}" placeholder="número..." value="${esc(val)}" style="flex:1"></div></div>`;}else{h+=`<div class="field"><label>${f.l}</label><input type="text" id="${fid}" placeholder="${f.ph||'...'}" value="${esc(val)}"></div>`;}});h+='</div>';}
   longs.forEach(f=>{const fid=`${type}_${n}_${f.id}`;const val=saved?(saved[f.id]||''):'';h+=`<div class="field" style="margin-top:8px"><label>${f.l}</label><textarea id="${fid}" rows="2" placeholder="...">${esc(val)}</textarea></div>`;});
+  // Si es bloque DEC, añadir sección dinámica de cargas usadas
+  if(type==='dec'){
+    h += '<div class="sublabel" style="margin-top:12px">Cargas usadas</div>';
+    h += '<div class="dyn-list" id="dec-cargas-'+n+'"></div>';
+    h += '<button class="btn-add" style="margin-top:8px" onclick="addCarga('+n+')">+ Añadir carga usada</button>';
+  }
   div.innerHTML=h;
+  // Restaurar cargas si hay datos guardados
+  if(type==='dec' && saved && saved._cargas){
+    saved._cargas.forEach(c=>addCarga(n,c));
+  }
   list.appendChild(div);
   if(CNT[type]>=cfg.max) addBtn.style.display='none';
   div.addEventListener('input',guardar); div.addEventListener('change',guardar);
@@ -458,10 +467,47 @@ function removeRoleRow(btn) {
 // ── PERSISTENCIA ──────────────────────────────────────────────────────────
 const SID=['fecha','hora','lugar','ordenServicio','indicativo','ag1','ag2','ag3','ag4','ag5','ag6','ag7','ag8','p1ind','p1num','p2ind','p2num','p3ind','p3num','trasVeh','trasNum','trasDst','custDroga','custArma','custDet','leeDerechos','engrilla','custOtroNr','custOtroDesc','descripcion','danosFisicos','danosMateriales','posibleDelito','actuacionPolicial','asistenciaOfrecida','asistenciaAceptada'];
 
+// ── CARGAS DEC ─────────────────────────────────────────────────────────────
+const CARGA_CNT = {};
+function addCarga(decN, savedVal){
+  if(!CARGA_CNT[decN]) CARGA_CNT[decN]=0;
+  if(CARGA_CNT[decN]>=4) return;
+  CARGA_CNT[decN]++;
+  const cn = CARGA_CNT[decN];
+  const list = document.getElementById('dec-cargas-'+decN);
+  if(!list) return;
+  const row = document.createElement('div');
+  row.className='dyn-block';
+  row.dataset.decn=String(decN);
+  row.dataset.cargan=String(cn);
+  row.style.marginBottom='8px';
+  const val = savedVal||'';
+  row.innerHTML=`<div class="dyn-header" style="margin-bottom:8px"><span class="dyn-label">Carga ${cn}</span><button class="btn-remove" onclick="removeCarga(this)">✕</button></div><div class="field"><label>Número de serie de la carga</label><div style="display:flex;align-items:center;gap:6px"><span style="color:var(--text);font-family:var(--font);font-size:13px;font-weight:bold;flex-shrink:0">X</span><input type="text" id="carga_${decN}_${cn}" placeholder="número de serie..." value="${esc(val)}" style="flex:1"></div></div>`;
+  list.appendChild(row);
+  row.addEventListener('input', guardar);
+  row.addEventListener('change', guardar);
+  setTimeout(()=>row.scrollIntoView({behavior:'smooth',block:'nearest'}),80);
+  guardar();
+}
+
+function removeCarga(btn){
+  const row=btn.closest('[data-decn]');
+  const decN=row.dataset.decn;
+  row.remove();
+  if(CARGA_CNT[decN]) CARGA_CNT[decN]--;
+  document.querySelectorAll('[data-decn="'+decN+'"]').forEach((r,i)=>{
+    r.dataset.cargan=String(i+1);
+    r.querySelector('.dyn-label').textContent='Carga '+(i+1);
+    const el=r.querySelector('input');
+    if(el) el.id='carga_'+decN+'_'+(i+1);
+  });
+  guardar();
+}
+
 function guardar(){
   const d={_b:{},_r:{}};
   SID.forEach(id=>{const el=document.getElementById(id);if(el)d[id]=el.value;});
-  Object.keys(CFGS).forEach(type=>{d._b[type]=[];document.querySelectorAll(`[data-type="${type}"]`).forEach(b=>{const o={};CFGS[type].fields.forEach(f=>{const el=document.getElementById(`${type}_${b.dataset.n}_${f.id}`);if(el)o[f.id]=el.value;});d._b[type].push(o);});});
+  Object.keys(CFGS).forEach(type=>{d._b[type]=[];document.querySelectorAll(`[data-type="${type}"]`).forEach(b=>{const o={};CFGS[type].fields.forEach(f=>{const el=document.getElementById(`${type}_${b.dataset.n}_${f.id}`);if(el)o[f.id]=el.value;});if(type==='dec'){o._cargas=[];document.querySelectorAll(`[data-decn="${b.dataset.n}"]`).forEach(r=>{const el=document.getElementById(`carga_${b.dataset.n}_${r.dataset.cargan}`);if(el)o._cargas.push(el.value);});}d._b[type].push(o);});});
   ['entAutor','entVictima','cacheoAutor','cacheoVictima'].forEach(type=>{d._r[type]=[];document.querySelectorAll(`[data-rtype="${type}"]`).forEach(r=>{const n=r.dataset.rn;d._r[type].push({agente:(document.getElementById(`r_${type}_${n}_agente`)||{}).value||'',persona:(document.getElementById(`r_${type}_${n}_persona`)||{}).value||'',});});});
   localStorage.setItem('fp3',JSON.stringify(d));
 }
@@ -505,7 +551,7 @@ function generarTexto(){
   function dynBloque(type,titulo){
     const blocks=document.querySelectorAll(`[data-type="${type}"]`);if(!blocks.length)return;
     t+=`\n── ${titulo} ──────────────────────────────────\n`;
-    blocks.forEach((b,i)=>{t+=`${CFGS[type].label} ${i+1}\n`;CFGS[type].fields.forEach(f=>{const el=document.getElementById(`${type}_${b.dataset.n}_${f.id}`);const val=el?el.value.trim():'';if(val)t+=lin(f.l,val);});});
+    blocks.forEach((b,i)=>{t+=`${CFGS[type].label} ${i+1}\n`;CFGS[type].fields.forEach(f=>{const el=document.getElementById(`${type}_${b.dataset.n}_${f.id}`);const val=el?el.value.trim():'';if(val){const outVal=(type==='dec'&&f.id==='codCCP')?'X'+val:val;t+=lin(f.l,outVal);}});if(type==='dec'){document.querySelectorAll(`[data-decn="${b.dataset.n}"]`).forEach((r,ci)=>{const el=document.getElementById(`carga_${b.dataset.n}_${r.dataset.cargan}`);const val=el?el.value.trim():'';if(val)t+=lin(`  Carga ${ci+1}`,'X'+val);});}});
   }
   dynBloque('vehiculos','VEHÍCULOS IMPLICADOS');
   dynBloque('autores','AUTOR/ES (DETENIDO/S)');

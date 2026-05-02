@@ -1,612 +1,1774 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0a1628">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="FichaPolicial">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<title>Ficha de Actuación Policial</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{
-  --bg:#030b14;--bg2:#06101f;--bg3:#0a1628;--bg4:#0d1e35;
-  --border:#1a3050;--border2:#1e3a5f;
-  --blue:#4a90d9;--blue2:#357abd;
-  --text:#c8d8f0;--muted:#7aafd4;--dim:#3a5070;
-  --gold:#f0c040;--green:#27ae60;--red:#c0392b;--orange:#e67e22;
-  --font:'Courier New',Courier,monospace;
-}
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;overflow-x:hidden}
-
-/* HEADER */
-.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:11px 14px;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between}
-.hlogo{width:32px;height:32px;border-radius:50%;border:2px solid var(--blue);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--blue);flex-shrink:0}
-.htitle{font-size:12px;font-weight:bold;color:#fff}
-.hsub{font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.5px}
-.btn-limpiar{background:none;border:1px solid var(--red);color:var(--red);border-radius:6px;padding:6px 10px;font-size:10px;font-family:var(--font);cursor:pointer;text-transform:uppercase}
-.btn-limpiar:active{background:var(--red);color:#fff}
-
-main{padding:12px 12px 110px;max-width:680px;margin:0 auto}
-
-/* SECTION */
-.sec{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px}
-.sec-title{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;color:var(--blue);border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:14px}
-.badge{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;min-width:20px;border-radius:50%;background:var(--blue);color:#fff;font-size:10px;font-weight:bold}
-
-/* FIELDS */
-.field{margin-bottom:10px}
-.field:last-child{margin-bottom:0}
-label{display:block;font-size:10px;font-weight:bold;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px}
-input,textarea,select{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:9px 10px;color:var(--text);font-family:var(--font);font-size:13px;outline:none;transition:border-color .15s;-webkit-appearance:none;appearance:none}
-input:focus,textarea:focus,select:focus{border-color:var(--blue)}
-textarea{resize:vertical;min-height:60px;line-height:1.5}
-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237aafd4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
-select option{background:var(--bg3)}
-::placeholder{color:var(--dim)}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-
-/* DYNAMIC BLOCKS */
-.dyn-list{display:flex;flex-direction:column;gap:10px}
-.dyn-block{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:12px}
-.dyn-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.dyn-label{font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:.7px;color:var(--gold)}
-.btn-remove{background:none;border:1px solid var(--red);color:var(--red);border-radius:5px;padding:4px 8px;font-size:10px;font-family:var(--font);cursor:pointer}
-.btn-remove:active{background:var(--red);color:#fff}
-
-/* ROLE PAIR BLOCK */
-.role-block{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:10px;display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.role-block:last-child{margin-bottom:0}
-.role-persona{flex:1;font-size:11px;color:var(--muted);font-weight:bold;text-transform:uppercase;letter-spacing:.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.role-input{flex:1;background:var(--bg);border:1px solid var(--border2);border-radius:5px;padding:7px 9px;color:var(--text);font-family:var(--font);font-size:12px;outline:none}
-.role-input:focus{border-color:var(--blue)}
-.role-list{display:flex;flex-direction:column;gap:0}
-
-/* ADD BUTTON */
-.btn-add{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:11px;margin-top:10px;background:none;border:1px dashed var(--border2);border-radius:8px;color:var(--blue);font-family:var(--font);font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:.8px;cursor:pointer;transition:all .15s}
-.btn-add:active{background:rgba(74,144,217,.1);border-color:var(--blue)}
-
-/* SUBLABEL */
-.sublabel{font-size:10px;font-weight:bold;text-transform:uppercase;letter-spacing:.8px;color:var(--gold);margin:14px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
-
-/* CRIME DETECTION */
-.crime-box{margin-top:10px;padding:10px;background:var(--bg4);border:1px solid var(--border2);border-radius:8px;display:none}
-.crime-box.show{display:block}
-.crime-title{font-size:10px;font-weight:bold;text-transform:uppercase;letter-spacing:.8px;color:var(--gold);margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.crime-item{margin-bottom:10px;padding:8px;background:var(--bg3);border-radius:6px;border-left:3px solid var(--blue)}
-.crime-item:last-child{margin-bottom:0}
-.crime-name{font-size:11px;font-weight:bold;color:var(--blue);margin-bottom:4px}
-.crime-norm{font-size:10px;color:var(--text);line-height:1.6;padding-left:4px}
-.crime-ref{color:var(--gold);font-weight:bold}
-
-/* COPY BUTTON */
-.btn-copy{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--blue);color:#fff;border:none;padding:17px 20px;font-family:var(--font);font-size:13px;font-weight:bold;text-transform:uppercase;letter-spacing:.8px;cursor:pointer;transition:background .15s}
-.btn-copy.ok{background:var(--green)}
-.btn-copy:active{background:var(--blue2)}
-
-/* TOAST */
-.toast{position:fixed;top:62px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;padding:10px 18px;border-radius:8px;font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:.5px;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap;z-index:300}
-.toast.show{opacity:1}
-</style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+  <title>Calendario de Turnos</title>
+  <link rel="manifest" href="manifest.json"/>
+  <meta name="theme-color" content="#1C1C2E"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <link rel="apple-touch-icon" href="icon.svg"/>
+  <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.23.5/babel.min.js"></script>
+  <style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:system-ui,sans-serif;overscroll-behavior:none;}</style>
 </head>
 <body>
+<div id="root"></div>
+<script type="text/babel">
+const{useState,useMemo,useRef,useCallback,useEffect}=React;
+const toKey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const fromKey=dk=>{const[y,m,dd]=dk.split('-').map(Number);return new Date(y,m-1,dd);};
+const addD=(d,n)=>{const r=new Date(d);r.setDate(r.getDate()+n);return r;};
+const monStart=d=>{const r=new Date(d);const day=r.getDay();r.setDate(r.getDate()-(day===0?6:day-1));return r;};
+const DN=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+const DNF=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+const MN=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const MNS=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const TC='#90A4AE',LC='#43A047',FC_WORK='#EF5350',FC_REST='#66BB6A';
 
-<header class="header">
-  <div style="display:flex;align-items:center;gap:10px">
-    <div class="hlogo">⚖</div>
-    <div><div class="htitle">Ficha de Actuación Policial</div><div class="hsub">Policía Municipal · Comisaría Central</div></div>
-  </div>
-  <button class="btn-limpiar" onclick="limpiarTodo()">✕ Limpiar</button>
-</header>
+const LOGO_OPTS=[{id:'pm',l:'PM Madrid',e:null},{id:'p2',l:'Policía 👮',e:'👮'},{id:'p3',l:'Guardia 🛡️',e:'🛡️'},{id:'p4',l:'Bomberos 🚒',e:'🚒'},{id:'p5',l:'Sanitario 🚑',e:'🚑'}];
+const LogoPM=({size=36})=>(
+  <svg viewBox="0 0 100 100" width={size} height={size} style={{flexShrink:0}}>
+    {Array.from({length:32},(_,i)=>{const a=(i/32)*Math.PI*2-Math.PI/2,am=((i+.5)/32)*Math.PI*2-Math.PI/2,an=((i+1)/32)*Math.PI*2-Math.PI/2;
+      return<polygon key={i} points={`${50+36*Math.cos(a)} ${50+36*Math.sin(a)} ${50+49*Math.cos(am)} ${50+49*Math.sin(am)} ${50+36*Math.cos(an)} ${50+36*Math.sin(an)}`} fill="white"/>;
+    })}<circle cx="50" cy="50" r="34" fill="#1C3A8A"/><circle cx="50" cy="50" r="27" fill="none" stroke="white" strokeWidth="1.2"/>
+    <path d="M50 24 L60 28 L60 39 C60 47 55 51 50 53 C45 51 40 47 40 39 L40 28Z" fill="white"/>
+    <text x="50" y="69" textAnchor="middle" fontSize="5.8" fontWeight="800" fill="white" letterSpacing=".2">PM MADRID</text>
+  </svg>
+);
+const RenderLogo=({type,size=34,customData})=>{
+  if(type==='custom'&&customData)return<img src={customData} alt="logo" style={{width:size,height:size,borderRadius:6,objectFit:'contain',flexShrink:0}}/>;
+  if(type==='pm')return<LogoPM size={size}/>;
+  return<span style={{fontSize:size*.88,lineHeight:1}}>{LOGO_OPTS.find(o=>o.id===type)?.e||'👮'}</span>;
+};
 
-<div class="toast" id="toast">✓ Copiado — pégalo en el chat</div>
-
-<main>
-
-<!-- 1 DATOS -->
-<div class="sec">
-  <div class="sec-title"><span class="badge">1</span>Datos de la Actuación</div>
-  <div class="g2">
-    <div class="field"><label>Fecha</label><input type="date" id="fecha"></div>
-    <div class="field"><label>Hora</label><input type="time" id="hora"></div>
-  </div>
-  <div class="field" style="margin-top:8px"><label>Lugar exacto</label><input type="text" id="lugar" placeholder="Dirección, espacio, zona..."></div>
-  <div class="field"><label>Orden de servicio</label><input type="text" id="ordenServicio" placeholder="Nº / referencia (opcional)"></div>
-</div>
-
-<!-- 2 AGENTES -->
-<div class="sec">
-  <div class="sec-title"><span class="badge">2</span>Agentes Actuantes</div>
-  <div class="field"><label>Indicativo (todos)</label><input type="text" id="indicativo" placeholder="Ej: Omega 5234"></div>
-  <div class="g2" style="margin-top:8px">
-    <div class="field"><label>Agente 1 · Nº</label><input type="text" id="ag1" placeholder="Nº policial..."></div>
-    <div class="field"><label>Agente 2 · Nº</label><input type="text" id="ag2" placeholder="Nº policial..."></div>
-    <div class="field"><label>Agente 3 · Nº</label><input type="text" id="ag3" placeholder="Nº policial..."></div>
-    <div class="field"><label>Agente 4 · Nº</label><input type="text" id="ag4" placeholder="Nº policial..."></div>
-    <div class="field"><label>Agente 5 · Nº</label><input type="text" id="ag5" placeholder="Nº policial..."></div>
-    <div class="field"><label>Agente 6 · Nº</label><input type="text" id="ag6" placeholder="Nº policial..."></div>
-    <div class="field"><label>Agente 7 · Nº</label><input type="text" id="ag7" placeholder="Nº policial..."></div>
-    <div class="field"><label>Agente 8 · Nº</label><input type="text" id="ag8" placeholder="Nº policial..."></div>
-  </div>
-</div>
-
-<!-- 3 VEHÍCULOS (movido) -->
-<div class="sec">
-  <div class="sec-title"><span class="badge">3</span>Vehículos Implicados</div>
-  <div class="dyn-list" id="list-vehiculos"></div>
-  <button class="btn-add" id="add-vehiculos" onclick="addBlock('vehiculos')">+ Añadir vehículo</button>
-</div>
-
-<!-- 4 AUTORES (movido) -->
-<div class="sec">
-  <div class="sec-title"><span class="badge">4</span>Autor/es — Detenido/s</div>
-  <div class="dyn-list" id="list-autores"></div>
-  <button class="btn-add" id="add-autores" onclick="addBlock('autores')">+ Añadir autor / detenido</button>
-</div>
-
-<!-- 5 VÍCTIMAS (movido) -->
-<div class="sec">
-  <div class="sec-title"><span class="badge">5</span>Víctima/s</div>
-  <div class="dyn-list" id="list-victimas"></div>
-  <button class="btn-add" id="add-victimas" onclick="addBlock('victimas')">+ Añadir víctima</button>
-</div>
-
-<!-- 6 TESTIGOS (movido) -->
-<div class="sec">
-  <div class="sec-title"><span class="badge">6</span>Testigos</div>
-  <div class="dyn-list" id="list-testigos"></div>
-  <button class="btn-add" id="add-testigos" onclick="addBlock('testigos')">+ Añadir testigo</button>
-</div>
-
-<!-- 7 PATRULLAS COLABORADORAS -->
-<div class="sec">
-  <div class="sec-title"><span class="badge">7</span>Patrullas Colaboradoras</div>
-  <div class="g2">
-    <div class="field"><label>Patrulla 1 · Indicativo</label><input type="text" id="p1ind" placeholder="Indicativo..."></div>
-    <div class="field"><label>Nº Policiales</label><input type="text" id="p1num" placeholder="Separados por coma..."></div>
-    <div class="field"><label>Patrulla 2 · Indicativo</label><input type="text" id="p2ind" placeholder="Indicativo..."></div>
-    <div class="field"><label>Nº Policiales</label><input type="text" id="p2num" placeholder="Separados por coma..."></div>
-    <div class="field"><label>Patrulla 3 · Indicativo</label><input type="text" id="p3ind" placeholder="Indicativo..."></div>
-    <div class="field"><label>Nº Policiales</label><input type="text" id="p3num" placeholder="Separados por coma..."></div>
-  </div>
-</div>
-
-<!-- 8 TRASLADO -->
-<div class="sec">
-  <div class="sec-title"><span class="badge">8</span>Patrulla de Traslado del Detenido</div>
-  <div class="field"><label>Indicativo / Nº Vehículo</label><input type="text" id="trasVeh" placeholder="Ej: P-543, Omega 1122..."></div>
-  <div class="field"><label>Nº Policiales</label><input type="text" id="trasNum" placeholder="Números de los agentes..."></div>
-  <div class="field"><label>Destino</label><input type="text" id="trasDst" placeholder="Comisaría / dependencias..."></div>
-</div>
-
-<!-- 9 ROLES DINÁMICOS -->
-<div class="sec">
-  <div class="sec-title"><span class="badge">9</span>Roles de los Agentes</div>
-
-  <div class="sublabel" style="margin-top:0">Entrevistas con Autores</div>
-  <div class="role-list" id="list-entAutor"></div>
-  <button class="btn-add" id="add-entAutor" onclick="addRoleRow('entAutor','Autor')" style="margin-top:8px">+ Añadir entrevista autor</button>
-
-  <div class="sublabel">Entrevistas con Víctimas</div>
-  <div class="role-list" id="list-entVictima"></div>
-  <button class="btn-add" id="add-entVictima" onclick="addRoleRow('entVictima','Víctima')" style="margin-top:8px">+ Añadir entrevista víctima</button>
-
-  <div class="sublabel">Cacheos de Autores</div>
-  <div class="role-list" id="list-cacheoAutor"></div>
-  <button class="btn-add" id="add-cacheoAutor" onclick="addRoleRow('cacheoAutor','Autor')" style="margin-top:8px">+ Añadir cacheo autor</button>
-
-  <div class="sublabel">Cacheos de Víctimas</div>
-  <div class="role-list" id="list-cacheoVictima"></div>
-  <button class="btn-add" id="add-cacheoVictima" onclick="addRoleRow('cacheoVictima','Víctima')" style="margin-top:8px">+ Añadir cacheo víctima</button>
-
-  <div class="sublabel">Custodias y Actuaciones</div>
-  <div class="g2">
-    <div class="field"><label>Custodia droga/sustancia</label><input type="text" id="custDroga" placeholder="Nº..."></div>
-    <div class="field"><label>Custodia arma</label><input type="text" id="custArma" placeholder="Nº..."></div>
-    <div class="field"><label>Custodia detenido/s</label><input type="text" id="custDet" placeholder="Nº..."></div>
-    <div class="field"><label>Lee los derechos</label><input type="text" id="leeDerechos" placeholder="Nº..."></div>
-    <div class="field"><label>Engrilletamiento</label><input type="text" id="engrilla" placeholder="Nº..."></div>
-    <div class="field"><label>Custodia otro efecto</label><input type="text" id="custOtroNr" placeholder="Nº..."></div>
-  </div>
-  <div class="field"><label>Describir otro efecto custodiado</label><input type="text" id="custOtroDesc" placeholder="Qué custodia..."></div>
-</div>
-
-<!-- 10 INCIDENCIAS -->
-<div class="sec">
-  <div class="sec-title"><span class="badge">10</span>Incidencias de los Agentes</div>
-  <div class="dyn-list" id="list-incidencias"></div>
-  <button class="btn-add" id="add-incidencias" onclick="addBlock('incidencias')">+ Añadir incidencia</button>
-</div>
-
-<!-- 11 HECHOS -->
-<div class="sec">
-  <div class="sec-title"><span class="badge">11</span>Hechos</div>
-  <div class="field"><label>Descripción</label><textarea id="descripcion" rows="5" placeholder="Narración de los hechos tal como ocurrieron..."></textarea></div>
-  <div class="field"><label>Daños físicos</label><textarea id="danosFisicos" rows="2" placeholder="Lesiones observadas..."></textarea></div>
-  <div class="field"><label>Daños materiales</label><textarea id="danosMateriales" rows="2" placeholder="Bienes dañados, valoración..."></textarea></div>
-</div>
-
-<!-- 12 INFRACCIONES ADMINISTRATIVAS -->
-<div class="sec">
-  <div class="sec-title"><span class="badge">12</span>Infracciones Administrativas</div>
-  <div class="dyn-list" id="list-infracciones"></div>
-  <button class="btn-add" id="add-infracciones" onclick="addBlock('infracciones')">+ Añadir infracción administrativa</button>
-</div>
-
-<!-- 13 INTERVENCIÓN CON DEC -->
-<div class="sec">
-  <div class="sec-title"><span class="badge">13</span>Intervención con DEC (Dispositivo Eléctrico de Control)</div>
-  <div class="dyn-list" id="list-dec"></div>
-  <button class="btn-add" id="add-dec" onclick="addBlock('dec')">+ Añadir intervención DEC</button>
-</div>
-
-<!-- 14 CALIFICACIÓN -->
-<div class="sec">
-  <div class="sec-title"><span class="badge">14</span>Calificación y Actuación</div>
-  <div class="field">
-    <label>Posible delito / descripción breve</label>
-    <textarea id="posibleDelito" rows="3" placeholder="Escribe el tipo de delito o una descripción breve de los hechos — los artículos aplicables aparecerán automáticamente..." oninput="detectarDelitos(this.value)"></textarea>
-    <div class="crime-box" id="crimeBox">
-      <div class="crime-title">⚖ Legislación detectada automáticamente</div>
-      <div id="crimeList"></div>
-    </div>
-  </div>
-  <div class="field"><label>Actuación policial</label><textarea id="actuacionPolicial" rows="3" placeholder="Diligencias, traslados, identificaciones..."></textarea></div>
-  <div class="g2">
-    <div class="field"><label>Asistencia médica ofrecida</label>
-      <select id="asistenciaOfrecida"><option value="">— —</option><option value="SÍ">SÍ</option><option value="NO">NO</option></select></div>
-    <div class="field"><label>Asistencia médica aceptada</label>
-      <select id="asistenciaAceptada"><option value="">— —</option><option value="SÍ">SÍ</option><option value="NO">NO</option></select></div>
-  </div>
-</div>
-
-</main>
-
-<button class="btn-copy" id="btnCopy" onclick="copiarFicha()">
-  ⎘ Copiar ficha para generar comparecencia
-</button>
-
-<script>
-// ── CÓDIGO PENAL — DETECCIÓN AUTOMÁTICA ───────────────────────────────────
-const CP = [
-  {titulo:"Homicidio y Asesinato — Tít. I CP", kw:["homicidio","asesinato","matar","muerte","fallecido","cadáver","suicidio"],
-   normas:[["Art. 138 CP","Homicidio doloso. Pena: 10-15 años."],["Art. 139 CP","Asesinato (alevosía, precio, ensañamiento). Pena: 15-25 años."],["Art. 140 CP","Asesinato hiperagravado. Pena: prisión permanente revisable."],["Art. 142 CP","Homicidio imprudente. Pena: 1-4 años."]]},
-  {titulo:"Lesiones — Tít. III CP", kw:["lesion","lesión","golpe","herida","paliza","fractura","contusión","agresión física","traumatismo","herido","lesionado","corte","sangre"],
-   normas:[["Art. 147.1 CP","Lesiones con tratamiento médico. Pena: 3 meses-3 años."],["Art. 148 CP","Lesiones agravadas (armas, víctima menor). Pena: 2-5 años."],["Art. 149 CP","Lesiones gravísimas (pérdida de órgano). Pena: 6-12 años."],["Art. 153 CP","Lesiones en ámbito de pareja. Pena: 3 meses-1 año."]]},
-  {titulo:"Libertad — Tít. VI CP", kw:["detención ilegal","secuestro","privación de libertad","amenaza","amenazas","coacción","coacciones","retención","intimidación","acoso","stalking","matrimonio forzado"],
-   normas:[["Art. 163 CP","Detención ilegal. Pena: 4-6 años."],["Art. 164 CP","Secuestro. Pena: 6-10 años."],["Art. 169 CP","Amenazas graves. Pena: 1-5 años."],["Art. 172 CP","Coacciones. Pena: 6 meses-3 años."],["Art. 172 ter CP","Acoso/stalking. Pena: 3 meses-2 años."]]},
-  {titulo:"Torturas e Integridad Moral — Tít. VII CP", kw:["tortura","trato degradante","vejación","humillación","trato inhumano","acoso laboral","acoso moral"],
-   normas:[["Art. 173 CP","Trato degradante o acoso laboral. Pena: 6 meses-2 años."],["Art. 174 CP","Tortura por autoridad. Pena: 2-6 años + inhabilitación."]]},
-  {titulo:"Trata de Seres Humanos — Tít. VII bis CP", kw:["trata","tráfico de personas","explotación sexual","explotación laboral","esclavitud","servidumbre"],
-   normas:[["Art. 177 bis CP","Trata de seres humanos. Pena: 5-8 años (agravada: 6-12 años)."]]},
-  {titulo:"Libertad e Indemnidad Sexuales — Tít. VIII CP", kw:["agresión sexual","violación","abuso sexual","acoso sexual","exhibicionismo","prostitución forzada","pornografía infantil","grooming","tocamiento","indemnidad sexual"],
-   normas:[["Art. 178 CP","Agresión sexual. Pena: 1-4 años."],["Art. 179 CP","Violación. Pena: 4-12 años."],["Art. 181 CP","Actos sexuales con menor de 16. Pena: 2-6 años."],["Art. 183 ter CP","Grooming. Pena: 1-3 años."],["Art. 189 CP","Pornografía infantil. Pena: 1-5 años."]]},
-  {titulo:"Intimidad e Inviolabilidad del Domicilio — Tít. IX CP", kw:["intimidad","escucha","grabación ilegal","espionaje","interceptación","allanamiento","domicilio","morada","hackeo","acceso informático","cámara oculta","imágenes íntimas"],
-   normas:[["Art. 197 CP","Descubrimiento de secretos. Pena: 1-4 años."],["Art. 197 bis CP","Acceso ilegítimo a sistemas. Pena: 6 meses-2 años."],["Art. 202 CP","Allanamiento de morada. Pena: 1-4 años."]]},
-  {titulo:"Delitos contra el Honor — Tít. X CP", kw:["calumnia","injuria","difamación","honor","falsa imputación","insulto público"],
-   normas:[["Art. 205 CP","Calumnia. Pena: 6 meses-2 años."],["Art. 208 CP","Injuria grave y pública. Pena: multa 3-7 meses."]]},
-  {titulo:"Relaciones Familiares — Tít. XI CP", kw:["bigamia","abandono de familia","impago de pensión","sustracción de menores","abandono de menor"],
-   normas:[["Art. 217 CP","Bigamia. Pena: 6 meses-1 año."],["Art. 223 CP","Sustracción de menores. Pena: 2-4 años."],["Art. 227 CP","Impago de pensión. Pena: 3 meses-1 año."]]},
-  {titulo:"Robo y Hurto — Tít. XII CP", kw:["robo","hurto","sustracción","carterista","tirón","bolso","arrebato","fuerza en las cosas","escalada","llave falsa","forzar"],
-   normas:[["Art. 234 CP","Hurto. Pena: multa o 6-18 meses (≥400€)."],["Art. 237/240 CP","Robo con fuerza. Pena: 1-5 años."],["Art. 242 CP","Robo con violencia o intimidación. Pena: 2-5 años."]]},
-  {titulo:"Estafa, Extorsión, Daños — Tít. XII CP", kw:["estafa","fraude","engaño","timo","extorsión","chantaje","apropiación indebida","daños","destrozo","vandalismo","pintada","grafiti","sabotaje","usurpación","okupa","ocupación ilegal"],
-   normas:[["Art. 248 CP","Estafa. Pena: 6 meses-3 años."],["Art. 243 CP","Extorsión. Pena: 1-5 años."],["Art. 253 CP","Apropiación indebida. Pena: 6 meses-3 años."],["Art. 263 CP","Daños dolosos. Pena: 1-3 años."],["Art. 245 CP","Usurpación de inmueble. Pena: multa o 1-2 años."]]},
-  {titulo:"Blanqueo de Capitales — Tít. XIII CP", kw:["blanqueo","lavado de dinero","blanqueo de capitales","origen ilícito","dinero negro"],
-   normas:[["Art. 301 CP","Blanqueo de capitales. Pena: 6 meses-6 años y multa."]]},
-  {titulo:"Receptación — Tít. XIII CP", kw:["receptación","objeto robado","objeto sustraído","compra robado","mercancía robada","efecto procedente de delito"],
-   normas:[["Art. 298 CP","Receptación. Pena: 6 meses-2 años."],["Art. 299 CP","Tipo agravado. Pena: 1-3 años."]]},
-  {titulo:"Hacienda Pública y SS — Tít. XIV CP", kw:["fraude fiscal","evasión fiscal","hacienda","seguridad social","impuestos","defraudación tributaria"],
-   normas:[["Art. 305 CP","Defraudación tributaria >120.000€. Pena: 1-5 años."],["Art. 307 CP","Fraude SS >50.000€. Pena: 1-5 años."]]},
-  {titulo:"Derechos de los Trabajadores — Tít. XV CP", kw:["explotación laboral","trabajo ilegal","condiciones laborales ilegales","discriminación laboral","trabajo de menor"],
-   normas:[["Art. 311 CP","Condiciones laborales ilegales. Pena: 6 meses-6 años."],["Art. 316 CP","Riesgo grave en el trabajo. Pena: 6 meses-3 años."]]},
-  {titulo:"Inmigración ilegal — Tít. XV bis CP", kw:["inmigración ilegal","tráfico de inmigrantes","pateras","coyote","extranjeros en situación irregular"],
-   normas:[["Art. 318 bis CP","Tráfico ilegal de personas. Pena: 1-5 años."]]},
-  {titulo:"Medio Ambiente — Tít. XVI CP", kw:["contaminación","vertido","medio ambiente","especie protegida","caza furtiva","pesca ilegal","residuos tóxicos"],
-   normas:[["Art. 325 CP","Contaminación grave. Pena: 2-5 años."],["Art. 334 CP","Caza/pesca de especie protegida. Pena: 6 meses-2 años."]]},
-  {titulo:"Incendios — Tít. XVII CP", kw:["incendio","fuego intencionado","incendio forestal","pirómano","quema forestal"],
-   normas:[["Art. 351 CP","Incendio con peligro para personas. Pena: 10-20 años."],["Art. 352 CP","Incendio forestal. Pena: 1-5 años."]]},
-  {titulo:"Salud Pública — Tít. XVII CP", kw:["salud pública","droga","estupefaciente","narcotráfico","sustancia","tráfico de drogas","cocaína","heroína","hachís","marihuana","cannabis","anfetamina","mdma","éxtasis","trapicheo","camello","dealer","rivotril","benzodiacepina","medicamento falsificado","veneno","bolsa","papelina","grifa","dosis","papela"],
-   normas:[["Art. 368 CP","Tráfico de drogas que causan grave daño. Pena: 3-6 años (escasa entidad: 1-3 años)."],["Art. 369 CP","Tipos agravados: organización, notoria importancia, menores, establecimiento público."],["Art. 370 CP","Tipo hiperagravado: jefatura de organización. Pena: 9-13 años y medio."],["Art. 371 CP","Precursores de drogas. Pena: 3-6 años."]]},
-  {titulo:"Seguridad Vial — Tít. XVII CP", kw:["conducción temeraria","alcohol al volante","drogas al volante","atropello","fuga accidente","delito de tráfico","negativa prueba alcoholemia","conducción sin permiso","velocidad excesiva"],
-   normas:[["Art. 379.2 CP","Conducción bajo influencia de alcohol/drogas. Pena: multa + privación carné 1-4 años."],["Art. 380 CP","Conducción temeraria. Pena: 6 meses-2 años."],["Art. 383 CP","Negativa a alcoholemia. Pena: 6 meses-1 año."]]},
-  {titulo:"Falsedades — Tít. XVIII CP", kw:["falsedad","falsificación","documento falso","dni falso","pasaporte falso","moneda falsa","firma falsa","usurpación de identidad","certificado falso","nombre falso"],
-   normas:[["Art. 390 CP","Falsificación de documentos públicos. Pena: 3-6 años."],["Art. 392 CP","Falsificación por particular. Pena: 6 meses-3 años."],["Art. 401 CP","Usurpación del estado civil. Pena: 6 meses-3 años."]]},
-  {titulo:"Administración Pública — Tít. XIX CP", kw:["prevaricación","cohecho","soborno","tráfico de influencias","malversación","corrupción","funcionario corrupto"],
-   normas:[["Art. 404 CP","Prevaricación. Pena: inhabilitación 7-10 años."],["Art. 419 CP","Cohecho propio. Pena: 2-6 años."],["Art. 432 CP","Malversación. Pena: 2-6 años."]]},
-  {titulo:"Administración de Justicia — Tít. XX CP", kw:["falso testimonio","perjurio","obstrucción a la justicia","encubrimiento","acusación falsa","denuncia falsa","simulación de delito","quebrantamiento de condena","quebrantamiento de alejamiento"],
-   normas:[["Art. 456 CP","Denuncia falsa. Pena: multa 12-24 meses."],["Art. 458 CP","Falso testimonio. Pena: 1-3 años."],["Art. 468 CP","Quebrantamiento de condena/alejamiento. Pena: 6 meses-1 año."]]},
-  {titulo:"Orden Público — Tít. XXII CP", kw:["atentado","resistencia","desobediencia","desórdenes públicos","manifestación violenta","agresión a policía","agresión a agente","coacción a autoridad"],
-   normas:[["Art. 550 CP","Atentado a autoridad o agente. Pena: 1-4 años (con armas: 2-6 años)."],["Art. 556 CP","Resistencia/desobediencia grave. Pena: 3 meses-1 año."],["Art. 557 CP","Desórdenes públicos. Pena: 6 meses-3 años."]]},
-  {titulo:"Terrorismo — Tít. XXII bis CP", kw:["terrorismo","yihadismo","terrorista","bomba","explosivo","adoctrinamiento terrorista","financiación terrorismo"],
-   normas:[["Art. 571-580 CP","Delitos de terrorismo. Pena: hasta prisión permanente revisable."],["Art. 578 CP","Enaltecimiento del terrorismo. Pena: 1-3 años."]]},
-  {titulo:"Violencia de Género y Doméstica — LO 1/2004 / CP", kw:["violencia de género","violencia doméstica","maltrato","pareja","cónyuge","ex pareja","orden de alejamiento","orden de protección","violencia habitual","ciclo de violencia","maltratador"],
-   normas:[["LO 1/2004","Protección Integral contra la Violencia de Género."],["Art. 153 CP","Maltrato no habitual en ámbito familiar. Pena: 3 meses-1 año."],["Art. 173.2 CP","Violencia habitual. Pena: 6 meses-3 años."],["Art. 468 CP","Quebrantamiento de orden de alejamiento. Pena: 6 meses-1 año."]]},
-  {titulo:"Tenencia y Porte de Armas — CP / RD 137/1993", kw:["arma","pistola","navaja","cuchillo","arma blanca","arma de fuego","porte de arma","tenencia de arma","escopeta","revólver","puño americano","arma prohibida","defensa eléctrica","spray pimienta","nunchaku"],
-   normas:[["Art. 563 CP","Tenencia de armas prohibidas. Pena: 1-2 años."],["Art. 564 CP","Tenencia sin licencia. Pena: 1-2 años."],["RD 137/1993","Reglamento de Armas: clasificación y licencias."]]},
-  {titulo:"Ley de Seguridad Ciudadana — LO 4/2015", kw:["infracción administrativa","seguridad ciudadana","desobediencia leve","consumo de alcohol","negativa identificación","reunión ilegal","alteración del orden"],
-   normas:[["LO 4/2015 Art. 36","Infracciones graves: resistencia, desobediencia a la autoridad."],["LO 4/2015 Art. 37","Infracciones leves: consumo de alcohol en vía pública, falta de respeto."],["LO 4/2015 Art. 16","Identificación de personas en vía pública."]]},
+const INIT_CPTS=[
+  {id:'HLANT',a:'HLANT',n:'HORAS LIBRES AÑOS ANTERIORES',t:0,u:'H',c:'#FF6B6B',us:0,carryover:'both'},
+  {id:'HLIBS',a:'HLIBS',n:'HORAS LIBRES',t:1.4,u:'H',c:'#00BCD4',us:0,ag:true},
+  {id:'AMSBA',a:'AMSBA',n:'AUSENCIA MEDICA SIN BAJA',t:4,u:'d',c:'#2196F3',us:0},
+  {id:'CFEST',a:'CFEST',n:'COMPENSACION FESTIVOS',t:2,u:'d',c:'#4CAF50',us:0,ag:true},
+  {id:'ASPAR',a:'ASPAR',n:'ASUNTOS PARTICULARES',t:6,u:'d',c:'#F9A825',us:0},
+  {id:'ASPAA',a:'ASPAA',n:'ASUNTOS PARTICULARES AÑO ANTERIOR',t:0,u:'d',c:'#9C27B0',us:0,carryover:true},
+  {id:'LLACT',a:'LLACT',n:'LIC. LACTANCIA ACUMULADA',t:30,u:'d',c:'#009688',us:0},
+  {id:'CFANT',a:'CFANT',n:'COMP. FESTIVOS AÑO ANTERIOR',t:0,u:'d',c:'#81C784',us:0,carryover:true},
+  {id:'ENFAM',a:'ENFAM',n:'ENF/HOSP/REPO FAMILIAR',t:0,u:'d',c:'#E91E63',us:0},
+  {id:'ASMAF',a:'ASMAF',n:'ASISTENCIA MATRIMONIO FAMILIAR',t:20,u:'d',c:'#3F51B5',us:0},
+  {id:'FALFA',a:'FALFA',n:'FALLECIMIENTO FAMILIAR',t:0,u:'d',c:'#78909C',us:0},
+  {id:'PPATE',a:'PPATE',n:'PERMISO PATERNIDAD',t:140,u:'d',c:'#FF5722',us:0},
+  {id:'EXAME',a:'EXAME',n:'EXAMENES',t:0,u:'d',c:'#A1887F',us:0},
+  {id:'ART154',a:'ART15.4',n:'DIAS ART. 15.4H',t:0,u:'d',c:'#8BC34A',us:0},
+  {id:'CURS7',a:'CURS7',n:'CURSOS ARTÍCULO 70',t:72,u:'H',c:'#C0CA33',us:0},
+  {id:'PSUEL',a:'PSUEL',n:'PERMISO SIN SUELDO',t:0,u:'d',c:'#FF7043',us:0},
+  {id:'SUSPF',a:'SUSPF',n:'SUSPENSION DE FUNCIONES',t:0,u:'d',c:'#7986CB',us:0},
+  {id:'DPUBL',a:'DPUBL',n:'DEBERES PÚBLICOS ART 15.4 J,K,N',t:0,u:'d',c:'#26A69A',us:0},
+  {id:'VACAN',a:'VACAN',n:'DÍAS ADICIONALES POR ANTIGÜEDAD',t:1,u:'d',c:'#EF5350',us:0},
+  {id:'VACAC',a:'VACAC',n:'VACACIONES',t:22,u:'d',c:'#00ACC1',us:0},
+  {id:'HFCNO',a:'HFCNO',n:'HORAS FACTOR CORRECTOR NOCTURNO',t:56,u:'H',c:'#8E24AA',us:0},
+  {id:'HLART15',a:'HLART.15',n:'HORAS ART. 15 4º L',t:16,u:'H',c:'#1976D2',us:0},
+  {id:'HFCNOAÑ',a:'HFCNOAÑ',n:'H.F.C. NOCTURNO AÑO ANTERIOR',t:0,u:'H',c:'#00897B',us:0,carryover:true},
+  {id:'FEST2431',a:'FEST.24-31',n:'COMP. FESTIVOS 24 Y 31 DIC.',t:0,u:'d',c:'#2E7D32',us:0},
+  {id:'AJUSJOR',a:'AJUSJOR',n:'COMP. EXCESO/AJUSTE JORNADA',t:16,u:'d',c:'#546E7A',us:0},
+  {id:'SANIV',a:'SANIV',n:'COMP. JORNADA SAN ISIDRO Y VER.',t:4,u:'d',c:'#558B2F',us:0},
+  {id:'CFORM',a:'CFORM',n:'COMP. FORMACIÓN FUERA JORNADA',t:8,u:'d',c:'#F57C00',us:0},
+  {id:'PPARE',a:'PPARE',n:'PERMISO PARENTAL ART. 128.2 RD 5/23',t:56,u:'d',c:'#6A1B9A',us:0},
 ];
+const INIT_PROF=(name='Principal')=>({name,cpts:INIT_CPTS.map(c=>({...c})),ents:{},mrDays:[],mwDays:[],pat:[]});
 
-let crimeTimer = null;
-function detectarDelitos(txt) {
-  clearTimeout(crimeTimer);
-  crimeTimer = setTimeout(() => {
-    const lower = (txt || '').toLowerCase();
-    const detected = CP.filter(c => c.kw.some(k => lower.includes(k)));
-    const box = document.getElementById('crimeBox');
-    const list = document.getElementById('crimeList');
-    if (!detected.length || txt.trim().length < 4) { box.classList.remove('show'); return; }
-    box.classList.add('show');
-    list.innerHTML = detected.map(c =>
-      `<div class="crime-item">
-        <div class="crime-name">► ${c.titulo}</div>
-        ${c.normas.map(([ref,desc]) =>
-          `<div class="crime-norm"><span class="crime-ref">${ref}</span> — ${desc}</div>`
-        ).join('')}
-      </div>`
-    ).join('');
-  }, 350);
-}
+/* CAMBIO 5: widget notes */
+const INIT_SET={headerColor:'#1C1C2E',logoType:'pm',customLogoData:null,darkMode:false,widgets:[
+  {id:'overtime',name:'HORAS EXTRAS 💶',show:true},
+  {id:'trials_done',name:'Juicios realizados',show:true},
+  {id:'trials_future',name:'Juicios futuros',show:true},
+  {id:'notes',name:'Notas del día',show:true},
+]};
 
-// ── BLOQUES DINÁMICOS (autores, víctimas, testigos, vehículos, incidencias) ─
-const CFGS = {
-  autores:    {label:'Autor',      max:4, fields:[{id:'nombre',l:'Nombre y apellidos',ta:0},{id:'doc',l:'DNI/NIE/Pasaporte',ta:0},{id:'nacimiento',l:'Fecha nacimiento',ta:0,ph:'DD-MM-AAAA'},{id:'nacionalidad',l:'Nacionalidad',ta:0},{id:'domicilio',l:'Domicilio completo',ta:0},{id:'telefono',l:'Teléfono',ta:0},{id:'alegaciones',l:'Alegaciones',ta:1},{id:'efectos',l:'Efectos intervenidos',ta:1}]},
-  victimas:   {label:'Víctima',    max:4, fields:[{id:'nombre',l:'Nombre y apellidos',ta:0},{id:'doc',l:'DNI/NIE/Pasaporte',ta:0},{id:'nacimiento',l:'Fecha nacimiento',ta:0,ph:'DD-MM-AAAA'},{id:'nacionalidad',l:'Nacionalidad',ta:0},{id:'domicilio',l:'Domicilio completo',ta:0},{id:'telefono',l:'Teléfono',ta:0},{id:'alegaciones',l:'Alegaciones',ta:1},{id:'efectos',l:'Efectos intervenidos',ta:1}]},
-  testigos:   {label:'Testigo',    max:4, fields:[{id:'nombre',l:'Nombre y apellidos',ta:0},{id:'dni',l:'DNI/NIE',ta:0},{id:'domicilio',l:'Domicilio',ta:0},{id:'telefono',l:'Teléfono',ta:0},{id:'manifestacion',l:'Manifestación',ta:1}]},
-  vehiculos:  {label:'Vehículo',   max:4, fields:[{id:'matricula',l:'Matrícula',ta:0},{id:'marca',l:'Marca/Modelo',ta:0},{id:'color',l:'Color',ta:0},{id:'titular',l:'Titular/Conductor',ta:0},{id:'relacion',l:'Relación con los hechos',ta:1}]},
-  incidencias:{label:'Incidencia', max:4, fields:[{id:'agente',l:'Agente Nº',ta:0},{id:'tipo',l:'Tipo (daño físico/material/actuación relevante)',ta:0},{id:'descripcion',l:'Descripción',ta:1}]},
-  infracciones:{label:'Infracción', max:8, fields:[{id:'numActa',l:'Número de denuncia / acta',ta:0},{id:'denunciado',l:'Nombre del denunciado',ta:0},{id:'descripcion',l:'Descripción de la infracción / motivo del acta',ta:1}]},
-  dec:{label:'DEC', max:4, fields:[
-    {id:'agente',   l:'Agente e indicativo',ta:0},
-    {id:'codCCP',   l:'Código identificativo de la CCP',ta:0},
-    {id:'disparos', l:'Número de disparos y ciclos NMI activados',ta:0},
-    {id:'impacto',  l:'Zona de impacto',ta:0},
-    {id:'avisoV0',  l:'Aviso a V-0',ta:0,ph:'SÍ / NO'},
-    {id:'resultado',l:'Resultado de la intervención y estado del sujeto',ta:1},
-    {id:'samur',    l:'SAMUR — descripción breve de la asistencia',ta:1},
-  ]},
+/* CAMBIO 1: slots | CAMBIO 2: juicio horas/horasTipo | nota general */
+const EF={
+  type:'TRABA',hm:'full',hrs:8,
+  wd:{ind:'',veh:'',os:'',pe:'',notas:''},
+  eh:{d:'',n:'',fd:'',dieta:'none',motivo:'',tipo:'cobrar'},
+  juicio:{active:false,juzgado:'',fecha:'',horaInicio:'',horaFin:'',termMunicipal:'dentro',horas:'',horasTipo:'cobrar'},
+  slots:[],
+  nota:''
 };
-const CNT = {autores:0,victimas:0,testigos:0,vehiculos:0,incidencias:0,infracciones:0,dec:0};
 
-function addBlock(type, saved) {
-  const cfg = CFGS[type];
-  if(CNT[type] >= cfg.max) return;
-  CNT[type]++;
-  const n = CNT[type];
-  const list = document.getElementById('list-'+type);
-  const addBtn = document.getElementById('add-'+type);
-  const div = document.createElement('div');
-  div.className='dyn-block'; div.dataset.type=type; div.dataset.n=n;
-  const shorts=cfg.fields.filter(f=>!f.ta), longs=cfg.fields.filter(f=>f.ta);
-  let h=`<div class="dyn-header"><span class="dyn-label">${cfg.label} ${n}</span><button class="btn-remove" onclick="removeBlock(this)">✕ Quitar</button></div>`;
-  if(shorts.length){h+='<div class="g2">';shorts.forEach(f=>{const fid=`${type}_${n}_${f.id}`;const val=saved?(saved[f.id]||''):'';const needsX=(type==='dec'&&f.id==='codCCP');if(needsX){h+=`<div class="field"><label>${f.l}</label><div style="display:flex;align-items:center;gap:6px"><span style="color:var(--text);font-family:var(--font);font-size:13px;font-weight:bold;flex-shrink:0">X</span><input type="text" id="${fid}" placeholder="número..." value="${esc(val)}" style="flex:1"></div></div>`;}else{h+=`<div class="field"><label>${f.l}</label><input type="text" id="${fid}" placeholder="${f.ph||'...'}" value="${esc(val)}"></div>`;}});h+='</div>';}
-  longs.forEach(f=>{const fid=`${type}_${n}_${f.id}`;const val=saved?(saved[f.id]||''):'';h+=`<div class="field" style="margin-top:8px"><label>${f.l}</label><textarea id="${fid}" rows="2" placeholder="...">${esc(val)}</textarea></div>`;});
-  // Si es bloque DEC, añadir sección dinámica de cargas usadas
-  if(type==='dec'){
-    h += '<div class="sublabel" style="margin-top:12px">Cargas usadas</div>';
-    h += '<div class="dyn-list" id="dec-cargas-'+n+'"></div>';
-    h += '<button class="btn-add" style="margin-top:8px" onclick="addCarga('+n+')">+ Añadir carga usada</button>';
-  }
-  div.innerHTML=h;
-  // Restaurar cargas si hay datos guardados
-  if(type==='dec' && saved && saved._cargas){
-    saved._cargas.forEach(c=>addCarga(n,c));
-  }
-  list.appendChild(div);
-  if(CNT[type]>=cfg.max) addBtn.style.display='none';
-  div.addEventListener('input',guardar); div.addEventListener('change',guardar);
-  setTimeout(()=>div.scrollIntoView({behavior:'smooth',block:'nearest'}),80);
-}
+const getLibrarH=eh=>{
+  if(!eh||eh.tipo!=='librar')return 0;
+  const d=parseFloat(eh.d)||0;
+  const n=+(((parseFloat(eh.n)||0)*1.4).toFixed(2));
+  const fd=+(((parseFloat(eh.fd)||0)*1.4).toFixed(2));
+  const dieta=eh.dieta==='media'?.5:eh.dieta==='completa'?1:0;
+  return+(d+n+fd+dieta).toFixed(2);
+};
+/* CAMBIO 2: juicio a librar → 6h (dentro) o 7h (fuera) a HLIBS */
+const getLibrarHJuicio=j=>{
+  if(!j?.active||j.horasTipo!=='librar')return 0;
+  return j.termMunicipal==='fuera'?7:6;
+};
 
-function removeBlock(btn) {
-  const block=btn.closest('.dyn-block'), type=block.dataset.type;
-  const list=document.getElementById('list-'+type);
-  block.remove(); CNT[type]--;
-  list.querySelectorAll('.dyn-block').forEach((b,i)=>{
-    b.dataset.n=i+1;
-    b.querySelector('.dyn-label').textContent=CFGS[type].label+' '+(i+1);
-    b.querySelectorAll('input,textarea').forEach(el=>{const p=el.id.split('_');p[1]=String(i+1);el.id=p.join('_');});
+/* ── Static UI ── */
+const ProgBar=({pct,color,bg='#E8EAED',h=5})=>(
+  <div style={{background:bg,borderRadius:4,height:h,overflow:'hidden'}}>
+    <div style={{width:`${Math.min(pct,100)}%`,height:'100%',background:color,borderRadius:4,transition:'width .35s'}}/>
+  </div>
+);
+const Btn=({children,onClick,color='#1D4ED8',disabled,full,small,outline,style={}})=>(
+  <button onClick={onClick} disabled={disabled} style={{
+    background:disabled?'#BDBDBD':outline?'transparent':color,color:outline?color:'white',
+    border:outline?`2px solid ${color}`:'none',borderRadius:24,padding:small?'7px 14px':'11px 22px',
+    fontSize:small?11:13,fontWeight:700,cursor:disabled?'not-allowed':'pointer',
+    width:full?'100%':'auto',boxShadow:disabled?'none':`0 2px 8px ${color}44`,...style}}
+    onMouseDown={e=>{if(!disabled)e.currentTarget.style.transform='scale(.97)';}}
+    onMouseUp={e=>{e.currentTarget.style.transform='scale(1)';}}
+  >{children}</button>
+);
+const PieTabIcon=({active,size=22})=>(
+  <div style={{width:size,height:size,borderRadius:'50%',flexShrink:0,
+    background:active?'conic-gradient(#00ACC1 0% 28%,#F9A825 28% 54%,#4CAF50 54% 76%,#8E24AA 76% 100%)':'conic-gradient(#B0BEC5 0% 28%,#CFD8DC 28% 54%,#B0BEC5 54% 76%,#CFD8DC 76% 100%)'}}/>
+);
+const PieSVG=({data,cardBg})=>{
+  const[hov,setHov]=useState(null);
+  const total=data.reduce((s,d)=>s+d.value,0);
+  if(!total)return<div style={{textAlign:'center',padding:50,color:'#CBD5E1'}}>Sin datos registrados aún.</div>;
+  const cx=160,cy=160,R=125,ri=50;let ang=-Math.PI/2;
+  const slices=data.map((d,i)=>{
+    const frac=d.value/total,start=ang,end=ang+frac*2*Math.PI;ang=end;
+    const c1=[Math.cos(start),Math.sin(start)],c2=[Math.cos(end),Math.sin(end)];
+    const large=frac>.5?1:0;
+    return{...d,frac,mid:start+(end-start)/2,path:[
+      `M${cx+ri*c1[0]} ${cy+ri*c1[1]}`,`L${cx+R*c1[0]} ${cy+R*c1[1]}`,
+      `A${R} ${R} 0 ${large} 1 ${cx+R*c2[0]} ${cy+R*c2[1]}`,
+      `L${cx+ri*c2[0]} ${cy+ri*c2[1]}`,
+      `A${ri} ${ri} 0 ${large} 0 ${cx+ri*c1[0]} ${cy+ri*c1[1]}Z`].join(' ')};
   });
-  document.getElementById('add-'+type).style.display='';
-  guardar();
-}
-
-// ── FILAS DE ROLES DINÁMICAS ──────────────────────────────────────────────
-const ROLE_CNT = {entAutor:0, entVictima:0, cacheoAutor:0, cacheoVictima:0};
-const ROLE_MAX = 4;
-const ROLE_LABELS = {
-  entAutor:    {persona:'Autor',   accion:'Entrevista'},
-  entVictima:  {persona:'Víctima', accion:'Entrevista'},
-  cacheoAutor: {persona:'Autor',   accion:'Cacheo'},
-  cacheoVictima:{persona:'Víctima',accion:'Cacheo'},
+  const hd=hov!=null?slices[hov]:null;
+  return(
+    <svg viewBox="0 0 320 320" style={{width:'100%',maxHeight:300,display:'block'}}>
+      {slices.map((s,i)=>(
+        <path key={i} d={s.path} fill={s.color} stroke="white" strokeWidth={hov===i?0:1.5}
+          style={{cursor:'pointer',filter:hov===i?`drop-shadow(0 0 8px ${s.color})`:'none',transition:'filter .15s'}}
+          onMouseEnter={()=>setHov(i)} onMouseLeave={()=>setHov(null)}
+          onTouchStart={()=>setHov(v=>v===i?null:i)}/>
+      ))}
+      {slices.filter(s=>s.frac>.06).map((s,i)=>{
+        const lx=cx+(R+ri)/2*1.1*Math.cos(s.mid),ly=cy+(R+ri)/2*1.1*Math.sin(s.mid);
+        return<text key={i} x={lx} y={ly} textAnchor="middle" fontSize="8.5" fontWeight="700" fill="white" style={{pointerEvents:'none'}}>{s.name}</text>;
+      })}
+      <circle cx={cx} cy={cy} r={ri-2} fill={cardBg||'white'}/>
+      {hd?<>
+        <text x={cx} y={cy-10} textAnchor="middle" fontSize="12" fontWeight="800" fill="#1E293B">{hd.name}</text>
+        <text x={cx} y={cy+6} textAnchor="middle" fontSize="10" fill="#64748B">{hd.total} {hd.unit}</text>
+        <text x={cx} y={cy+22} textAnchor="middle" fontSize="10" fontWeight="700" fill={hd.color}>{(hd.frac*100).toFixed(1)}%</text>
+      </>:<text x={cx} y={cy+5} textAnchor="middle" fontSize="9" fill="#94A3B8">Toca un sector</text>}
+    </svg>
+  );
 };
 
-function addRoleRow(type, personaLabel, savedAgente, savedPersona) {
-  if(ROLE_CNT[type] >= ROLE_MAX) return;
-  ROLE_CNT[type]++;
-  const n = ROLE_CNT[type];
-  const list = document.getElementById('list-'+type);
-  const addBtn = document.getElementById('add-'+type);
-  const row = document.createElement('div');
-  row.className='dyn-block'; row.dataset.rtype=type; row.dataset.rn=n;
-  row.style.marginBottom='8px';
-  const agenteVal = savedAgente||'';
-  const personaVal = savedPersona||'';
-  row.innerHTML=`
-    <div class="dyn-header" style="margin-bottom:8px">
-      <span class="dyn-label">${ROLE_LABELS[type].accion} ${personaLabel} ${n}</span>
-      <button class="btn-remove" onclick="removeRoleRow(this)">✕</button>
+/* ══ THEMED COMPONENTS — fuera de App para evitar bug de teclado ══ */
+const Card=({children,bg,style={},th})=>(
+  <div style={{background:bg||th.cardBg,borderRadius:16,padding:14,boxShadow:th.dm?'0 1px 8px rgba(0,0,0,.3)':'0 1px 8px rgba(0,0,0,.07)',marginBottom:12,...style}}>{children}</div>
+);
+const STitle=({icon,children,th})=>(
+  <div style={{fontSize:13,fontWeight:800,color:th.sectionTitle,marginBottom:10,display:'flex',alignItems:'center',gap:6}}>
+    {icon&&<span style={{fontSize:15}}>{icon}</span>}{children}
+  </div>
+);
+const IRow=({label,value,onChange,type='text',ph='',multiline,opts,th})=>(
+  <div style={{marginBottom:9}}>
+    <label style={{fontSize:10,fontWeight:700,color:th.textSub,display:'block',marginBottom:3,textTransform:'uppercase',letterSpacing:.4}}>{label}</label>
+    {opts
+      ?<select value={value} onChange={e=>onChange(e.target.value)} style={{width:'100%',borderRadius:20,border:`1.5px solid ${th.inputBorder}`,padding:'8px 14px',fontSize:12,background:th.inputBg,appearance:'none',fontFamily:'inherit',fontWeight:600,color:th.text}}>
+        {opts.map(o=><option key={o.v} value={o.v}>{o.l}</option>)}</select>
+      :multiline
+        ?<textarea value={value} onChange={e=>onChange(e.target.value)} placeholder={ph} rows={2}
+          style={{width:'100%',borderRadius:12,border:`1.5px solid ${th.inputBorder}`,padding:'8px 12px',fontSize:12,fontFamily:'inherit',resize:'none',boxSizing:'border-box',background:th.inputBg,color:th.text}}/>
+        :<input type={type} value={value} onChange={e=>onChange(e.target.value)} placeholder={ph}
+          style={{width:'100%',borderRadius:20,border:`1.5px solid ${th.inputBorder}`,padding:'8px 14px',fontSize:12,boxSizing:'border-box',fontFamily:'inherit',background:th.inputBg,color:th.text}}/>
+    }
+  </div>
+);
+const ModalShell=({children,onClose,title,th})=>(
+  <div style={{position:'fixed',inset:0,background:'rgba(15,23,42,.65)',zIndex:400,display:'flex',alignItems:'flex-end',justifyContent:'center'}}
+    onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
+    <div style={{background:th.cardBg,borderRadius:'22px 22px 0 0',width:'100%',maxHeight:'93vh',overflowY:'auto',padding:'18px 16px 36px',boxShadow:'0 -8px 40px rgba(0,0,0,.25)'}}>
+      <div style={{width:36,height:4,background:th.border,borderRadius:2,margin:'0 auto 16px'}}/>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
+        <div style={{fontSize:16,fontWeight:800,color:th.sectionTitle}}>{title}</div>
+        <button onClick={onClose} style={{background:th.cardBg2,border:'none',borderRadius:20,width:33,height:33,fontSize:16,cursor:'pointer',color:th.textSub,display:'flex',alignItems:'center',justifyContent:'center'}}>✕</button>
+      </div>
+      {children}
     </div>
-    <div class="g2">
-      <div class="field"><label>Agente Nº</label><input type="text" id="r_${type}_${n}_agente" placeholder="Nº policial..." value="${esc(agenteVal)}"></div>
-      <div class="field"><label>${personaLabel} Nº</label><input type="text" id="r_${type}_${n}_persona" placeholder="${personaLabel} 1, 2..." value="${esc(personaVal)}"></div>
-    </div>`;
-  list.appendChild(row);
-  if(ROLE_CNT[type]>=ROLE_MAX) addBtn.style.display='none';
-  row.addEventListener('input',guardar); row.addEventListener('change',guardar);
-  setTimeout(()=>row.scrollIntoView({behavior:'smooth',block:'nearest'}),80);
-}
+  </div>
+);
+const ColorPicker=({value,onChange,th})=>(
+  <div style={{marginBottom:14}}>
+    <label style={{fontSize:10,fontWeight:700,color:th.textSub,display:'block',marginBottom:8,textTransform:'uppercase'}}>Color</label>
+    <div style={{display:'flex',flexWrap:'wrap',gap:8,marginBottom:8}}>
+      {['#EF5350','#FF7043','#F9A825','#43A047','#00ACC1','#1D4ED8','#7C3AED','#EC4899','#78909C','#FF6B6B','#00897B','#C0CA33'].map(col=>(
+        <div key={col} onClick={()=>onChange(col)}
+          style={{width:28,height:28,borderRadius:8,background:col,cursor:'pointer',flexShrink:0,border:value===col?'3px solid '+th.text:'3px solid transparent'}}/>
+      ))}
+    </div>
+    <div style={{display:'flex',alignItems:'center',gap:10}}>
+      <label style={{fontSize:11,color:th.textSub,fontWeight:600}}>Paleta completa:</label>
+      <input type="color" value={value} onChange={e=>onChange(e.target.value)}
+        style={{width:44,height:44,borderRadius:12,border:`2px solid ${th.inputBorder}`,padding:3,cursor:'pointer',flexShrink:0,background:th.inputBg}}/>
+      <div style={{width:44,height:44,borderRadius:12,background:value,border:`2px solid ${th.border}`}}/>
+    </div>
+  </div>
+);
 
-function removeRoleRow(btn) {
-  const row=btn.closest('[data-rtype]'), type=row.dataset.rtype;
-  const list=document.getElementById('list-'+type);
-  const pLabel=ROLE_LABELS[type].persona, aLabel=ROLE_LABELS[type].accion;
-  row.remove(); ROLE_CNT[type]--;
-  list.querySelectorAll('[data-rtype]').forEach((r,i)=>{
-    r.dataset.rn=i+1;
-    r.querySelector('.dyn-label').textContent=`${aLabel} ${pLabel} ${i+1}`;
-    r.querySelectorAll('input').forEach(el=>{const p=el.id.split('_');p[2]=String(i+1);el.id=p.join('_');});
-  });
-  document.getElementById('add-'+type).style.display='';
-  guardar();
-}
+/* ════════════ APP ════════════ */
+function App(){
+  const td=useMemo(()=>{const d=new Date();d.setHours(0,0,0,0);return d;},[]);
+  const tk=toKey(td);
 
-// ── PERSISTENCIA ──────────────────────────────────────────────────────────
-const SID=['fecha','hora','lugar','ordenServicio','indicativo','ag1','ag2','ag3','ag4','ag5','ag6','ag7','ag8','p1ind','p1num','p2ind','p2num','p3ind','p3num','trasVeh','trasNum','trasDst','custDroga','custArma','custDet','leeDerechos','engrilla','custOtroNr','custOtroDesc','descripcion','danosFisicos','danosMateriales','posibleDelito','actuacionPolicial','asistenciaOfrecida','asistenciaAceptada'];
+  const[profiles,setProfiles]=useState([INIT_PROF()]);
+  const[activeProf,setActiveProf]=useState(0);
+  const[settings,setSettings]=useState(INIT_SET);
+  const[loaded,setLoaded]=useState(false);
+  const[tab,setTab]=useState('cal');
+  const[cv,setCv]=useState('week');
+  const[nav,setNav]=useState(new Date(td));
+  const[selDay,setSelDay]=useState(null);
+  const[showCP,setShowCP]=useState(false);
+  const[sumFilt,setSumFilt]=useState('all');
+  const[mpModal,setMpModal]=useState(null);
+  const[mpSel,setMpSel]=useState(new Set());
+  const[mpNav,setMpNav]=useState(new Date(td));
+  const[agModal,setAgModal]=useState(null);
+  const[agAmt,setAgAmt]=useState('');
+  const[agTarget,setAgTarget]=useState('t');
+  const[addCptModal,setAddCptModal]=useState(false);
+  const[newCpt,setNewCpt]=useState({a:'',n:'',t:0,u:'d',c:'#607D8B'});
+  const[editCptId,setEditCptId]=useState(null);
+  const[editCptData,setEditCptData]=useState(null);
+  const[importModal,setImportModal]=useState(false);
+  const[importText,setImportText]=useState('');
+  const[saveInd,setSaveInd]=useState('');
+  const[settingsModal,setSettingsModal]=useState(false);
+  const[widgetModal,setWidgetModal]=useState(null);
+  const[newPat,setNewPat]=useState('work');
+  const[form,setForm]=useState({...EF,eh:{...EF.eh},juicio:{...EF.juicio},slots:[],nota:''});
+  const[draggingIdx,setDraggingIdx]=useState(null);
+  const[dragOverIdx,setDragOverIdx]=useState(null);
+  const dragState=useRef({active:false,idx:null,timer:null});
+  /* CAMBIO 6: EH plegable */
+  const[showEh,setShowEh]=useState(false);
+  /* CAMBIO 1: slot add UI */
+  const[showSlotAdd,setShowSlotAdd]=useState(false);
+  const[slotForm,setSlotForm]=useState({type:'',hrs:1});
 
-// ── CARGAS DEC ─────────────────────────────────────────────────────────────
-const CARGA_CNT = {};
-function addCarga(decN, savedVal){
-  if(!CARGA_CNT[decN]) CARGA_CNT[decN]=0;
-  if(CARGA_CNT[decN]>=4) return;
-  CARGA_CNT[decN]++;
-  const cn = CARGA_CNT[decN];
-  const list = document.getElementById('dec-cargas-'+decN);
-  if(!list) return;
-  const row = document.createElement('div');
-  row.className='dyn-block';
-  row.dataset.decn=String(decN);
-  row.dataset.cargan=String(cn);
-  row.style.marginBottom='8px';
-  const val = savedVal||'';
-  row.innerHTML=`<div class="dyn-header" style="margin-bottom:8px"><span class="dyn-label">Carga ${cn}</span><button class="btn-remove" onclick="removeCarga(this)">✕</button></div><div class="field"><label>Número de serie de la carga</label><div style="display:flex;align-items:center;gap:6px"><span style="color:var(--text);font-family:var(--font);font-size:13px;font-weight:bold;flex-shrink:0">X</span><input type="text" id="carga_${decN}_${cn}" placeholder="número de serie..." value="${esc(val)}" style="flex:1"></div></div>`;
-  list.appendChild(row);
-  row.addEventListener('input', guardar);
-  row.addEventListener('change', guardar);
-  setTimeout(()=>row.scrollIntoView({behavior:'smooth',block:'nearest'}),80);
-  guardar();
-}
+  /* theme */
+  const dm=settings.darkMode||false;
+  const TH=dm?{
+    dm:true,pageBg:'#0F172A',cardBg:'#1E293B',cardBg2:'#162032',
+    text:'#E2E8F0',textSub:'#94A3B8',border:'#334155',
+    inputBg:'#0F172A',inputBorder:'#475569',navBg:'#1E293B',navBorder:'#334155',
+    sectionTitle:'#93C5FD',progBg:'#334155',
+    tagBlueBg:'#1E3A5F',tagBlueText:'#93C5FD',tagGreenBg:'#14532D',tagGreenText:'#86EFAC',
+    tagOrangeBg:'#431407',tagOrangeText:'#FED7AA',
+    calEmpty:'#1E293B',calToday:'#1E3A5F',calTodayBorder:'#3B82F6',
+  }:{
+    dm:false,pageBg:'#F1F5F9',cardBg:'white',cardBg2:'#FAFAFA',
+    text:'#1E293B',textSub:'#64748B',border:'#E5E7EB',
+    inputBg:'white',inputBorder:'#E0E0E0',navBg:'white',navBorder:'#E2E8F0',
+    sectionTitle:'#1E3A8A',progBg:'#E8EAED',
+    tagBlueBg:'#DBEAFE',tagBlueText:'#1D4ED8',tagGreenBg:'#E8F5E9',tagGreenText:'#2E7D32',
+    tagOrangeBg:'#FFE0B2',tagOrangeText:'#E65100',
+    calEmpty:'#FAFAFA',calToday:'#DBEAFE',calTodayBorder:'#1D4ED8',
+  };
 
-function removeCarga(btn){
-  const row=btn.closest('[data-decn]');
-  const decN=row.dataset.decn;
-  row.remove();
-  if(CARGA_CNT[decN]) CARGA_CNT[decN]--;
-  document.querySelectorAll('[data-decn="'+decN+'"]').forEach((r,i)=>{
-    r.dataset.cargan=String(i+1);
-    r.querySelector('.dyn-label').textContent='Carga '+(i+1);
-    const el=r.querySelector('input');
-    if(el) el.id='carga_'+decN+'_'+(i+1);
-  });
-  guardar();
-}
+  const prof=profiles[Math.min(activeProf,profiles.length-1)]||profiles[0];
+  const{cpts,ents,mrDays,mwDays,pat}=prof;
+  const upd=fn=>setProfiles(ps=>ps.map((p,i)=>i===activeProf?{...p,...fn(p)}:p));
+  const setCpts=fn=>upd(p=>({cpts:typeof fn==='function'?fn(p.cpts):fn}));
+  const setEnts=fn=>upd(p=>({ents:typeof fn==='function'?fn(p.ents):fn}));
+  const setMrDays=fn=>upd(p=>({mrDays:typeof fn==='function'?fn(p.mrDays):fn}));
+  const setMwDays=fn=>upd(p=>({mwDays:typeof fn==='function'?fn(p.mwDays):fn}));
+  const setPat=fn=>upd(p=>({pat:typeof fn==='function'?fn(p.pat):fn}));
 
-function guardar(){
-  const d={_b:{},_r:{}};
-  SID.forEach(id=>{const el=document.getElementById(id);if(el)d[id]=el.value;});
-  Object.keys(CFGS).forEach(type=>{d._b[type]=[];document.querySelectorAll(`[data-type="${type}"]`).forEach(b=>{const o={};CFGS[type].fields.forEach(f=>{const el=document.getElementById(`${type}_${b.dataset.n}_${f.id}`);if(el)o[f.id]=el.value;});if(type==='dec'){o._cargas=[];document.querySelectorAll(`[data-decn="${b.dataset.n}"]`).forEach(r=>{const el=document.getElementById(`carga_${b.dataset.n}_${r.dataset.cargan}`);if(el)o._cargas.push(el.value);});}d._b[type].push(o);});});
-  ['entAutor','entVictima','cacheoAutor','cacheoVictima'].forEach(type=>{d._r[type]=[];document.querySelectorAll(`[data-rtype="${type}"]`).forEach(r=>{const n=r.dataset.rn;d._r[type].push({agente:(document.getElementById(`r_${type}_${n}_agente`)||{}).value||'',persona:(document.getElementById(`r_${type}_${n}_persona`)||{}).value||'',});});});
-  localStorage.setItem('fp3',JSON.stringify(d));
-}
+  /* localStorage */
+  useEffect(()=>{
+    try{
+      const raw=localStorage.getItem('cal_v5');
+      if(raw){
+        const d=JSON.parse(raw);
+        if(d.profiles)setProfiles(d.profiles);
+        if(d.activeProf!=null)setActiveProf(d.activeProf);
+        if(d.settings){
+          /* merge: añadir widgets nuevos que no existieran */
+          const savedW=d.settings.widgets||[];
+          const mergedW=INIT_SET.widgets.map(dw=>savedW.find(w=>w.id===dw.id)||dw);
+          setSettings({...INIT_SET,...d.settings,widgets:mergedW});
+        }
+      } else {
+        const raw4=localStorage.getItem('cal_v4');
+        if(raw4){
+          const d=JSON.parse(raw4);
+          if(d.profiles)setProfiles(d.profiles);
+          if(d.activeProf!=null)setActiveProf(d.activeProf);
+          if(d.settings){
+            const savedW=d.settings.widgets||[];
+            const mergedW=INIT_SET.widgets.map(dw=>savedW.find(w=>w.id===dw.id)||dw);
+            setSettings({...INIT_SET,...d.settings,widgets:mergedW});
+          }
+        }
+      }
+    }catch(e){}
+    setLoaded(true);
+  },[]);
 
-function restaurar(){
-  const raw=localStorage.getItem('fp3');
-  if(!raw)return;
-  const d=JSON.parse(raw);
-  SID.forEach(id=>{const el=document.getElementById(id);if(el&&d[id]!==undefined)el.value=d[id];});
-  if(d._b)Object.keys(CFGS).forEach(type=>{(d._b[type]||[]).forEach(o=>addBlock(type,o));});
-  if(d._r){
-    const rLabels={entAutor:'Autor',entVictima:'Víctima',cacheoAutor:'Autor',cacheoVictima:'Víctima'};
-    ['entAutor','entVictima','cacheoAutor','cacheoVictima'].forEach(type=>{(d._r[type]||[]).forEach(o=>addRoleRow(type,rLabels[type],o.agente,o.persona));});
-  }
-  if(d.posibleDelito) detectarDelitos(d.posibleDelito);
-}
+  useEffect(()=>{
+    if(!loaded)return;
+    try{
+      localStorage.setItem('cal_v5',JSON.stringify({profiles,activeProf,settings}));
+      setSaveInd('✓');setTimeout(()=>setSaveInd(''),1800);
+    }catch(e){}
+  },[profiles,activeProf,settings,loaded]);
 
-function limpiarTodo(){
-  if(!confirm('¿Limpiar toda la ficha? Se perderán todos los datos.'))return;
-  localStorage.removeItem('fp3');
-  SID.forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  Object.keys(CFGS).forEach(type=>{const l=document.getElementById('list-'+type);if(l)l.innerHTML='';CNT[type]=0;const b=document.getElementById('add-'+type);if(b)b.style.display='';});
-  ['entAutor','entVictima','cacheoAutor','cacheoVictima'].forEach(type=>{document.getElementById('list-'+type).innerHTML='';ROLE_CNT[type]=0;document.getElementById('add-'+type).style.display='';});
-  document.getElementById('crimeBox').classList.remove('show');
-}
+  /* CAMBIO 3: export descarga fichero JSON */
+  const exportBackup=()=>{
+    const data=JSON.stringify({profiles,activeProf,settings,ts:Date.now()},null,2);
+    const blob=new Blob([data],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=`turnos-backup-${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a);a.click();
+    document.body.removeChild(a);URL.revokeObjectURL(url);
+  };
 
-// ── GENERADOR DE TEXTO ────────────────────────────────────────────────────
-function v(id){const el=document.getElementById(id);return el?el.value.trim():'';}
-function lin(l,val){return val?`  ${l}: ${val}\n`:''}
-function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+  const doImport=()=>{
+    try{
+      const d=JSON.parse(importText);
+      if(d.profiles)setProfiles(d.profiles);
+      if(d.activeProf!=null)setActiveProf(d.activeProf);
+      if(d.settings)setSettings({...INIT_SET,...d.settings});
+      setImportModal(false);setImportText('');alert('✅ Importado correctamente.');
+    }catch{alert('❌ JSON no válido.');}
+  };
 
-function generarTexto(){
-  let t='═══════════════════════════════════════════════\n    FICHA DE ACTUACIÓN POLICIAL — DATOS\n═══════════════════════════════════════════════\n\n';
-  t+='── DATOS DE LA ACTUACIÓN ──────────────────────\n';
-  t+=lin('Fecha',v('fecha'));t+=lin('Hora',v('hora'));t+=lin('Lugar exacto',v('lugar'));t+=lin('Orden de servicio',v('ordenServicio'));
-  t+='\n── AGENTES ACTUANTES ──────────────────────────\n';
-  t+=lin('Indicativo',v('indicativo'));
-  for(let i=1;i<=8;i++){const n=v(`ag${i}`);if(n)t+=`  Agente ${i} · Nº Policial: ${n}\n`;}
+  const addConcept=()=>{
+    if(!newCpt.a.trim())return;
+    setCpts(p=>[...p,{id:'USR_'+Date.now(),...newCpt,t:parseFloat(newCpt.t)||0,us:0}]);
+    setNewCpt({a:'',n:'',t:0,u:'d',c:'#607D8B'});setAddCptModal(false);
+  };
+  const saveEditCpt=()=>{
+    if(!editCptData||!editCptId)return;
+    setCpts(p=>p.map(c=>c.id===editCptId?{...c,...editCptData,t:parseFloat(editCptData.t)||0}:c));
+    setEditCptId(null);setEditCptData(null);
+  };
+  const removeConcept=id=>{
+    setCpts(p=>p.filter(c=>c.id!==id));
+    setEnts(p=>{const n={...p};Object.keys(n).forEach(k=>{if(n[k].type===id)delete n[k];});return n;});
+  };
 
-  // bloques dinámicos vehículos, autores, víctimas, testigos
-  function dynBloque(type,titulo){
-    const blocks=document.querySelectorAll(`[data-type="${type}"]`);if(!blocks.length)return;
-    t+=`\n── ${titulo} ──────────────────────────────────\n`;
-    blocks.forEach((b,i)=>{t+=`${CFGS[type].label} ${i+1}\n`;CFGS[type].fields.forEach(f=>{const el=document.getElementById(`${type}_${b.dataset.n}_${f.id}`);const val=el?el.value.trim():'';if(val){const outVal=(type==='dec'&&f.id==='codCCP')?'X'+val:val;t+=lin(f.l,outVal);}});if(type==='dec'){document.querySelectorAll(`[data-decn="${b.dataset.n}"]`).forEach((r,ci)=>{const el=document.getElementById(`carga_${b.dataset.n}_${r.dataset.cargan}`);const val=el?el.value.trim():'';if(val)t+=lin(`  Carga ${ci+1}`,'X'+val);});}});
-  }
-  dynBloque('vehiculos','VEHÍCULOS IMPLICADOS');
-  dynBloque('autores','AUTOR/ES (DETENIDO/S)');
-  dynBloque('victimas','VÍCTIMA/S');
-  dynBloque('testigos','TESTIGOS');
+  const onDragTS=(idx,e)=>{
+    dragState.current.timer=setTimeout(()=>{
+      dragState.current.active=true;dragState.current.idx=idx;
+      if(navigator.vibrate)navigator.vibrate(40);setDraggingIdx(idx);setDragOverIdx(idx);
+    },500);
+  };
+  const onDragTM=e=>{
+    clearTimeout(dragState.current.timer);
+    if(!dragState.current.active)return;
+    e.preventDefault();
+    const touch=e.touches[0];
+    const el=document.elementFromPoint(touch.clientX,touch.clientY);
+    const card=el?.closest('[data-cpt]');
+    if(card){const idx=parseInt(card.dataset.cpt);if(!isNaN(idx))setDragOverIdx(idx);}
+  };
+  const onDragTE=()=>{
+    clearTimeout(dragState.current.timer);
+    if(dragState.current.active&&draggingIdx!=null&&dragOverIdx!=null&&draggingIdx!==dragOverIdx){
+      setCpts(p=>{const arr=[...p];const[item]=arr.splice(draggingIdx,1);arr.splice(dragOverIdx,0,item);return arr;});
+    }
+    dragState.current={active:false,idx:null,timer:null};setDraggingIdx(null);setDragOverIdx(null);
+  };
 
-  const p1=v('p1ind')||v('p1num'),p2=v('p2ind')||v('p2num'),p3=v('p3ind')||v('p3num');
-  if(p1||p2||p3){t+='\n── PATRULLAS COLABORADORAS ────────────────────\n';if(p1)t+=`  Patrulla 1 · Indicativo: ${v('p1ind')} | Nº Policiales: ${v('p1num')}\n`;if(p2)t+=`  Patrulla 2 · Indicativo: ${v('p2ind')} | Nº Policiales: ${v('p2num')}\n`;if(p3)t+=`  Patrulla 3 · Indicativo: ${v('p3ind')} | Nº Policiales: ${v('p3num')}\n`;}
-  if(v('trasVeh')||v('trasNum')||v('trasDst')){t+='\n── PATRULLA DE TRASLADO DEL DETENIDO ──────────\n';t+=lin('Indicativo/Vehículo',v('trasVeh'));t+=lin('Nº Policiales',v('trasNum'));t+=lin('Destino del traslado',v('trasDst'));}
+  const doYearReset=()=>{
+    setCpts(prev=>{
+      const g=id=>prev.find(c=>c.id===id);
+      return prev.map(c=>{
+        if(c.id==='HLANT')return{...c,t:+(c.t+Math.max(0,(g('HLIBS')?.t||0)-(g('HLIBS')?.us||0))).toFixed(1)};
+        if(c.id==='ASPAA')return{...c,t:Math.max(0,(g('ASPAR')?.t||0)-(g('ASPAR')?.us||0)),us:0};
+        if(c.id==='CFANT')return{...c,t:Math.max(0,(g('FEST2431')?.t||0)-(g('FEST2431')?.us||0))+Math.max(0,(g('CFEST')?.t||0)-(g('CFEST')?.us||0)),us:0};
+        if(c.id==='HFCNOAÑ')return{...c,t:Math.max(0,(g('HFCNO')?.t||0)-(g('HFCNO')?.us||0)),us:0};
+        return{...c,us:0};
+      });
+    });setEnts({});
+  };
 
-  // roles dinámicos
-  const roles=[];
-  const rLabels={entAutor:'entrevista con',entVictima:'entrevista con',cacheoAutor:'cacheo a',cacheoVictima:'cacheo a'};
-  const rPersonas={entAutor:'Autor',entVictima:'Víctima',cacheoAutor:'Autor',cacheoVictima:'Víctima'};
-  ['entAutor','entVictima','cacheoAutor','cacheoVictima'].forEach(type=>{
-    document.querySelectorAll(`[data-rtype="${type}"]`).forEach((r,i)=>{
-      const n=r.dataset.rn;
-      const ag=(document.getElementById(`r_${type}_${n}_agente`)||{}).value||'';
-      const per=(document.getElementById(`r_${type}_${n}_persona`)||{}).value||'';
-      if(ag) roles.push(`  · Agente que realiza ${rLabels[type]} ${rPersonas[type]} ${per||i+1}: Nº: ${ag}`);
+  const getDI=useCallback(dk=>{
+    if(mrDays.includes(dk))return{c:FC_REST,l:'FEST.D',pct:100};
+    if(mwDays.includes(dk))return{c:FC_WORK,l:'F.OBL',pct:100};
+    const e=ents[dk];if(!e)return null;
+    if(e.type==='TRABA')return{c:TC,l:'TRABA',pct:100};
+    if(e.type==='LIBRE')return{c:LC,l:'LIBRE',pct:100};
+    if(e.type==='FEST_REST')return{c:FC_REST,l:'FEST.D',pct:100};
+    const cp=cpts.find(c=>c.id===e.type);if(!cp)return null;
+    const suf=e.hm==='salida'?'↑':e.hm==='entrada'?'↓':'';
+    const pct=e.hm==='full'?100:Math.round(((parseFloat(e.hrs)||0)/8)*100);
+    return{c:cp.c,l:cp.a+suf,pct};
+  },[ents,mrDays,mwDays,cpts]);
+
+  const openDay=dk=>{
+    const e=ents[dk];
+    /* CAMBIO 6: auto-expandir EH si ya tiene datos */
+    setShowEh(!!(e?.eh&&(e.eh.d||e.eh.n||e.eh.fd||(e.eh.dieta&&e.eh.dieta!=='none'))));
+    setShowSlotAdd(false);
+    setSlotForm({type:'',hrs:1});
+    setForm(e?{
+      type:e.type||'TRABA',hm:e.hm||'full',hrs:e.hrs||8,
+      wd:{...EF.wd,...(e.wd||{})},
+      eh:{...EF.eh,...(e.eh||{})},
+      juicio:{...EF.juicio,...(e.juicio||{})},
+      slots:[...(e.slots||[])],
+      nota:e.nota||''
+    }:{...EF,eh:{...EF.eh},juicio:{...EF.juicio},slots:[],nota:''});
+    setSelDay(dk);
+  };
+
+  const saveEntry=()=>{
+    if(!selDay)return;
+    const old=ents[selDay],oType=old?.type,nType=form.type;
+    /* base concept usage */
+    if(oType&&!['TRABA','LIBRE','FEST_REST'].includes(oType)){
+      const oc=cpts.find(c=>c.id===oType);
+      if(oc){const r=oc.u==='H'?(old.hm==='full'?8:(parseFloat(old.hrs)||0)):1;
+        setCpts(p=>p.map(c=>c.id===oType?{...c,us:Math.max(0,c.us-r)}:c));}
+    }
+    if(nType&&!['TRABA','LIBRE','FEST_REST'].includes(nType)){
+      const nc=cpts.find(c=>c.id===nType);
+      if(nc){const r=nc.u==='H'?(form.hm==='full'?8:(parseFloat(form.hrs)||0)):1;
+        setCpts(p=>p.map(c=>c.id===nType?{...c,us:c.us+r}:c));}
+    }
+    /* EH librar → HLIBS */
+    const oldLib=getLibrarH(old?.eh),newLib=getLibrarH(form.eh);
+    if(oldLib!==newLib)setCpts(p=>p.map(c=>c.id==='HLIBS'?{...c,t:Math.max(0,+(c.t-oldLib+newLib).toFixed(2))}:c));
+    /* CAMBIO 1: slots usage */
+    (old?.slots||[]).forEach(sl=>{
+      const h=parseFloat(sl.hrs)||0;
+      if(h>0)setCpts(p=>p.map(x=>x.id===sl.type?{...x,us:Math.max(0,+(x.us-h).toFixed(2))}:x));
     });
-  });
-  if(v('custDroga'))roles.push(`  · Custodia de droga/sustancia: Nº: ${v('custDroga')}`);
-  if(v('custArma'))roles.push(`  · Custodia de arma: Nº: ${v('custArma')}`);
-  if(v('custDet'))roles.push(`  · Custodia del/los detenido/s: Nº: ${v('custDet')}`);
-  if(v('custOtroNr'))roles.push(`  · Custodia de otro efecto (${v('custOtroDesc')||'—'}): Nº: ${v('custOtroNr')}`);
-  if(v('leeDerechos'))roles.push(`  · Agente que lee los derechos: Nº: ${v('leeDerechos')}`);
-  if(v('engrilla'))roles.push(`  · Agente que realiza el engrilletamiento: Nº: ${v('engrilla')}`);
-  if(roles.length){t+='\n── ROLES DE LOS AGENTES ───────────────────────\n';t+=roles.join('\n')+'\n';}
+    (form.slots||[]).forEach(sl=>{
+      const h=parseFloat(sl.hrs)||0;
+      if(h>0)setCpts(p=>p.map(x=>x.id===sl.type?{...x,us:+(x.us+h).toFixed(2)}:x));
+    });
+    /* CAMBIO 2: juicio librar → HLIBS */
+    const oldJLib=getLibrarHJuicio(old?.juicio),newJLib=getLibrarHJuicio(form.juicio);
+    if(oldJLib!==newJLib)setCpts(p=>p.map(c=>c.id==='HLIBS'?{...c,t:Math.max(0,+(c.t-oldJLib+newJLib).toFixed(2))}:c));
+    setEnts(p=>({...p,[selDay]:{
+      type:form.type,hm:form.hm,hrs:form.hrs,
+      wd:{...form.wd},eh:{...form.eh},juicio:{...form.juicio},
+      slots:[...(form.slots||[])],nota:form.nota||''
+    }}));
+    setSelDay(null);
+  };
 
-  dynBloque('incidencias','INCIDENCIAS DE LOS AGENTES');
-  dynBloque('infracciones','INFRACCIONES ADMINISTRATIVAS');
-  dynBloque('dec','INTERVENCIÓN CON DEC');
+  const delEntry=()=>{
+    if(!selDay)return;
+    const old=ents[selDay];
+    if(old){
+      if(!['TRABA','LIBRE','FEST_REST'].includes(old.type)){
+        const oc=cpts.find(c=>c.id===old.type);
+        if(oc){const r=oc.u==='H'?(old.hm==='full'?8:(parseFloat(old.hrs)||0)):1;
+          setCpts(p=>p.map(c=>c.id===old.type?{...c,us:Math.max(0,c.us-r)}:c));}
+      }
+      const libH=getLibrarH(old.eh);
+      if(libH>0)setCpts(p=>p.map(c=>c.id==='HLIBS'?{...c,t:Math.max(0,+(c.t-libH).toFixed(2))}:c));
+      (old.slots||[]).forEach(sl=>{
+        const h=parseFloat(sl.hrs)||0;
+        if(h>0)setCpts(p=>p.map(x=>x.id===sl.type?{...x,us:Math.max(0,+(x.us-h).toFixed(2))}:x));
+      });
+      const jLib=getLibrarHJuicio(old.juicio);
+      if(jLib>0)setCpts(p=>p.map(c=>c.id==='HLIBS'?{...c,t:Math.max(0,+(c.t-jLib).toFixed(2))}:c));
+    }
+    setEnts(p=>{const n={...p};delete n[selDay];return n;});setSelDay(null);
+  };
 
-  t+='\n── HECHOS ─────────────────────────────────────\n';
-  t+=lin('Descripción',v('descripcion'));t+=lin('Daños físicos',v('danosFisicos'));t+=lin('Daños materiales',v('danosMateriales'));
-  t+='\n── CALIFICACIÓN Y ACTUACIÓN ───────────────────\n';
-  t+=lin('Posible delito',v('posibleDelito'));t+=lin('Actuación policial',v('actuacionPolicial'));
-  t+=lin('Asistencia médica ofrecida',v('asistenciaOfrecida'));t+=lin('Asistencia médica aceptada',v('asistenciaAceptada'));
-  t+='\n═══════════════════════════════════════════════\n';
-  return t;
+  const UCS42_PAT=['work','work','rest','rest','work','work','work','work','work','rest','rest','work','work','work','work','work','work','rest','rest','rest','work','work','work','rest','rest','work','work','work','work','work','rest','rest','work','work','rest','rest','work','work','work','work','work','work'];
+  const UCS42_MW=['2026-01-01','2026-05-01','2026-05-02','2026-08-14','2026-12-07','2026-12-08'];
+  const UCS42_MR=['2026-01-06','2026-04-02','2026-04-03','2026-04-04','2026-05-15','2026-10-12','2026-11-02','2026-11-09','2026-12-24','2026-12-25','2026-12-31'];
+  const applyUCS42=()=>{
+    if(!window.confirm('¿Aplicar cuadrante UCS42 2026? Se sobreescribirán los días del año 2026 y se fijarán los festivos.'))return;
+    const year=2026,ne={...ents};
+    let pi=0,cur=new Date(year,0,1),end=new Date(year,11,31);
+    while(cur<=end){const dk=toKey(cur);
+      if(!UCS42_MW.includes(dk)&&!UCS42_MR.includes(dk)){
+        const pt=UCS42_PAT[pi%UCS42_PAT.length];
+        ne[dk]={...EF,type:pt==='work'?'TRABA':'LIBRE',hrs:pt==='work'?8:0,slots:[],nota:''};
+      }pi++;cur=addD(cur,1);}
+    setEnts(ne);
+    setMwDays(prev=>[...new Set([...prev.filter(d=>!d.startsWith('2026-')),...UCS42_MW])]);
+    setMrDays(prev=>[...new Set([...prev.filter(d=>!d.startsWith('2026-')),...UCS42_MR])]);
+    setTab('cal');
+  };
+
+  const applyPat=()=>{
+    if(!pat.length)return;
+    const year=td.getFullYear(),ne={...ents};
+    let pi=0,cur=new Date(year,0,1),end=new Date(year,11,31);
+    while(cur<=end){const dk=toKey(cur);
+      if(!mrDays.includes(dk)&&!mwDays.includes(dk)){
+        const pt=pat[pi%pat.length];
+        ne[dk]={...EF,type:pt==='work'?'TRABA':'LIBRE',hrs:pt==='work'?8:0,slots:[],nota:''};
+      }pi++;cur=addD(cur,1);}
+    setEnts(ne);setTab('cal');
+  };
+
+  const touchX=useRef(null);
+  const hTS=e=>{touchX.current=e.touches[0].clientX;};
+  const hTE=e=>{
+    if(touchX.current==null)return;
+    const diff=e.changedTouches[0].clientX-touchX.current;
+    touchX.current=null;if(Math.abs(diff)<50)return;goNav(diff<0?1:-1);
+  };
+  const goNav=useCallback(dir=>{setNav(prev=>{const d=new Date(prev);
+    if(cv==='day')d.setDate(d.getDate()+dir);
+    else if(cv==='week')d.setDate(d.getDate()+7*dir);
+    else if(cv==='month')d.setMonth(d.getMonth()+dir);
+    else d.setFullYear(d.getFullYear()+dir);
+    return d;
+  });},[cv]);
+
+  const navTitle=useMemo(()=>{
+    if(cv==='day')return`${nav.getDate()} ${MN[nav.getMonth()]} ${nav.getFullYear()}`;
+    if(cv==='week'){const ws=monStart(nav),we=addD(ws,6);return`${ws.getDate()} ${MNS[ws.getMonth()]} – ${we.getDate()} ${MNS[we.getMonth()]} ${we.getFullYear()}`;}
+    if(cv==='month')return`${MN[nav.getMonth()]} ${nav.getFullYear()}`;
+    return`Año ${nav.getFullYear()}`;
+  },[cv,nav]);
+
+  /* consumedPie — CAMBIO 1: incluye slots */
+  const consumedPie=useMemo(()=>{
+    const counts={};
+    Object.entries(ents).filter(([dk])=>fromKey(dk)<=td).forEach(([dk,e])=>{
+      const type=mrDays.includes(dk)||mwDays.includes(dk)?'TRABA':e.type;
+      const slots=e.slots||[];
+      const totalSlotHrs=slots.reduce((s,sl)=>s+(parseFloat(sl.hrs)||0),0);
+      const baseVal=slots.length>0?(Math.max(0,8-totalSlotHrs)/8):(e.hm!=='full'?(parseFloat(e.hrs)||0)/8:1);
+      if(baseVal>0)counts[type]=(counts[type]||0)+baseVal;
+      slots.forEach(sl=>{const v=(parseFloat(sl.hrs)||0)/8;if(v>0)counts[sl.type]=(counts[sl.type]||0)+v;});
+    });
+    const r=[];
+    Object.entries(counts).forEach(([type,val])=>{
+      if(type==='TRABA')r.push({name:'TRABA',value:val,color:TC,full:'Días trabajados',total:Math.round(val),unit:'d'});
+      else if(type==='LIBRE')r.push({name:'LIBRE',value:val,color:LC,full:'Días libres',total:Math.round(val),unit:'d'});
+      else if(type==='FEST_REST')r.push({name:'FEST.D',value:val,color:FC_REST,full:'Festivos',total:Math.round(val),unit:'d'});
+      else{const cp=cpts.find(c=>c.id===type);if(cp)r.push({name:cp.a,value:val,color:cp.c,full:cp.n,total:cp.u==='H'?+(val*8).toFixed(1):+val.toFixed(1),unit:cp.u});}
+    });
+    return r.filter(d=>d.value>0).sort((a,b)=>b.value-a.value);
+  },[ents,mrDays,mwDays,td,cpts]);
+
+  const overtimeRows=useMemo(()=>
+    Object.entries(ents).filter(([dk,e])=>fromKey(dk)<=td&&e.eh&&(parseFloat(e.eh.d)||parseFloat(e.eh.n)||parseFloat(e.eh.fd)))
+      .map(([dk,e])=>({dk,d:parseFloat(e.eh.d)||0,n:parseFloat(e.eh.n)||0,fd:parseFloat(e.eh.fd)||0,
+        dieta:e.eh.dieta||'none',motivo:e.eh.motivo||'',tipo:e.eh.tipo||'cobrar',
+        total:(parseFloat(e.eh.d)||0)+(parseFloat(e.eh.n)||0)+(parseFloat(e.eh.fd)||0)+(e.eh.dieta==='media'?.5:e.eh.dieta==='completa'?1:0)}))
+      .sort((a,b)=>a.dk.localeCompare(b.dk))
+  ,[ents,td]);
+  const overtimeCobrar=useMemo(()=>overtimeRows.filter(r=>r.tipo!=='librar').reduce((s,x)=>s+x.total,0),[overtimeRows]);
+  const trialsAll=useMemo(()=>Object.entries(ents).filter(([,e])=>e.juicio?.active)
+    .map(([dk,e])=>({dk,dateObj:fromKey(dk),...e.juicio})).sort((a,b)=>a.dk.localeCompare(b.dk)),[ents]);
+  const trialsDone=useMemo(()=>trialsAll.filter(t=>t.dateObj<=td),[trialsAll,td]);
+  const trialsFuture=useMemo(()=>trialsAll.filter(t=>t.dateObj>td),[trialsAll,td]);
+  const totalDaysRem=useMemo(()=>cpts.filter(c=>c.u==='d'&&c.t>0&&c.us<c.t).reduce((s,c)=>s+(c.t-c.us),0),[cpts]);
+  const totalHoursRem=useMemo(()=>cpts.filter(c=>c.u==='H'&&c.t>0&&c.us<c.t).reduce((s,c)=>s+(c.t-c.us),0),[cpts]);
+  const cntAgotado=useMemo(()=>cpts.filter(c=>c.t>0&&c.us>=c.t).length,[cpts]);
+  const visibleCpts=useMemo(()=>{
+    if(sumFilt==='saldo')return cpts.filter(c=>c.u==='d'&&c.t>0&&c.us<c.t);
+    if(sumFilt==='horas')return cpts.filter(c=>c.u==='H'&&c.t>0&&c.us<c.t);
+    if(sumFilt==='agotado')return cpts.filter(c=>c.t>0&&c.us>=c.t);
+    return cpts;
+  },[cpts,sumFilt]);
+  const selCpt=!['TRABA','LIBRE','FEST_REST'].includes(form.type)?cpts.find(c=>c.id===form.type):null;
+  const isHourCpt=selCpt?.u==='H';
+  const selDateObj=selDay?fromKey(selDay):null;
+  /* CAMBIO 5: notas widget */
+  const showNotesWidget=useMemo(()=>settings.widgets.find(w=>w.id==='notes')?.show!==false,[settings.widgets]);
+  /* CAMBIO 1: conceptos de horas */
+  const hourCpts=useMemo(()=>cpts.filter(c=>c.u==='H'),[cpts]);
+
+  /* ── CAMBIO 1: DayCell con gradiente multi-color ── */
+  const DayCell=({dk,weekMode})=>{
+    const dateObj=fromKey(dk),num=dateObj.getDate();
+    const isT=dk===tk,di=getDI(dk),dow=dateObj.getDay(),isWE=dow===0||dow===6;
+    const entry=ents[dk];
+    const slots=(entry?.slots||[]).filter(sl=>sl.type&&(parseFloat(sl.hrs)||0)>0);
+    const hasExt=!!(entry?.eh&&((parseFloat(entry.eh.d)||0)>0||(parseFloat(entry.eh.n)||0)>0||(parseFloat(entry.eh.fd)||0)>0));
+    const hasJ=entry?.juicio?.active;
+    const hasNota=showNotesWidget&&entry?.nota;
+    const totalSlotHrs=slots.reduce((s,sl)=>s+(parseFloat(sl.hrs)||0),0);
+
+    let bgStyle={background:isT?TH.calToday:TH.calEmpty};
+    let partialEl=null;
+    let isColorFull=false;
+
+    if(di&&slots.length>0){
+      isColorFull=true;
+      const baseHrs=Math.max(0,8-totalSlotHrs);
+      const segs=[];
+      if(baseHrs>0)segs.push({color:di.c,hrs:baseHrs});
+      slots.forEach(sl=>{const c=cpts.find(x=>x.id===sl.type);if(c)segs.push({color:c.c,hrs:parseFloat(sl.hrs)||0});});
+      const tot=segs.reduce((s,x)=>s+x.hrs,0)||8;
+      let off=0;
+      const gp=segs.map(s=>{const w=(s.hrs/tot)*100;const p=`${s.color} ${off.toFixed(1)}% ${(off+w).toFixed(1)}%`;off+=w;return p;});
+      bgStyle={background:`linear-gradient(to bottom,${gp.join(',')})`};
+    } else if(di){
+      const pct=di.pct??0;
+      if(pct>=100){isColorFull=true;bgStyle={background:di.c};}
+      else if(pct>0){
+        bgStyle={background:isT?TH.calToday:TH.calEmpty};
+        partialEl=<div style={{position:'absolute',bottom:0,left:0,right:0,height:`${pct}%`,background:di.c,opacity:.82,borderRadius:'0 0 8px 8px'}}/>;
+      }
+    }
+
+    const slotLabels=slots.map(sl=>cpts.find(c=>c.id===sl.type)?.a).filter(Boolean);
+    const label=di?(slotLabels.length>0?(weekMode?slotLabels.join('+'):di.l+'+'):di.l):null;
+
+    return(
+      <div onClick={()=>openDay(dk)}
+        style={{...bgStyle,border:isT?`2px solid ${TH.calTodayBorder}`:`1px solid ${TH.border}`,
+          borderRadius:10,cursor:'pointer',minHeight:weekMode?92:50,padding:'5px 3px',
+          display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'flex-start',
+          boxShadow:di?'0 2px 8px rgba(0,0,0,.18)':'none',overflow:'hidden',userSelect:'none',position:'relative'}}
+        onMouseEnter={e=>e.currentTarget.style.transform='scale(1.05)'}
+        onMouseLeave={e=>e.currentTarget.style.transform='scale(1)'}
+      >
+        {partialEl}
+        <span style={{fontSize:weekMode?13:10,fontWeight:isT?800:500,position:'relative',zIndex:1,
+          color:isColorFull?'rgba(255,255,255,.93)':isT?'#1D4ED8':isWE?'#DC2626':TH.text}}>{num}</span>
+        {label&&<span style={{fontSize:7,fontWeight:700,position:'relative',zIndex:1,
+          color:isColorFull?'rgba(255,255,255,.93)':TH.text,
+          background:isColorFull?'rgba(0,0,0,.2)':`${di.c}bb`,borderRadius:6,padding:'1px 4px',marginTop:2,
+          maxWidth:'90%',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{label}</span>}
+        {hasExt&&<div style={{position:'absolute',top:3,right:3,width:5,height:5,borderRadius:'50%',background:'#FDE047',zIndex:2}}/>}
+        {hasJ&&<div style={{position:'absolute',top:3,left:3,width:5,height:5,borderRadius:'50%',background:'#8B5CF6',zIndex:2}}/>}
+        {hasNota&&<div style={{position:'absolute',bottom:3,right:3,width:5,height:5,borderRadius:'50%',background:'#38BDF8',zIndex:2}}/>}
+      </div>
+    );
+  };
+
+  /* CAMBIO 5: WeekView con fila de notas */
+  const WeekView=()=>{
+    const ws=monStart(nav),days=Array.from({length:7},(_,i)=>addD(ws,i));
+    const notaDays=showNotesWidget?days.filter(d=>ents[toKey(d)]?.nota):[];
+    return(<div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)',gap:4,marginBottom:4}}>
+        {DN.map((d,i)=><div key={i} style={{textAlign:'center',fontSize:11,fontWeight:700,color:i>=5?'#DC2626':TH.textSub}}>{d}</div>)}
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)',gap:4}}>
+        {days.map(d=><DayCell key={toKey(d)} dk={toKey(d)} weekMode/>)}
+      </div>
+      {notaDays.length>0&&(
+        <div style={{marginTop:8,display:'flex',flexDirection:'column',gap:5}}>
+          {notaDays.map(d=>{
+            const dk=toKey(d),nota=ents[dk]?.nota;
+            const dow=d.getDay(),isWE=dow===0||dow===6;
+            const dname=DN[dow===0?6:dow-1];
+            return(
+              <div key={dk} style={{
+                width:'100%',background:dm?'#1E293B':'#F0F4F8',
+                borderRadius:10,padding:'8px 12px',
+                border:`1px solid ${TH.border}`,boxSizing:'border-box'
+              }}>
+                <span style={{fontSize:9,fontWeight:800,color:isWE?'#DC2626':'#1D4ED8',marginRight:6,textTransform:'uppercase'}}>
+                  {dname} {d.getDate()}
+                </span>
+                <span style={{fontSize:11,color:TH.text,lineHeight:1.45,whiteSpace:'pre-wrap'}}>{nota}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>);
+  };
+
+  const MonthView=()=>{
+    const y=nav.getFullYear(),m=nav.getMonth();
+    const fd=new Date(y,m,1),ld=new Date(y,m+1,0),off=fd.getDay()===0?6:fd.getDay()-1;
+    const cells=[];
+    for(let i=0;i<off;i++)cells.push(<div key={`e${i}`}/>);
+    for(let i=1;i<=ld.getDate();i++){const d=new Date(y,m,i);cells.push(<DayCell key={toKey(d)} dk={toKey(d)}/>);}
+    return(<div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)',gap:2,marginBottom:4}}>
+        {DN.map((d,i)=><div key={i} style={{textAlign:'center',fontSize:10,fontWeight:700,color:i>=5?'#DC2626':TH.textSub}}>{d}</div>)}
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)',gap:2}}>{cells}</div>
+    </div>);
+  };
+
+  /* CAMBIO 5: DayViewFull con nota | CAMBIO 2: juicio horas | CAMBIO 1: slots */
+  const DayViewFull=()=>{
+    const dk=toKey(nav),di=getDI(dk),e=ents[dk];
+    const slots=(e?.slots||[]).filter(sl=>sl.type&&(parseFloat(sl.hrs)||0)>0);
+    return(<div>
+      <div style={{background:di?`linear-gradient(140deg,${di.c}ee,${di.c}99)`:'linear-gradient(140deg,#E2E8F0,#CBD5E1)',
+        borderRadius:20,padding:20,marginBottom:14,boxShadow:'0 4px 20px rgba(0,0,0,.12)'}}>
+        <div style={{fontSize:26,fontWeight:800,color:di?'white':'#1E293B'}}>{nav.getDate()} {MN[nav.getMonth()]}</div>
+        <div style={{fontSize:13,color:di?'rgba(255,255,255,.75)':'#64748B',marginTop:2}}>{DNF[nav.getDay()]} · {nav.getFullYear()}</div>
+        {di?<div style={{marginTop:10,display:'inline-block',background:'rgba(0,0,0,.18)',borderRadius:12,padding:'4px 14px',fontSize:13,fontWeight:700,color:'white'}}>{di.l}</div>
+          :<div style={{marginTop:8,fontSize:12,color:'#94A3B8'}}>Sin registro. Pulsa "Editar".</div>}
+      </div>
+      {e?.type==='TRABA'&&e.wd&&Object.values(e.wd).some(v=>v)&&(
+        <Card th={TH}><STitle th={TH} icon="📋">Datos del servicio</STitle>
+          {[['Indicativo',e.wd.ind],['Vehículo',e.wd.veh],['Orden servicio',e.wd.os],['Puesto evento',e.wd.pe],['Notas',e.wd.notas]].filter(([,v])=>v).map(([k,v])=>(
+            <div key={k} style={{marginBottom:5,fontSize:12,color:TH.text}}><span style={{fontWeight:700,color:'#475569'}}>{k}: </span>{v}</div>
+          ))}
+        </Card>
+      )}
+      {/* CAMBIO 1: slots */}
+      {slots.length>0&&(
+        <Card th={TH}><STitle th={TH} icon="🧩">Conceptos adicionales</STitle>
+          {slots.map((sl,i)=>{const c=cpts.find(x=>x.id===sl.type);return c?(
+            <div key={i} style={{display:'flex',alignItems:'center',gap:8,marginBottom:5}}>
+              <div style={{width:10,height:10,borderRadius:2,background:c.c,flexShrink:0}}/>
+              <span style={{fontSize:12,fontWeight:700,color:TH.text}}>{c.a}</span>
+              <span style={{fontSize:12,color:TH.textSub}}>— {sl.hrs}h</span>
+            </div>
+          ):null;})}
+        </Card>
+      )}
+      {e?.eh&&(e.eh.d||e.eh.n||e.eh.fd||e.eh.dieta!=='none')&&(
+        <Card th={TH} bg={dm?'#2D2000':'#FFFBEB'}><STitle th={TH} icon="⏰">Horas extraordinarias</STitle>
+          <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:6}}>
+            {e.eh.d&&<span style={{fontSize:12,color:TH.text}}>🌤 <b>{e.eh.d}h</b></span>}
+            {e.eh.n&&<span style={{fontSize:12,color:TH.text}}>🌙 <b>{e.eh.n}h</b></span>}
+            {e.eh.fd&&<span style={{fontSize:12,color:TH.text}}>🎉 <b>{e.eh.fd}h</b></span>}
+            {e.eh.dieta!=='none'&&<span style={{fontSize:12,color:TH.text}}>🍽 <b>{e.eh.dieta==='media'?'Media':'Completa'}</b></span>}
+          </div>
+          {e.eh.motivo&&<div style={{fontSize:11,color:TH.textSub}}>📝 {e.eh.motivo}</div>}
+          <div style={{marginTop:4,display:'inline-block',borderRadius:12,padding:'2px 10px',fontSize:10,fontWeight:700,
+            background:e.eh.tipo==='librar'?'#DCFCE7':'#FEF9C3',color:e.eh.tipo==='librar'?'#15803D':'#92400E'}}>
+            {e.eh.tipo==='librar'?'✓ A librar':'💶 A cobrar'}</div>
+        </Card>
+      )}
+      {e?.juicio?.active&&(
+        <Card th={TH} bg={dm?'#1A0F2E':'#F3E8FF'}><STitle th={TH} icon="⚖️">Juicio</STitle>
+          {[['Juzgado',e.juicio.juzgado],['Fecha',e.juicio.fecha],['Inicio',e.juicio.horaInicio],['Fin',e.juicio.horaFin],['Ámbito',e.juicio.termMunicipal]].filter(([,v])=>v).map(([k,v])=>(
+            <div key={k} style={{marginBottom:4,fontSize:12,color:TH.text}}><span style={{fontWeight:700,color:'#6D28D9'}}>{k}: </span>{v}</div>
+          ))}
+          {/* CAMBIO 2: horas juicio en day view */}
+          {e.juicio.horas&&(
+            <div style={{marginTop:6,background:dm?'#2D1A4A':'#EDE9FE',borderRadius:10,padding:'6px 10px',fontSize:11}}>
+              <span style={{fontWeight:700,color:'#6D28D9'}}>⏱ {e.juicio.horas}h</span>
+              <span style={{color:TH.textSub,marginLeft:6}}>
+                {e.juicio.horasTipo==='librar'
+                  ?`✓ A librar → +${getLibrarHJuicio(e.juicio)}h HLIBS (${e.juicio.termMunicipal==='fuera'?'fuera':'dentro'} del término)`
+                  :'💶 A cobrar'}
+              </span>
+            </div>
+          )}
+        </Card>
+      )}
+      {/* CAMBIO 5: nota del día */}
+      {showNotesWidget&&e?.nota&&(
+        <Card th={TH} bg={dm?'#0F2030':'#EFF6FF'}><STitle th={TH} icon="📝">Nota</STitle>
+          <div style={{fontSize:12,color:TH.text,lineHeight:1.55,whiteSpace:'pre-wrap'}}>{e.nota}</div>
+        </Card>
+      )}
+      <Btn full onClick={()=>openDay(dk)}>✏️ Editar este día</Btn>
+    </div>);
+  };
+
+  const YearView=()=>{
+    const y=nav.getFullYear();
+    return(<div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:8}}>
+      {MNS.map((ms,mi)=>{
+        const fd=new Date(y,mi,1),ld=new Date(y,mi+1,0),off=fd.getDay()===0?6:fd.getDay()-1;
+        return(<div key={mi} style={{background:TH.cardBg,borderRadius:12,padding:8,
+          boxShadow:dm?'0 1px 4px rgba(0,0,0,.3)':'0 1px 4px rgba(0,0,0,.07)',cursor:'pointer'}}
+          onClick={()=>{setNav(new Date(y,mi,1));setCv('month');}}>
+          <div style={{fontSize:10,fontWeight:800,textAlign:'center',marginBottom:4,color:'#1D4ED8'}}>{ms}</div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)',gap:1}}>
+            {[...Array(off)].map((_,i)=><div key={`e${i}`}/>)}
+            {[...Array(ld.getDate())].map((_,i)=>{
+              const d=new Date(y,mi,i+1),dk=toKey(d),di=getDI(dk),isT=dk===tk;
+              return(<div key={i} onClick={e2=>{e2.stopPropagation();setNav(new Date(dk));setCv('day');}}
+                style={{aspectRatio:'1',background:di?di.c:isT?TH.calToday:'transparent',borderRadius:2,
+                  display:'flex',alignItems:'center',justifyContent:'center',fontSize:5.5,cursor:'pointer',
+                  border:isT?`1px solid ${TH.calTodayBorder}`:'none',
+                  color:di?'white':TH.textSub,fontWeight:isT?800:400}}>{i+1}</div>);
+            })}
+          </div>
+        </div>);
+      })}
+    </div>);
+  };
+
+  const LegendBar=()=>(
+    <div style={{marginTop:14,background:TH.cardBg,borderRadius:14,padding:10,
+      boxShadow:dm?'0 1px 5px rgba(0,0,0,.3)':'0 1px 5px rgba(0,0,0,.06)'}}>
+      <div style={{fontSize:10,fontWeight:700,color:TH.textSub,marginBottom:6,textTransform:'uppercase',letterSpacing:.5}}>
+        Leyenda · 🟡 H.Extra · 🟣 Juicio · 🔵 Nota</div>
+      <div style={{display:'flex',flexWrap:'wrap',gap:7}}>
+        {[{c:TC,l:'TRABA'},{c:LC,l:'LIBRE'},{c:FC_WORK,l:'F.OBL'},{c:FC_REST,l:'FEST.D'},...cpts.map(c=>({c:c.c,l:c.a}))].map((x,i)=>(
+          <div key={i} style={{display:'flex',alignItems:'center',gap:3}}>
+            <div style={{width:9,height:9,borderRadius:2,background:x.c,flexShrink:0}}/>
+            <span style={{fontSize:8,color:TH.textSub,fontWeight:600}}>{x.l}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const CalWidgets=()=>{
+    const ws=settings.widgets;
+    const ow=ws.find(w=>w.id==='overtime'),tw=ws.find(w=>w.id==='trials_done'),tf=ws.find(w=>w.id==='trials_future');
+    const vis=[ow?.show&&ow,tw?.show&&tw,tf?.show&&tf].filter(Boolean);
+    if(!vis.length)return null;
+    return(<div style={{display:'grid',gridTemplateColumns:`repeat(${vis.length},1fr)`,gap:8,marginTop:14}}>
+      {ow?.show&&<div onClick={()=>setWidgetModal('overtime')}
+        style={{background:TH.cardBg,borderRadius:14,padding:10,
+          boxShadow:dm?'0 1px 5px rgba(0,0,0,.3)':'0 1px 5px rgba(0,0,0,.08)',cursor:'pointer',textAlign:'center'}}>
+        <div style={{fontSize:7.5,fontWeight:700,color:TH.textSub,marginBottom:4,textTransform:'uppercase',letterSpacing:.3}}>{ow.name}</div>
+        <div style={{fontSize:18,fontWeight:800,color:'#F59E0B'}}>{overtimeCobrar.toFixed(1)}h</div>
+      </div>}
+      {tw?.show&&<div onClick={()=>setWidgetModal('trials_done')}
+        style={{background:TH.cardBg,borderRadius:14,padding:10,
+          boxShadow:dm?'0 1px 5px rgba(0,0,0,.3)':'0 1px 5px rgba(0,0,0,.08)',cursor:'pointer',textAlign:'center'}}>
+        <div style={{fontSize:7.5,fontWeight:700,color:TH.textSub,marginBottom:4,textTransform:'uppercase',letterSpacing:.3}}>{tw.name}</div>
+        <div style={{fontSize:18,fontWeight:800,color:'#8B5CF6'}}>{trialsDone.length}</div>
+      </div>}
+      {tf?.show&&<div onClick={()=>setWidgetModal('trials_future')}
+        style={{background:trialsFuture.length>0?(dm?'#1A0F2E':'#F3E8FF'):TH.cardBg,borderRadius:14,padding:10,
+          boxShadow:dm?'0 1px 5px rgba(0,0,0,.3)':'0 1px 5px rgba(0,0,0,.08)',cursor:'pointer',textAlign:'center',
+          border:trialsFuture.length>0?'2px solid #8B5CF6':'2px solid transparent'}}>
+        <div style={{fontSize:7.5,fontWeight:700,color:TH.textSub,marginBottom:4,textTransform:'uppercase',letterSpacing:.3}}>{tf.name}</div>
+        <div style={{fontSize:18,fontWeight:800,color:'#8B5CF6'}}>{trialsFuture.length}</div>
+        {trialsFuture.length>0&&<div style={{fontSize:8,color:'#8B5CF6',marginTop:1}}>Próx: {trialsFuture[0].dk.slice(5)}</div>}
+      </div>}
+    </div>);
+  };
+
+  if(!loaded)return(<div style={{display:'flex',alignItems:'center',justifyContent:'center',minHeight:'100vh',background:TH.pageBg,flexDirection:'column',gap:14}}>
+    <LogoPM size={60}/><div style={{fontSize:14,color:'#64748B'}}>Cargando…</div>
+  </div>);
+
+  const hCol=settings.headerColor||'#1C1C2E';
+
+  return(
+  <div style={{fontFamily:'system-ui,sans-serif',background:TH.pageBg,minHeight:'100vh',width:'100%',paddingBottom:80}}>
+
+  {/* HEADER */}
+  <div style={{background:hCol,color:'white',padding:'10px 12px',boxShadow:'0 4px 16px rgba(0,0,0,.35)',position:'sticky',top:0,zIndex:20}}>
+    <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8}}>
+      <div style={{display:'flex',alignItems:'center',gap:10,minWidth:0}}>
+        <RenderLogo type={settings.logoType} size={34} customData={settings.customLogoData}/>
+        <div>
+          <div style={{fontSize:13,fontWeight:800,letterSpacing:-.3,lineHeight:1.2,display:'flex',alignItems:'center',gap:6}}>
+            Calendario de Turnos{saveInd&&<span style={{fontSize:9,color:'#4ADE80',fontWeight:600}}>{saveInd}</span>}
+          </div>
+          <div style={{fontSize:9,opacity:.5}}>{prof.name} · {td.getFullYear()}</div>
+        </div>
+      </div>
+      <div style={{display:'flex',gap:4,flexShrink:0,alignItems:'center'}}>
+        {/* CAMBIO 3: descarga directa */}
+        <button onClick={exportBackup} title="Exportar backup (descarga JSON)"
+          style={{background:'rgba(255,255,255,.1)',border:'1px solid rgba(255,255,255,.2)',borderRadius:14,padding:'5px 9px',color:'white',fontSize:10,cursor:'pointer',fontWeight:700}}>⬇</button>
+        <button onClick={()=>{setImportText('');setImportModal(true);}}
+          style={{background:'rgba(255,255,255,.1)',border:'1px solid rgba(255,255,255,.2)',borderRadius:14,padding:'5px 9px',color:'white',fontSize:10,cursor:'pointer',fontWeight:700}}>⬆</button>
+        <button onClick={()=>setShowCP(true)}
+          style={{background:'rgba(255,255,255,.1)',border:'1px solid rgba(255,255,255,.2)',borderRadius:14,padding:'5px 9px',color:'white',fontSize:14,cursor:'pointer',fontWeight:700}}>📋</button>
+        <button onClick={()=>setSettingsModal(true)}
+          style={{background:'rgba(255,255,255,.15)',border:'1px solid rgba(255,255,255,.3)',borderRadius:14,padding:'5px 9px',color:'white',fontSize:16,cursor:'pointer',lineHeight:1}}>⚙️</button>
+      </div>
+    </div>
+  </div>
+
+  {/* CALENDAR */}
+  {tab==='cal'&&(
+    <div style={{padding:12}}>
+      <div style={{display:'flex',gap:3,marginBottom:12,background:dm?'#334155':'#E2E8F0',borderRadius:24,padding:3}}>
+        {[['day','Día'],['week','Semana'],['month','Mes'],['year','Año']].map(([v,l])=>(
+          <button key={v} onClick={()=>setCv(v)} style={{flex:1,border:'none',borderRadius:20,padding:'7px 3px',
+            background:cv===v?'#1D4ED8':'transparent',color:cv===v?'white':TH.textSub,fontSize:11,fontWeight:700,cursor:'pointer'}}>{l}</button>
+        ))}
+      </div>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:10,background:TH.cardBg,borderRadius:24,padding:'3px 6px',
+        boxShadow:dm?'0 1px 5px rgba(0,0,0,.3)':'0 1px 5px rgba(0,0,0,.07)'}}>
+        <button onClick={()=>goNav(-1)} style={{background:'none',border:'none',fontSize:26,cursor:'pointer',color:'#1D4ED8',padding:'0 10px',lineHeight:1}}>‹</button>
+        <span style={{fontSize:12,fontWeight:700,color:TH.text}}>{navTitle}</span>
+        <button onClick={()=>goNav(1)} style={{background:'none',border:'none',fontSize:26,cursor:'pointer',color:'#1D4ED8',padding:'0 10px',lineHeight:1}}>›</button>
+      </div>
+      <div style={{textAlign:'right',marginBottom:10}}>
+        <button onClick={()=>{setNav(new Date(td));setCv('week');}}
+          style={{background:'none',border:'1.5px solid #1D4ED8',borderRadius:16,padding:'4px 13px',fontSize:11,color:'#1D4ED8',cursor:'pointer',fontWeight:700}}>Hoy</button>
+      </div>
+      <div onTouchStart={hTS} onTouchEnd={hTE}>
+        {cv==='day'&&<DayViewFull/>}
+        {cv==='week'&&<WeekView/>}
+        {cv==='month'&&<MonthView/>}
+        {cv==='year'&&<YearView/>}
+      </div>
+      {cv!=='day'&&<LegendBar/>}
+      <CalWidgets/>
+    </div>
+  )}
+
+  {/* RESUMEN */}
+  {tab==='sum'&&(
+    <div style={{padding:12}}>
+      <div style={{fontSize:17,fontWeight:800,color:TH.sectionTitle,marginBottom:14}}>📊 Resumen</div>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:8,marginBottom:14}}>
+        {[{k:'saldo',l:'DÍAS SALDO',v:totalDaysRem.toFixed(0),col:'#16A34A'},
+          {k:'horas',l:'HORAS SALDO',v:totalHoursRem.toFixed(0)+'h',col:'#1D4ED8'},
+          {k:'agotado',l:'AGOTADOS',v:cntAgotado,col:'#DC2626'}].map(s=>(
+          <button key={s.k} onClick={()=>setSumFilt(f=>f===s.k?'all':s.k)}
+            style={{background:sumFilt===s.k?s.col:TH.cardBg,borderRadius:14,padding:'10px 4px',textAlign:'center',
+              boxShadow:dm?'0 1px 5px rgba(0,0,0,.3)':'0 1px 5px rgba(0,0,0,.09)',
+              border:sumFilt===s.k?`2px solid ${s.col}`:`2px solid ${TH.border}`,cursor:'pointer'}}>
+            <div style={{fontSize:18,fontWeight:800,color:sumFilt===s.k?'white':s.col}}>{s.v}</div>
+            <div style={{fontSize:7.5,color:sumFilt===s.k?'rgba(255,255,255,.8)':TH.textSub,fontWeight:700,marginTop:2,letterSpacing:.3}}>{s.l}</div>
+          </button>
+        ))}
+      </div>
+      <div style={{display:'flex',justifyContent:'flex-end',alignItems:'center',gap:8,marginBottom:12}}>
+        {sumFilt!=='all'&&<button onClick={()=>setSumFilt('all')} style={{background:'none',border:`1px solid ${TH.border}`,borderRadius:16,padding:'4px 14px',fontSize:11,color:TH.textSub,cursor:'pointer'}}>Ver todos</button>}
+        <button onClick={()=>setAddCptModal(true)}
+          style={{background:'#1D4ED8',border:'none',borderRadius:14,width:40,height:40,color:'white',fontSize:22,cursor:'pointer',boxShadow:'0 2px 8px #1D4ED844',display:'flex',alignItems:'center',justifyContent:'center'}}>+</button>
+      </div>
+      <div style={{touchAction:draggingIdx!=null?'none':'auto'}}>
+        {visibleCpts.map((c,index)=>{
+          const isCarryBoth=c.carryover==='both',isCO=c.carryover===true;
+          const pend=Math.max(0,c.t-c.us),pct=c.t>0?Math.min((c.us/c.t)*100,100):0;
+          const isDragging=draggingIdx===index,isOver=dragOverIdx===index&&draggingIdx!==index;
+          return(
+            <div key={c.id} data-cpt={index}
+              onTouchStart={e=>onDragTS(index,e)} onTouchMove={onDragTM} onTouchEnd={onDragTE}
+              style={{marginBottom:8,
+                background:isCarryBoth?(dm?'#2D1A00':'#FFF8F0'):isCO?(dm?'#0A2A0A':'#F0FDF4'):TH.cardBg,
+                borderRadius:14,padding:11,
+                boxShadow:isDragging?'0 8px 24px rgba(0,0,0,.3)':(dm?'0 1px 5px rgba(0,0,0,.3)':'0 1px 5px rgba(0,0,0,.07)'),
+                borderLeft:`4px solid ${c.c}`,borderTop:isOver?'3px solid #1D4ED8':undefined,
+                opacity:isDragging?.6:1,transform:isDragging?'scale(1.02)':'scale(1)',
+                transition:'opacity .15s,transform .15s',cursor:'grab'}}>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:4}}>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{display:'flex',alignItems:'center',gap:4,flexWrap:'wrap'}}>
+                    <span style={{fontSize:10,color:TH.textSub,marginRight:2,userSelect:'none'}}>⠿</span>
+                    <span style={{fontSize:12,fontWeight:800,color:TH.text}}>{c.a}</span>
+                    {c.ag&&<span style={{fontSize:7,background:TH.tagBlueBg,color:TH.tagBlueText,borderRadius:8,padding:'1px 5px',fontWeight:700}}>AUTO</span>}
+                    {isCarryBoth&&<span style={{fontSize:7,background:TH.tagOrangeBg,color:TH.tagOrangeText,borderRadius:8,padding:'1px 5px',fontWeight:700}}>AÑO ANT.</span>}
+                    {isCO&&<span style={{fontSize:7,background:TH.tagGreenBg,color:TH.tagGreenText,borderRadius:8,padding:'1px 5px',fontWeight:700}}>TRASPASO</span>}
+                  </div>
+                  <div style={{fontSize:9,color:TH.textSub,marginTop:2}}>{c.n}</div>
+                </div>
+                <div style={{display:'flex',alignItems:'center',gap:3,flexShrink:0}}>
+                  <button onClick={()=>{setEditCptId(c.id);setEditCptData({a:c.a,n:c.n,c:c.c,t:c.t,u:c.u});}}
+                    style={{fontSize:9,background:TH.tagBlueBg,color:TH.tagBlueText,border:'none',borderRadius:8,padding:'3px 6px',cursor:'pointer',fontWeight:700}}>✏️</button>
+                  <button onClick={()=>{setAgModal(c.id);setAgTarget('t');setAgAmt(String(c.t));}}
+                    style={{fontSize:9,background:TH.tagGreenBg,color:TH.tagGreenText,border:'none',borderRadius:8,padding:'3px 6px',cursor:'pointer',fontWeight:700}}>T:{c.t}{c.u}</button>
+                  <button onClick={()=>{setAgModal(c.id);setAgTarget('us');setAgAmt(String(c.us));}}
+                    style={{fontSize:9,background:dm?'#3B0000':'#FDECEA',color:'#C62828',border:'none',borderRadius:8,padding:'3px 6px',cursor:'pointer',fontWeight:700}}>U:{c.us}{c.u}</button>
+                  <button onClick={()=>{if(window.confirm(`¿Eliminar "${c.a}"?`))removeConcept(c.id);}}
+                    style={{background:dm?'#3B0000':'#FEF2F2',border:'none',borderRadius:8,padding:'3px 6px',fontSize:11,color:'#B91C1C',cursor:'pointer',fontWeight:700}}>🗑</button>
+                </div>
+              </div>
+              {c.t>0&&<><div style={{marginTop:6}}><ProgBar pct={pct} color={c.c} bg={TH.progBg}/></div>
+                <div style={{fontSize:10,fontWeight:700,color:'#16A34A',marginTop:3,textAlign:'right'}}>Pendiente: {pend.toFixed(1)}{c.u}</div></>}
+              {c.t===0&&<div style={{fontSize:10,color:TH.textSub,marginTop:3,fontStyle:'italic'}}>Sin total asignado</div>}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  )}
+
+  {/* PATRÓN */}
+  {tab==='pat'&&(
+    <div style={{padding:12}}>
+      <div style={{fontSize:17,fontWeight:800,color:TH.sectionTitle,marginBottom:14}}>🔄 Patrón de trabajo</div>
+      <Card th={TH}>
+        <STitle th={TH} icon="🔢">Secuencia de días</STitle>
+        <div style={{display:'flex',flexWrap:'wrap',gap:6,minHeight:36,padding:8,background:TH.cardBg2,borderRadius:12,marginBottom:12}}>
+          {pat.map((d,i)=>(
+            <span key={i} onClick={()=>setPat(p=>p.filter((_,idx)=>idx!==i))}
+              style={{background:d==='work'?TC:LC,color:'white',borderRadius:20,padding:'5px 12px',fontSize:12,fontWeight:700,cursor:'pointer'}}>
+              {d==='work'?'T':'L'} ✕</span>
+          ))}
+          {!pat.length&&<span style={{fontSize:11,color:TH.textSub,alignSelf:'center',marginLeft:4}}>Sin patrón</span>}
+        </div>
+        <div style={{display:'flex',gap:8}}>
+          <select value={newPat} onChange={e=>setNewPat(e.target.value)}
+            style={{flex:1,borderRadius:20,border:`1.5px solid ${TH.inputBorder}`,padding:'9px 14px',fontSize:12,background:TH.inputBg,appearance:'none',fontFamily:'inherit',fontWeight:600,color:TH.text}}>
+            <option value="work">● TRABAJO</option><option value="rest">○ LIBRE</option>
+          </select>
+          <Btn small onClick={()=>setPat(p=>[...p,newPat])}>+ Añadir</Btn>
+        </div>
+      </Card>
+      {[{key:'mw',icon:'🔴',title:'Festivos obligados a trabajar',color:FC_WORK,days:mwDays,setDays:setMwDays},
+        {key:'mr',icon:'🟢',title:'Festivos de obligado descanso',color:FC_REST,days:mrDays,setDays:setMrDays}].map(({key,icon,title,color,days,setDays})=>(
+        <Card key={key} th={TH}>
+          <STitle th={TH} icon={icon}>{title}</STitle>
+          <Btn full color={color} onClick={()=>{setMpModal(key);setMpSel(new Set(days));setMpNav(new Date(td));}}>
+            📅 Seleccionar fechas en calendario</Btn>
+          {days.length>0&&<div style={{marginTop:10}}>
+            <div style={{fontSize:10,fontWeight:700,color:TH.textSub,marginBottom:5}}>{days.length} día(s) · toca para eliminar</div>
+            <div style={{display:'flex',flexWrap:'wrap',gap:4}}>
+              {[...days].sort().map(d=>(<span key={d} onClick={()=>setDays(p=>p.filter(x=>x!==d))}
+                style={{background:color,color:'white',borderRadius:12,padding:'3px 10px',fontSize:10,cursor:'pointer',fontWeight:600}}>{d.slice(5)} ✕</span>))}
+            </div>
+          </div>}
+        </Card>
+      ))}
+      {/* Cuadrantes predefinidos — desplegable */}
+      <Card th={TH}>
+        <STitle th={TH} icon="📋">Aplicar cuadrante predefinido</STitle>
+        <div style={{borderRadius:12,border:`1.5px solid ${TH.border}`,overflow:'hidden'}}>
+          <div onClick={()=>setShowEh(v=>!v)}
+            style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'11px 14px',
+              background:showEh?(dm?'#1E3A5F':'#EFF6FF'):TH.cardBg2,cursor:'pointer'}}>
+            <div>
+              <div style={{fontSize:12,fontWeight:700,color:showEh?'#1D4ED8':TH.text}}>Cuadrante UCS42 · 2026</div>
+              <div style={{fontSize:10,color:TH.textSub,marginTop:1}}>Secuencia de 42 días con festivos</div>
+            </div>
+            <span style={{fontSize:14,color:TH.textSub,transition:'transform .2s',display:'inline-block',transform:showEh?'rotate(180deg)':'rotate(0deg)'}}>▼</span>
+          </div>
+          {showEh&&(
+            <div style={{padding:'12px 14px',borderTop:`1px solid ${TH.border}`,background:dm?'#0C1A2E':'#F8FAFF'}}>
+              <div style={{fontSize:11,color:TH.textSub,marginBottom:10,lineHeight:1.5}}>
+                Rellena todos los días de 2026 con la secuencia de 42 días y fija los festivos obligados de trabajo y descanso.
+              </div>
+              <Btn full color='#0284C7' onClick={applyUCS42}>✅ Aplicar cuadrante UCS42 a 2026</Btn>
+            </div>
+          )}
+        </div>
+      </Card>
+      <Btn full disabled={!pat.length} onClick={applyPat}>🔄 Aplicar patrón al año {td.getFullYear()}</Btn>
+      <div style={{height:1,background:TH.border,margin:'16px 0'}}/>
+      <Card th={TH}>
+        <STitle th={TH} icon="🗓">Reinicio de año</STitle>
+        <div style={{fontSize:11,color:TH.textSub,marginBottom:10,lineHeight:1.6}}>
+          Traspasos al iniciar nuevo año:
+          {[
+            ['HLANT','HLIBS'],['ASPAA','ASPAR'],['CFANT','FEST2431','CFEST'],['HFCNOAÑ','HFCNO']
+          ].map((ids,i)=>{
+            const names=ids.map(id=>cpts.find(c=>c.id===id)?.a||id);
+            const dest=names[0],srcs=names.slice(1).join(' + ');
+            return(
+              <div key={i} style={{display:'flex',alignItems:'center',gap:4,marginTop:4}}>
+                <span style={{fontWeight:700,color:TH.sectionTitle,fontSize:11}}>{dest}</span>
+                <span style={{color:TH.textSub,fontSize:10}}>←</span>
+                <span style={{fontWeight:600,color:TH.text,fontSize:11}}>{srcs}</span>
+              </div>
+            );
+          })}
+        </div>
+        <Btn full color='#C2410C' onClick={()=>{if(window.confirm('¿Confirmar reinicio de año con traspasos?'))doYearReset();}}>🔁 Reinicio de año nuevo</Btn>
+      </Card>
+    </div>
+  )}
+
+  {/* GRÁFICA */}
+  {tab==='chart'&&(
+    <div style={{padding:12}}>
+      <div style={{fontSize:17,fontWeight:800,color:TH.sectionTitle,marginBottom:6}}>Distribución consumida · {td.getFullYear()}</div>
+      <div style={{fontSize:11,color:TH.textSub,marginBottom:14}}>Solo días ya transcurridos y registrados, al 100%.</div>
+      {consumedPie.length===0
+        ?<div style={{textAlign:'center',padding:50}}><div style={{fontSize:56}}>◌</div><p style={{fontSize:13,color:TH.textSub,marginTop:10}}>Sin datos hasta hoy.</p></div>
+        :<>
+          <Card th={TH}><PieSVG data={consumedPie} cardBg={TH.cardBg}/></Card>
+          <Card th={TH}>{consumedPie.map((d,i)=>(
+            <div key={i} style={{display:'flex',alignItems:'center',gap:8,padding:'7px 0',borderBottom:i<consumedPie.length-1?`1px solid ${TH.border}`:'none'}}>
+              <div style={{width:12,height:12,borderRadius:3,background:d.color,flexShrink:0}}/>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontSize:11,fontWeight:700,color:TH.text,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{d.name}</div>
+                <div style={{fontSize:9,color:TH.textSub}}>{d.full.substring(0,34)}</div>
+              </div>
+              <div style={{textAlign:'right',flexShrink:0,fontSize:11,fontWeight:700,color:TH.textSub}}>{d.total} {d.unit}</div>
+            </div>
+          ))}</Card>
+        </>
+      }
+    </div>
+  )}
+
+  {/* BOTTOM NAV */}
+  <div style={{position:'fixed',bottom:0,left:0,right:0,background:TH.navBg,borderTop:`1px solid ${TH.navBorder}`,display:'flex',justifyContent:'space-around',padding:'6px 0 8px',boxShadow:'0 -3px 14px rgba(0,0,0,.08)',zIndex:10}}>
+    {[{id:'cal',ico:'📅',l:'Calendario'},{id:'sum',ico:'📊',l:'Resumen'},{id:'pat',ico:'🔄',l:'Patrón'},{id:'chart',ico:null,l:'Gráfica'}].map(t=>(
+      <button key={t.id} onClick={()=>setTab(t.id)} style={{background:'none',border:'none',cursor:'pointer',display:'flex',flexDirection:'column',alignItems:'center',gap:2,padding:'4px 8px',color:tab===t.id?'#1D4ED8':TH.textSub}}>
+        {t.ico?<span style={{fontSize:21}}>{t.ico}</span>:<PieTabIcon active={tab===t.id}/>}
+        <span style={{fontSize:9,fontWeight:tab===t.id?800:500}}>{t.l}</span>
+      </button>
+    ))}
+  </div>
+
+  {/* ═══ DAY MODAL ═══ */}
+  {selDay&&selDateObj&&(
+    <div style={{position:'fixed',inset:0,background:'rgba(15,23,42,.55)',zIndex:100,display:'flex',alignItems:'flex-end',justifyContent:'center'}}
+      onClick={e=>{if(e.target===e.currentTarget)setSelDay(null);}}>
+      <div style={{background:TH.cardBg,borderRadius:'22px 22px 0 0',width:'100%',maxHeight:'93vh',overflowY:'auto',padding:'20px 16px 36px',boxShadow:'0 -8px 40px rgba(0,0,0,.2)'}}>
+        <div style={{width:36,height:4,background:TH.border,borderRadius:2,margin:'0 auto 18px'}}/>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:18}}>
+          <div>
+            <div style={{fontSize:18,fontWeight:800,color:TH.sectionTitle}}>{DNF[selDateObj.getDay()]} {selDateObj.getDate()}</div>
+            <div style={{fontSize:12,color:TH.textSub,marginTop:1}}>{MN[selDateObj.getMonth()]} {selDateObj.getFullYear()}</div>
+          </div>
+          <div style={{display:'flex',gap:8,alignItems:'center'}}>
+            {ents[selDay]&&<button onClick={delEntry} style={{background:dm?'#3B0000':'#FEF2F2',border:'none',borderRadius:20,padding:'6px 13px',fontSize:11,color:'#B91C1C',cursor:'pointer',fontWeight:700}}>🗑 Borrar</button>}
+            <button onClick={()=>setSelDay(null)} style={{background:TH.cardBg2,border:'none',borderRadius:20,width:33,height:33,fontSize:16,cursor:'pointer',color:TH.textSub,display:'flex',alignItems:'center',justifyContent:'center'}}>✕</button>
+          </div>
+        </div>
+
+        {/* Tipo de día */}
+        <div style={{marginBottom:16}}>
+          <label style={{fontSize:10,fontWeight:800,color:TH.textSub,display:'block',marginBottom:6,textTransform:'uppercase',letterSpacing:.5}}>Tipo de día</label>
+          <div style={{position:'relative'}}>
+            <select value={form.type} onChange={e=>setForm(f=>({...f,type:e.target.value,hm:'full',hrs:8}))}
+              style={{width:'100%',borderRadius:24,border:`1.5px solid ${TH.inputBorder}`,padding:'11px 18px',fontSize:12,background:TH.inputBg,appearance:'none',fontFamily:'inherit',fontWeight:600,color:TH.text}}>
+              <option value="TRABA">● TRABA — Trabajo</option>
+              <option value="LIBRE">○ LIBRE — Día libre</option>
+              {cpts.map(c=><option key={c.id} value={c.id}>{c.a} — {c.n.substring(0,28)} ({Math.max(0,c.t-c.us).toFixed(1)}{c.u} pend.)</option>)}
+            </select>
+            <span style={{position:'absolute',right:14,top:'50%',transform:'translateY(-50%)',pointerEvents:'none',color:TH.textSub,fontSize:11}}>▼</span>
+          </div>
+        </div>
+
+        {/* Modo horas (solo conceptos hora) */}
+        {isHourCpt&&(
+          <div style={{marginBottom:16}}>
+            <label style={{fontSize:10,fontWeight:800,color:TH.textSub,display:'block',marginBottom:6,textTransform:'uppercase',letterSpacing:.5}}>Modo de horas</label>
+            <div style={{display:'flex',gap:6}}>
+              {[['full','● Completo'],['salida','↑ Salida'],['entrada','↓ Entrada']].map(([v,l])=>(
+                <button key={v} onClick={()=>setForm(f=>({...f,hm:v,hrs:v==='full'?8:f.hrs}))}
+                  style={{flex:1,border:'none',borderRadius:20,padding:'9px 4px',
+                    background:form.hm===v?'#1D4ED8':TH.cardBg2,color:form.hm===v?'white':TH.textSub,fontSize:10,fontWeight:700,cursor:'pointer'}}>{l}</button>
+              ))}
+            </div>
+            {form.hm!=='full'&&(
+              <div style={{marginTop:10}}>
+                <label style={{fontSize:10,color:TH.textSub,display:'block',marginBottom:4,fontWeight:600}}>Horas a descontar</label>
+                <input type="number" min=".5" max="8" step=".5" value={form.hrs}
+                  onChange={e=>setForm(f=>({...f,hrs:parseFloat(e.target.value)||0}))}
+                  style={{width:'100%',borderRadius:20,border:`1.5px solid ${TH.inputBorder}`,padding:'9px 14px',fontSize:13,boxSizing:'border-box',fontFamily:'inherit',background:TH.inputBg,color:TH.text}}/>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Datos del servicio */}
+        {form.type==='TRABA'&&(
+          <div style={{background:dm?'#0C1A2E':'#EFF6FF',borderRadius:16,padding:14,marginBottom:14}}>
+            <STitle th={TH} icon="📋">Datos del servicio</STitle>
+            {/* CAMBIO 4: placeholder "Número de vehículo" */}
+            {[['ind','Indicativo','Ej: A-23'],['veh','Vehículo','Número de vehículo'],['os','Orden de servicio','Nº de orden'],['pe','Puesto en el evento','Descripción']].map(([k,l,ph])=>(
+              <IRow key={k} th={TH} label={l} ph={ph} value={form.wd[k]||''} onChange={v=>setForm(f=>({...f,wd:{...f.wd,[k]:v}}))}/>
+            ))}
+            <IRow th={TH} label="Notas" ph="Observaciones…" value={form.wd.notas||''} multiline onChange={v=>setForm(f=>({...f,wd:{...f.wd,notas:v}}))}/>
+          </div>
+        )}
+
+        {/* CAMBIO 1: Conceptos adicionales de horas (slots) */}
+        {(form.type==='TRABA'||form.type==='LIBRE'||form.slots.length>0)&&hourCpts.length>0&&(
+          <div style={{background:dm?'#0D1F30':'#E0F2FE',borderRadius:16,padding:14,marginBottom:14}}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:(form.slots.length>0||showSlotAdd)?10:0}}>
+              <STitle th={TH} icon="🧩">Conceptos de horas</STitle>
+              {!showSlotAdd&&(
+                <button onClick={()=>{
+                  setShowSlotAdd(true);
+                  const first=hourCpts[0];
+                  if(first)setSlotForm({type:first.id,hrs:1});
+                }} style={{background:'#0284C7',border:'none',borderRadius:16,padding:'5px 12px',fontSize:11,color:'white',cursor:'pointer',fontWeight:700}}>
+                  + Añadir
+                </button>
+              )}
+            </div>
+            {/* Slots existentes */}
+            {form.slots.map((sl,i)=>{
+              const c=cpts.find(x=>x.id===sl.type);
+              return c?(
+                <div key={i} style={{display:'flex',alignItems:'center',gap:8,padding:'6px 8px',borderRadius:10,
+                  background:dm?'rgba(255,255,255,.06)':'rgba(255,255,255,.7)',marginBottom:5}}>
+                  <div style={{width:10,height:10,borderRadius:2,background:c.c,flexShrink:0}}/>
+                  <span style={{fontSize:11,fontWeight:700,color:TH.text,flex:1}}>{c.a}</span>
+                  <span style={{fontSize:11,color:TH.textSub,marginRight:4}}>{sl.hrs}h</span>
+                  <button onClick={()=>setForm(f=>({...f,slots:f.slots.filter((_,j)=>j!==i)}))}
+                    style={{background:'none',border:'none',color:'#B91C1C',cursor:'pointer',fontSize:14,padding:'0 2px',lineHeight:1}}>✕</button>
+                </div>
+              ):null;
+            })}
+            {/* Totalizador */}
+            {form.slots.length>0&&(()=>{
+              const tot=form.slots.reduce((s,sl)=>s+(parseFloat(sl.hrs)||0),0);
+              const rest=Math.max(0,8-tot);
+              return(
+                <div style={{fontSize:10,color:tot>8?'#DC2626':'#0284C7',fontWeight:700,
+                  marginBottom:showSlotAdd?10:0,background:dm?'rgba(255,255,255,.05)':'rgba(255,255,255,.6)',
+                  borderRadius:8,padding:'4px 8px'}}>
+                  {tot.toFixed(1)}h asignadas · {rest.toFixed(1)}h como {form.type==='LIBRE'?'LIBRE':'TRABA'}{tot>8?' ⚠️ Supera 8h':''}
+                </div>
+              );
+            })()}
+            {/* Formulario añadir slot */}
+            {showSlotAdd&&(
+              <div style={{background:dm?'rgba(255,255,255,.08)':'rgba(255,255,255,.85)',borderRadius:12,padding:10,marginTop:4}}>
+                <div style={{marginBottom:8}}>
+                  <label style={{fontSize:10,fontWeight:700,color:TH.textSub,display:'block',marginBottom:3,textTransform:'uppercase'}}>Concepto de horas</label>
+                  <select value={slotForm.type||hourCpts[0]?.id||''} onChange={e=>setSlotForm(p=>({...p,type:e.target.value}))}
+                    style={{width:'100%',borderRadius:16,border:`1.5px solid ${TH.inputBorder}`,padding:'8px 12px',fontSize:11,
+                      background:TH.inputBg,appearance:'none',fontFamily:'inherit',fontWeight:600,color:TH.text}}>
+                    {hourCpts.map(c=><option key={c.id} value={c.id}>{c.a} — {c.n.substring(0,22)} ({Math.max(0,c.t-c.us).toFixed(1)}h pend.)</option>)}
+                  </select>
+                </div>
+                <div style={{marginBottom:10}}>
+                  <label style={{fontSize:10,fontWeight:700,color:TH.textSub,display:'block',marginBottom:3,textTransform:'uppercase'}}>Horas a asignar</label>
+                  <input type="text" inputMode="decimal" value={slotForm.hrs}
+                    onChange={e=>setSlotForm(p=>({...p,hrs:e.target.value}))}
+                    placeholder="Ej: 2 o 2.5"
+                    style={{width:'100%',borderRadius:16,border:`1.5px solid ${TH.inputBorder}`,padding:'8px 12px',fontSize:12,
+                      boxSizing:'border-box',fontFamily:'inherit',background:TH.inputBg,color:TH.text}}/>
+                </div>
+                <div style={{display:'flex',gap:6}}>
+                  <button onClick={()=>{setShowSlotAdd(false);setSlotForm({type:'',hrs:1});}}
+                    style={{flex:1,background:TH.cardBg2,border:'none',borderRadius:14,padding:'8px',fontSize:11,color:TH.textSub,cursor:'pointer',fontWeight:600}}>Cancelar</button>
+                  <button onClick={()=>{
+                    const t=slotForm.type||hourCpts[0]?.id||'';
+                    const h=parseFloat(String(slotForm.hrs).replace(',','.'))||0;
+                    if(!h||h<=0)return;
+                    if(!t)return;
+                    setForm(f=>({...f,slots:[...f.slots,{type:t,hrs:h}]}));
+                    setShowSlotAdd(false);setSlotForm({type:'',hrs:1});
+                  }} style={{flex:2,background:'#0284C7',border:'none',borderRadius:14,padding:'8px',fontSize:11,color:'white',cursor:'pointer',fontWeight:700}}>
+                    ✅ Añadir al día
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* CAMBIO 6: Horas extraordinarias PLEGADAS */}
+        {(form.type==='TRABA'||form.type==='LIBRE')&&(
+          <div style={{background:dm?'#1A1400':'#FEFCE8',borderRadius:16,padding:14,marginBottom:14}}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:showEh?12:0}}>
+              <STitle th={TH} icon="⏰">Horas extraordinarias</STitle>
+              <div style={{display:'flex',gap:6}}>
+                {showEh&&(form.eh.d||form.eh.n||form.eh.fd||form.eh.dieta!=='none')&&(
+                  <button onClick={()=>setForm(f=>({...f,eh:{...EF.eh}}))}
+                    style={{background:dm?'#3B0000':'#FEF2F2',border:'none',borderRadius:16,padding:'5px 10px',fontSize:10,color:'#B91C1C',cursor:'pointer',fontWeight:700}}>🗑 Quitar</button>
+                )}
+                <button onClick={()=>setShowEh(v=>!v)}
+                  style={{background:showEh?'#D97706':(dm?'#2D2200':'#FDE68A'),border:'none',borderRadius:20,padding:'5px 14px',
+                    fontSize:11,color:showEh?'white':'#92400E',cursor:'pointer',fontWeight:700}}>
+                  {showEh?'▲ Plegar':'+ Añadir'}
+                </button>
+              </div>
+            </div>
+            {showEh&&(
+              <>
+                <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:10}}>
+                  {[['d','🌤 Diurnas'],['n','🌙 Nocturnas'],['fd','🎉 Festiva/Dom.']].map(([k,l])=>(
+                    <div key={k}>
+                      <label style={{fontSize:10,color:'#92400E',display:'block',marginBottom:3,fontWeight:700}}>{l}</label>
+                      <input type="number" min="0" step=".5" value={form.eh[k]||''} placeholder="0h"
+                        onChange={e=>setForm(f=>({...f,eh:{...f.eh,[k]:e.target.value}}))}
+                        style={{width:'100%',borderRadius:20,border:'1.5px solid #FDE68A',padding:'8px 12px',fontSize:12,
+                          boxSizing:'border-box',background:TH.inputBg,fontFamily:'inherit',color:TH.text}}/>
+                    </div>
+                  ))}
+                  <div>
+                    <label style={{fontSize:10,color:'#92400E',display:'block',marginBottom:3,fontWeight:700}}>🍽 Dieta</label>
+                    <select value={form.eh.dieta} onChange={e=>setForm(f=>({...f,eh:{...f.eh,dieta:e.target.value}}))}
+                      style={{width:'100%',borderRadius:20,border:'1.5px solid #FDE68A',padding:'8px 12px',fontSize:11,
+                        background:TH.inputBg,appearance:'none',fontFamily:'inherit',fontWeight:600,color:TH.text}}>
+                      <option value="none">Sin dieta</option>
+                      <option value="media">Media (+0.5h)</option>
+                      <option value="completa">Completa (+1h)</option>
+                    </select>
+                  </div>
+                </div>
+                <IRow th={TH} label="Motivo de las horas" ph="Ej: Operación especial, guardia extra…" value={form.eh.motivo||''} onChange={v=>setForm(f=>({...f,eh:{...f.eh,motivo:v}}))}/>
+                <div style={{marginTop:4}}>
+                  <label style={{fontSize:10,color:'#92400E',display:'block',marginBottom:6,fontWeight:700,textTransform:'uppercase',letterSpacing:.4}}>Compensación</label>
+                  <div style={{display:'flex',gap:8}}>
+                    {[['cobrar','💶 A cobrar','#F59E0B'],['librar','🕐 A librar','#16A34A']].map(([v,l,col])=>(
+                      <button key={v} onClick={()=>setForm(f=>({...f,eh:{...f.eh,tipo:v}}))}
+                        style={{flex:1,border:'none',borderRadius:20,padding:'10px 8px',
+                          background:form.eh.tipo===v?col:TH.cardBg2,color:form.eh.tipo===v?'white':TH.textSub,fontSize:11,fontWeight:700,cursor:'pointer'}}>
+                        {l}
+                      </button>
+                    ))}
+                  </div>
+                  {form.eh.tipo==='librar'&&(parseFloat(form.eh.d)||0)+(parseFloat(form.eh.n)||0)+(parseFloat(form.eh.fd)||0)>0&&(
+                    <div style={{marginTop:8,background:dm?'#0A2A0A':'#DCFCE7',borderRadius:12,padding:'8px 12px',fontSize:11,color:'#15803D',fontWeight:600}}>
+                      ✅ Se añadirán <b>{getLibrarH(form.eh).toFixed(2)}h</b> al total de HLIBS
+                      {((parseFloat(form.eh.n)||0)+(parseFloat(form.eh.fd)||0))>0&&(
+                        <div style={{fontSize:10,fontWeight:400,marginTop:3,color:'#166534'}}>
+                          🌙 Nocturnas y 🎉 Festivas ×1.4 (factor corrector)
+                          {(parseFloat(form.eh.d)||0)>0&&` · ☀️ Diurnas ×1`}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
+        {/* CAMBIO 2: Juicio con horas a cobrar/librar */}
+        <div style={{background:dm?'#1A0F2E':'#F3E8FF',borderRadius:16,padding:14,marginBottom:14}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:form.juicio.active?12:0}}>
+            <STitle th={TH} icon="⚖️">Juicio</STitle>
+            <div style={{display:'flex',gap:6}}>
+              {form.juicio.active&&(
+                <button onClick={()=>setForm(f=>({...f,juicio:{...EF.juicio}}))}
+                  style={{background:dm?'#3B0000':'#FEF2F2',border:'none',borderRadius:16,padding:'5px 10px',fontSize:10,color:'#B91C1C',cursor:'pointer',fontWeight:700}}>🗑 Quitar</button>
+              )}
+              <button onClick={()=>setForm(f=>({...f,juicio:{...f.juicio,active:!f.juicio.active}}))}
+                style={{background:form.juicio.active?'#7C3AED':(dm?'#2D1A4A':'#DDD6FE'),border:'none',borderRadius:20,padding:'5px 14px',
+                  fontSize:11,color:form.juicio.active?'white':'#6D28D9',cursor:'pointer',fontWeight:700}}>
+                {form.juicio.active?'✓ Activo':'+ Añadir'}
+              </button>
+            </div>
+          </div>
+          {form.juicio.active&&(
+            <>
+              <IRow th={TH} label="Juzgado" ph="Nº Juzgado" value={form.juicio.juzgado} onChange={v=>setForm(f=>({...f,juicio:{...f.juicio,juzgado:v}}))}/>
+              <IRow th={TH} label="Fecha del juicio" type="date" value={form.juicio.fecha} onChange={v=>setForm(f=>({...f,juicio:{...f.juicio,fecha:v}}))}/>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
+                <IRow th={TH} label="Hora inicio" type="time" value={form.juicio.horaInicio} onChange={v=>setForm(f=>({...f,juicio:{...f.juicio,horaInicio:v}}))}/>
+                <IRow th={TH} label="Hora fin" type="time" value={form.juicio.horaFin} onChange={v=>setForm(f=>({...f,juicio:{...f.juicio,horaFin:v}}))}/>
+              </div>
+              <IRow th={TH} label="Término municipal" value={form.juicio.termMunicipal}
+                onChange={v=>setForm(f=>({...f,juicio:{...f.juicio,termMunicipal:v}}))}
+                opts={[{v:'dentro',l:'Dentro del término'},{v:'fuera',l:'Fuera del término'}]}/>
+              {/* CAMBIO 2: horas del juicio */}
+              <div style={{borderTop:`1px solid ${dm?'#3B2060':'#DDD6FE'}`,marginTop:10,paddingTop:12}}>
+                <label style={{fontSize:10,fontWeight:800,color:'#6D28D9',display:'block',marginBottom:8,textTransform:'uppercase',letterSpacing:.4}}>
+                  ⏱ Horas del juicio
+                </label>
+                <IRow th={TH} label="Número de horas" type="number" ph="Ej: 2" value={form.juicio.horas||''} onChange={v=>setForm(f=>({...f,juicio:{...f.juicio,horas:v}}))}/>
+                <label style={{fontSize:10,fontWeight:700,color:'#6D28D9',display:'block',marginBottom:6,textTransform:'uppercase',letterSpacing:.4}}>Compensación de las horas</label>
+                <div style={{display:'flex',gap:8,marginBottom:8}}>
+                  {[['cobrar','💶 A cobrar','#7C3AED'],['librar','🕐 A librar','#6D28D9']].map(([v,l,col])=>(
+                    <button key={v} onClick={()=>setForm(f=>({...f,juicio:{...f.juicio,horasTipo:v}}))}
+                      style={{flex:1,border:'none',borderRadius:20,padding:'9px 8px',
+                        background:form.juicio.horasTipo===v?col:TH.cardBg2,color:form.juicio.horasTipo===v?'white':TH.textSub,fontSize:11,fontWeight:700,cursor:'pointer'}}>
+                      {l}
+                    </button>
+                  ))}
+                </div>
+                {form.juicio.horasTipo==='librar'&&(
+                  <div style={{background:dm?'#1A0F3E':'#EDE9FE',borderRadius:12,padding:'8px 12px',fontSize:11,color:'#6D28D9',fontWeight:700}}>
+                    ✅ Se añadirán {form.juicio.termMunicipal==='fuera'?7:6}h a HLIBS
+                    <span style={{fontWeight:400,color:TH.textSub,marginLeft:4}}>
+                      ({form.juicio.termMunicipal==='fuera'?'fuera del término → 7h':'dentro del término → 6h'})
+                    </span>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* CAMBIO 5: Nota del día */}
+        <div style={{background:dm?'#0F2030':'#EFF6FF',borderRadius:16,padding:14,marginBottom:16}}>
+          <STitle th={TH} icon="📝">Nota del día</STitle>
+          <textarea value={form.nota||''} onChange={e=>setForm(f=>({...f,nota:e.target.value}))}
+            placeholder="Escribe una nota para este día…" rows={3}
+            style={{width:'100%',borderRadius:12,border:`1.5px solid ${TH.inputBorder}`,padding:'9px 12px',
+              fontSize:12,fontFamily:'inherit',resize:'none',boxSizing:'border-box',background:TH.inputBg,color:TH.text}}/>
+        </div>
+
+        <Btn full onClick={saveEntry}>💾 Guardar día</Btn>
+      </div>
+    </div>
+  )}
+
+  {/* CONCEPTS PANEL */}
+  {showCP&&(
+    <div style={{position:'fixed',inset:0,background:TH.pageBg,zIndex:200,overflowY:'auto'}}>
+      <div style={{background:`linear-gradient(135deg,${hCol},${hCol}cc)`,color:'white',padding:'15px 16px',position:'sticky',top:0,zIndex:1}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          <div style={{fontSize:16,fontWeight:800}}>📋 Todos los conceptos</div>
+          <button onClick={()=>setShowCP(false)} style={{background:'rgba(255,255,255,.15)',border:'none',borderRadius:20,padding:'7px 14px',color:'white',fontSize:12,cursor:'pointer',fontWeight:700}}>✕ Cerrar</button>
+        </div>
+      </div>
+      <div style={{padding:12}}>
+        {cpts.map(c=>{const pend=Math.max(0,c.t-c.us),pct=c.t>0?Math.min((c.us/c.t)*100,100):0;return(
+          <div key={c.id} style={{marginBottom:8,background:TH.cardBg,borderRadius:14,padding:11,
+            boxShadow:dm?'0 1px 5px rgba(0,0,0,.3)':'0 1px 5px rgba(0,0,0,.08)',borderLeft:`5px solid ${c.c}`}}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:2}}>
+              <div style={{display:'flex',alignItems:'center',gap:5}}>
+                <div style={{width:10,height:10,borderRadius:2,background:c.c}}/>
+                <span style={{fontSize:12,fontWeight:800,color:TH.text}}>{c.a}</span>
+              </div>
+              <div style={{fontSize:11}}><span style={{color:'#DC2626',fontWeight:700}}>{c.us}</span><span style={{color:TH.textSub}}> / {c.t}{c.u}</span></div>
+            </div>
+            <div style={{fontSize:9.5,color:TH.textSub,marginBottom:5}}>{c.n}</div>
+            {c.t>0&&<><ProgBar pct={pct} color={c.c} bg={TH.progBg}/><div style={{fontSize:10,fontWeight:700,color:'#16A34A',marginTop:3,textAlign:'right'}}>Pendiente: {pend.toFixed(1)}{c.u}</div></>}
+          </div>
+        );})}
+      </div>
+    </div>
+  )}
+
+  {/* MULTI-DATE PICKER */}
+  {mpModal&&(()=>{
+    const isMw=mpModal==='mw',color=isMw?FC_WORK:FC_REST;
+    const y=mpNav.getFullYear(),m=mpNav.getMonth();
+    const fd=new Date(y,m,1),ld=new Date(y,m+1,0),off=fd.getDay()===0?6:fd.getDay()-1;
+    const toggleDay=dk=>{setMpSel(prev=>{const s=new Set(prev);s.has(dk)?s.delete(dk):s.add(dk);return s;});};
+    const confirm=()=>{const arr=[...mpSel];if(isMw)setMwDays([...new Set(arr)]);else setMrDays([...new Set(arr)]);setMpModal(null);};
+    return(
+      <div style={{position:'fixed',inset:0,background:'rgba(15,23,42,.7)',zIndex:400,display:'flex',alignItems:'flex-end',justifyContent:'center'}}>
+        <div style={{background:TH.cardBg,borderRadius:'22px 22px 0 0',width:'100%',maxHeight:'92vh',overflowY:'auto',padding:'16px 14px 36px'}}>
+          <div style={{width:36,height:4,background:TH.border,borderRadius:2,margin:'0 auto 14px'}}/>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
+            <div>
+              <div style={{fontSize:15,fontWeight:800,color:TH.text}}>{isMw?'🔴':'🟢'} {isMw?'F. TRABAJO':'F. DESCANSO'}</div>
+              <div style={{fontSize:11,color:TH.textSub,marginTop:2}}>Toca para seleccionar/deseleccionar</div>
+            </div>
+            <button onClick={()=>setMpModal(null)} style={{background:TH.cardBg2,border:'none',borderRadius:20,width:33,height:33,fontSize:16,cursor:'pointer',color:TH.textSub}}>✕</button>
+          </div>
+          <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',background:TH.cardBg2,borderRadius:20,padding:'6px 8px',marginBottom:12}}>
+            <button onClick={()=>setMpNav(d=>{const n=new Date(d);n.setMonth(n.getMonth()-1);return n;})} style={{background:'none',border:'none',fontSize:22,cursor:'pointer',color,padding:'0 8px',lineHeight:1}}>‹</button>
+            <span style={{fontSize:13,fontWeight:700,color:TH.text}}>{MN[m]} {y}</span>
+            <button onClick={()=>setMpNav(d=>{const n=new Date(d);n.setMonth(n.getMonth()+1);return n;})} style={{background:'none',border:'none',fontSize:22,cursor:'pointer',color,padding:'0 8px',lineHeight:1}}>›</button>
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)',gap:3,marginBottom:4}}>
+            {DN.map((d,i)=><div key={i} style={{textAlign:'center',fontSize:10,fontWeight:700,color:i>=5?'#DC2626':TH.textSub}}>{d}</div>)}
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)',gap:3,marginBottom:14}}>
+            {[...Array(off)].map((_,i)=><div key={`e${i}`}/>)}
+            {[...Array(ld.getDate())].map((_,i)=>{
+              const d=new Date(y,m,i+1),dk=toKey(d),sel=mpSel.has(dk),isT=dk===tk,dow=d.getDay(),isWE=dow===0||dow===6;
+              return(<div key={i} onClick={()=>toggleDay(dk)}
+                style={{aspectRatio:'1',background:sel?color:isT?TH.calToday:TH.calEmpty,borderRadius:10,
+                  display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',cursor:'pointer',
+                  border:sel?`2px solid ${color}`:isT?`2px solid ${TH.calTodayBorder}`:`1.5px solid ${TH.border}`,
+                  boxShadow:sel?`0 2px 8px ${color}55`:'none',userSelect:'none'}}>
+                <span style={{fontSize:12,fontWeight:sel?800:500,color:sel?'white':isT?'#1D4ED8':isWE?'#DC2626':TH.text}}>{i+1}</span>
+                {sel&&<div style={{width:4,height:4,borderRadius:'50%',background:'rgba(255,255,255,.7)',marginTop:1}}/>}
+              </div>);
+            })}
+          </div>
+          <div style={{background:mpSel.size>0?`${color}22`:TH.cardBg2,borderRadius:16,padding:'10px 14px',marginBottom:12,display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+            <div>
+              <div style={{fontSize:14,fontWeight:800,color:mpSel.size>0?color:TH.textSub}}>{mpSel.size} día(s) seleccionado(s)</div>
+              {mpSel.size>0&&<div style={{fontSize:10,color:TH.textSub,marginTop:2}}>{[...mpSel].sort().map(d=>d.slice(5)).join(' · ')}</div>}
+            </div>
+            {mpSel.size>0&&<button onClick={()=>setMpSel(new Set())} style={{background:'none',border:`1px solid ${TH.border}`,borderRadius:12,padding:'4px 10px',fontSize:10,color:TH.textSub,cursor:'pointer',fontWeight:600}}>Limpiar</button>}
+          </div>
+          <Btn full color={color} disabled={mpSel.size===0} onClick={confirm}>✅ Añadir {mpSel.size} día(s)</Btn>
+        </div>
+      </div>
+    );
+  })()}
+
+  {/* AG MODAL */}
+  {agModal&&(()=>{const c=cpts.find(x=>x.id===agModal);if(!c)return null;return(
+    <div style={{position:'fixed',inset:0,background:'rgba(15,23,42,.6)',zIndex:300,display:'flex',alignItems:'center',justifyContent:'center',padding:20}}>
+      <div style={{background:TH.cardBg,borderRadius:20,padding:24,width:'100%',maxWidth:320,boxShadow:'0 8px 40px rgba(0,0,0,.25)'}}>
+        <div style={{fontSize:15,fontWeight:800,color:TH.sectionTitle,marginBottom:4}}>{c.a} · {agTarget==='us'?'Editar usados':'Editar total'}</div>
+        <div style={{fontSize:11,color:TH.textSub,marginBottom:16}}>{c.n}</div>
+        <IRow th={TH} label={`Valor en ${c.u}`} type="number" ph="Ej: 8" value={agAmt} onChange={v=>setAgAmt(v)}/>
+        <div style={{display:'flex',gap:8,marginTop:14}}>
+          <Btn full outline onClick={()=>setAgModal(null)}>Cancelar</Btn>
+          <Btn full onClick={()=>{
+            const v=parseFloat(agAmt);
+            if(!isNaN(v)&&v>=0){
+              if(agTarget==='us')setCpts(p=>p.map(x=>x.id===agModal?{...x,us:v}:x));
+              else setCpts(p=>p.map(x=>x.id===agModal?{...x,t:v}:x));
+            }setAgModal(null);
+          }}>Guardar</Btn>
+        </div>
+      </div>
+    </div>
+  );})()} 
+
+  {/* ADD CONCEPT */}
+  {addCptModal&&(
+    <ModalShell th={TH} title="➕ Nuevo concepto" onClose={()=>setAddCptModal(false)}>
+      <IRow th={TH} label="Abreviatura (máx. 10)" ph="Ej: MICP" value={newCpt.a} onChange={v=>setNewCpt(p=>({...p,a:v.toUpperCase().slice(0,10)}))}/>
+      <IRow th={TH} label="Nombre completo" ph="Descripción" value={newCpt.n} onChange={v=>setNewCpt(p=>({...p,n:v}))}/>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:9}}>
+        <div>
+          <label style={{fontSize:10,fontWeight:700,color:TH.textSub,display:'block',marginBottom:3,textTransform:'uppercase'}}>Total</label>
+          <input type="number" min="0" step="0.5" value={newCpt.t} onChange={e=>setNewCpt(p=>({...p,t:e.target.value}))}
+            style={{width:'100%',borderRadius:20,border:`1.5px solid ${TH.inputBorder}`,padding:'8px 14px',fontSize:12,boxSizing:'border-box',fontFamily:'inherit',background:TH.inputBg,color:TH.text}}/>
+        </div>
+        <div>
+          <label style={{fontSize:10,fontWeight:700,color:TH.textSub,display:'block',marginBottom:3,textTransform:'uppercase'}}>Unidad</label>
+          <select value={newCpt.u} onChange={e=>setNewCpt(p=>({...p,u:e.target.value}))}
+            style={{width:'100%',borderRadius:20,border:`1.5px solid ${TH.inputBorder}`,padding:'8px 14px',fontSize:12,background:TH.inputBg,appearance:'none',fontFamily:'inherit',fontWeight:600,color:TH.text}}>
+            <option value="d">Días (d)</option><option value="H">Horas (H)</option>
+          </select>
+        </div>
+      </div>
+      <ColorPicker th={TH} value={newCpt.c} onChange={v=>setNewCpt(p=>({...p,c:v}))}/>
+      <div style={{display:'flex',gap:8}}>
+        <Btn full outline onClick={()=>setAddCptModal(false)}>Cancelar</Btn>
+        <Btn full disabled={!newCpt.a.trim()} onClick={addConcept}>✅ Añadir</Btn>
+      </div>
+    </ModalShell>
+  )}
+
+  {/* EDIT CONCEPT */}
+  {editCptId&&editCptData&&(
+    <ModalShell th={TH} title="✏️ Editar concepto" onClose={()=>{setEditCptId(null);setEditCptData(null);}}>
+      <IRow th={TH} label="Abreviatura (máx. 10)" ph="Ej: VACAN" value={editCptData.a} onChange={v=>setEditCptData(p=>({...p,a:v.toUpperCase().slice(0,10)}))}/>
+      <IRow th={TH} label="Nombre completo" ph="Descripción" value={editCptData.n} onChange={v=>setEditCptData(p=>({...p,n:v}))}/>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:9}}>
+        <div>
+          <label style={{fontSize:10,fontWeight:700,color:TH.textSub,display:'block',marginBottom:3,textTransform:'uppercase'}}>Total</label>
+          <input type="number" min="0" step="0.5" value={editCptData.t} onChange={e=>setEditCptData(p=>({...p,t:e.target.value}))}
+            style={{width:'100%',borderRadius:20,border:`1.5px solid ${TH.inputBorder}`,padding:'8px 14px',fontSize:12,boxSizing:'border-box',fontFamily:'inherit',background:TH.inputBg,color:TH.text}}/>
+        </div>
+        <div>
+          <label style={{fontSize:10,fontWeight:700,color:TH.textSub,display:'block',marginBottom:3,textTransform:'uppercase'}}>Unidad</label>
+          <select value={editCptData.u} onChange={e=>setEditCptData(p=>({...p,u:e.target.value}))}
+            style={{width:'100%',borderRadius:20,border:`1.5px solid ${TH.inputBorder}`,padding:'8px 14px',fontSize:12,background:TH.inputBg,appearance:'none',fontFamily:'inherit',fontWeight:600,color:TH.text}}>
+            <option value="d">Días (d)</option><option value="H">Horas (H)</option>
+          </select>
+        </div>
+      </div>
+      <ColorPicker th={TH} value={editCptData.c} onChange={v=>setEditCptData(p=>({...p,c:v}))}/>
+      <div style={{display:'flex',gap:8}}>
+        <Btn full outline onClick={()=>{setEditCptId(null);setEditCptData(null);}}>Cancelar</Btn>
+        <Btn full disabled={!editCptData.a.trim()} onClick={saveEditCpt}>💾 Guardar cambios</Btn>
+      </div>
+    </ModalShell>
+  )}
+
+  {/* SETTINGS */}
+  {settingsModal&&(
+    <div style={{position:'fixed',inset:0,background:TH.pageBg,zIndex:300,overflowY:'auto'}}>
+      <div style={{background:`linear-gradient(135deg,${hCol},${hCol}cc)`,color:'white',padding:'15px 16px',position:'sticky',top:0,zIndex:1}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          <div style={{fontSize:16,fontWeight:800}}>⚙️ Ajustes</div>
+          <button onClick={()=>setSettingsModal(false)} style={{background:'rgba(255,255,255,.15)',border:'none',borderRadius:20,padding:'7px 14px',color:'white',fontSize:12,cursor:'pointer',fontWeight:700}}>✕ Cerrar</button>
+        </div>
+      </div>
+      <div style={{padding:12}}>
+        <Card th={TH}>
+          <STitle th={TH} icon="🌙">Modo oscuro / claro</STitle>
+          <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+            <div>
+              <div style={{fontSize:13,fontWeight:700,color:TH.text}}>{dm?'Modo oscuro activo':'Modo claro activo'}</div>
+              <div style={{fontSize:11,color:TH.textSub,marginTop:2}}>{dm?'Fondo negro, texto claro':'Fondo claro, texto oscuro'}</div>
+            </div>
+            <button onClick={()=>setSettings(s=>({...s,darkMode:!s.darkMode}))}
+              style={{background:dm?'#1D4ED8':'#E2E8F0',border:'none',borderRadius:24,width:52,height:28,cursor:'pointer',position:'relative',transition:'background .2s',flexShrink:0}}>
+              <div style={{position:'absolute',top:4,left:dm?26:4,width:20,height:20,borderRadius:'50%',background:'white',transition:'left .2s',boxShadow:'0 1px 3px rgba(0,0,0,.3)'}}/>
+            </button>
+          </div>
+        </Card>
+        <Card th={TH}>
+          <STitle th={TH} icon="🎨">Color del encabezado</STitle>
+          <div style={{display:'flex',alignItems:'center',gap:12}}>
+            <input type="color" value={settings.headerColor||'#1C1C2E'} onChange={e=>setSettings(s=>({...s,headerColor:e.target.value}))}
+              style={{width:52,height:52,borderRadius:14,border:`2px solid ${TH.border}`,padding:4,cursor:'pointer',flexShrink:0,background:TH.inputBg}}/>
+            <div style={{flex:1}}>
+              <div style={{height:40,borderRadius:12,background:settings.headerColor||'#1C1C2E',display:'flex',alignItems:'center',justifyContent:'center'}}>
+                <span style={{color:'white',fontSize:11,fontWeight:700}}>Vista previa</span>
+              </div>
+              <div style={{display:'flex',gap:6,marginTop:8,flexWrap:'wrap'}}>
+                {['#1C1C2E','#1C3A8A','#14532D','#7F1D1D','#1E3A5F','#3B0764','#1A1A1A','#065F46'].map(col=>(
+                  <div key={col} onClick={()=>setSettings(s=>({...s,headerColor:col}))}
+                    style={{width:28,height:28,borderRadius:8,background:col,cursor:'pointer',border:settings.headerColor===col?'3px solid #1D4ED8':'2px solid transparent'}}/>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Card>
+        <Card th={TH}>
+          <STitle th={TH} icon="🖼️">Logo / Icono</STitle>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:8,marginBottom:12}}>
+            {LOGO_OPTS.map(o=>(
+              <div key={o.id} onClick={()=>setSettings(s=>({...s,logoType:o.id}))}
+                style={{border:settings.logoType===o.id&&settings.logoType!=='custom'?'3px solid #1D4ED8':`2px solid ${TH.border}`,borderRadius:14,padding:'10px 4px',
+                  textAlign:'center',cursor:'pointer',background:settings.logoType===o.id&&settings.logoType!=='custom'?(dm?'#1E3A5F':'#EFF6FF'):TH.cardBg2}}>
+                <div style={{display:'flex',justifyContent:'center',marginBottom:4}}><RenderLogo type={o.id} size={30}/></div>
+                <div style={{fontSize:8,fontWeight:600,color:TH.textSub}}>{o.l.split(' ')[0]}</div>
+              </div>
+            ))}
+          </div>
+          {/* Custom logo upload */}
+          <div style={{background:dm?'#0C1A2E':'#EFF6FF',borderRadius:12,padding:12,border:settings.logoType==='custom'?'2px solid #1D4ED8':`1px solid ${TH.border}`}}>
+            <div style={{fontSize:11,fontWeight:700,color:TH.sectionTitle,marginBottom:8}}>📁 Imagen personalizada</div>
+            <div style={{display:'flex',gap:8,alignItems:'center',marginBottom:8}}>
+              {settings.customLogoData&&(
+                <img src={settings.customLogoData} alt="custom" style={{width:44,height:44,borderRadius:10,objectFit:'contain',border:`2px solid ${TH.border}`,flexShrink:0}}/>
+              )}
+              <label style={{flex:1,background:'#1D4ED8',borderRadius:16,padding:'9px 12px',fontSize:11,color:'white',cursor:'pointer',fontWeight:700,textAlign:'center',display:'block'}}>
+                📂 Subir desde el móvil
+                <input type="file" accept="image/*" style={{display:'none'}} onChange={e=>{
+                  const f=e.target.files?.[0];if(!f)return;
+                  const r=new FileReader();
+                  r.onload=ev=>{
+                    setSettings(s=>({...s,customLogoData:ev.target.result,logoType:'custom'}));
+                  };r.readAsDataURL(f);
+                }}/>
+              </label>
+            </div>
+            <div style={{fontSize:10,color:TH.textSub,marginBottom:6}}>O pega una URL de imagen:</div>
+            <div style={{display:'flex',gap:6}}>
+              <input type="text" placeholder="https://..." id="logoUrlInput"
+                style={{flex:1,borderRadius:16,border:`1.5px solid ${TH.inputBorder}`,padding:'7px 10px',fontSize:11,background:TH.inputBg,color:TH.text,fontFamily:'inherit'}}/>
+              <button onClick={()=>{
+                const url=document.getElementById('logoUrlInput')?.value?.trim();
+                if(!url)return;
+                setSettings(s=>({...s,customLogoData:url,logoType:'custom'}));
+              }} style={{background:'#1D4ED8',border:'none',borderRadius:14,padding:'7px 14px',fontSize:11,color:'white',cursor:'pointer',fontWeight:700}}>OK</button>
+            </div>
+            {settings.customLogoData&&settings.logoType==='custom'&&(
+              <button onClick={()=>setSettings(s=>({...s,customLogoData:null,logoType:'pm'}))}
+                style={{marginTop:8,background:'none',border:`1px solid ${TH.border}`,borderRadius:12,padding:'4px 10px',fontSize:10,color:'#B91C1C',cursor:'pointer',fontWeight:600}}>
+                🗑 Quitar imagen personalizada</button>
+            )}
+          </div>
+        </Card>
+        <Card th={TH}>
+          <STitle th={TH} icon="👤">Perfiles (máx. 4)</STitle>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>
+            {Array.from({length:4},(_,i)=>{const p=profiles[i];return(
+              <div key={i} style={{border:activeProf===i&&p?'2px solid #1D4ED8':`2px solid ${TH.border}`,borderRadius:14,padding:12,
+                background:activeProf===i&&p?(dm?'#1E3A5F':'#EFF6FF'):TH.cardBg2,cursor:p?'pointer':'default'}}>
+                {p?(<>
+                  <div onClick={()=>{setActiveProf(i);setSettingsModal(false);}}
+                    style={{fontSize:12,fontWeight:800,color:activeProf===i?'#1D4ED8':TH.text,marginBottom:2}}>{p.name}</div>
+                  <div style={{fontSize:9,color:TH.textSub}}>{Object.keys(p.ents).length} días · {p.cpts.length} conceptos</div>
+                  {activeProf===i&&<div style={{fontSize:8,color:'#1D4ED8',fontWeight:700,marginTop:2}}>● ACTIVO</div>}
+                  <div style={{display:'flex',gap:4,marginTop:6}}>
+                    <button onClick={()=>{const name=window.prompt('Nombre:',p.name);if(name)setProfiles(ps=>ps.map((pp,ii)=>ii===i?{...pp,name}:pp));}}
+                      style={{fontSize:9,background:TH.tagBlueBg,color:TH.tagBlueText,border:'none',borderRadius:8,padding:'2px 8px',cursor:'pointer',fontWeight:700}}>✏️</button>
+                    {profiles.length>1&&activeProf!==i&&(
+                      <button onClick={()=>{if(window.confirm(`¿Eliminar "${p.name}"?`)){setProfiles(ps=>ps.filter((_,ii)=>ii!==i));setActiveProf(0);}}}
+                        style={{fontSize:9,background:dm?'#3B0000':'#FEF2F2',color:'#B91C1C',border:'none',borderRadius:8,padding:'2px 8px',cursor:'pointer',fontWeight:700}}>🗑</button>
+                    )}
+                  </div>
+                </>):(
+                  <button onClick={()=>{const name=window.prompt('Nombre:',`Perfil ${i+1}`);if(name){setProfiles(ps=>{const n=[...ps];n[i]=INIT_PROF(name);return n;});}}}
+                    style={{width:'100%',height:72,background:'none',border:'none',cursor:'pointer',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:4,color:TH.textSub}}>
+                    <span style={{fontSize:24}}>+</span><span style={{fontSize:10,fontWeight:600}}>Nuevo perfil</span>
+                  </button>
+                )}
+              </div>
+            );})}
+          </div>
+        </Card>
+        {/* CAMBIO 5: widgets con toggle de notas */}
+        <Card th={TH}>
+          <STitle th={TH} icon="📦">Widgets y visualización</STitle>
+          {settings.widgets.map((w,i)=>(
+            <div key={w.id} style={{display:'flex',alignItems:'center',gap:10,padding:'8px 0',borderBottom:i<settings.widgets.length-1?`1px solid ${TH.border}`:'none'}}>
+              <button onClick={()=>setSettings(s=>({...s,widgets:s.widgets.map((ww,ii)=>ii===i?{...ww,show:!ww.show}:ww)}))}
+                style={{background:w.show?'#1D4ED8':TH.progBg,border:'none',borderRadius:20,width:36,height:20,cursor:'pointer',position:'relative',flexShrink:0}}>
+                <div style={{position:'absolute',top:2,left:w.show?18:2,width:16,height:16,borderRadius:'50%',background:'white',transition:'left .2s'}}/>
+              </button>
+              <input value={w.name} onChange={e=>setSettings(s=>({...s,widgets:s.widgets.map((ww,ii)=>ii===i?{...ww,name:e.target.value}:ww)}))}
+                style={{flex:1,border:`1px solid ${TH.border}`,borderRadius:12,padding:'6px 10px',fontSize:12,fontFamily:'inherit',background:TH.inputBg,color:TH.text}}/>
+            </div>
+          ))}
+          <div style={{fontSize:10,color:TH.textSub,marginTop:8,lineHeight:1.5}}>
+            📝 "Notas del día" controla si se muestran las notas en vista semana y día
+          </div>
+        </Card>
+      </div>
+    </div>
+  )}
+
+  {/* WIDGET MODALS */}
+  {widgetModal==='overtime'&&(
+    <ModalShell th={TH} title={`⏰ ${settings.widgets.find(w=>w.id==='overtime')?.name||'HORAS EXTRAS 💶'}`} onClose={()=>setWidgetModal(null)}>
+      <div style={{marginBottom:12,background:dm?'#1A1000':'#FFFBEB',borderRadius:14,padding:12,textAlign:'center'}}>
+        <div style={{fontSize:28,fontWeight:800,color:'#F59E0B'}}>{overtimeCobrar.toFixed(1)}h</div>
+        <div style={{fontSize:11,color:TH.textSub}}>Horas a cobrar en {td.getFullYear()}</div>
+      </div>
+      {overtimeRows.filter(r=>r.tipo!=='librar').length===0
+        ?<p style={{textAlign:'center',color:TH.textSub,fontSize:13}}>Sin horas a cobrar registradas.</p>
+        :overtimeRows.filter(r=>r.tipo!=='librar').map((r,i)=>(
+          <div key={i} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'8px 0',borderBottom:`1px solid ${TH.border}`}}>
+            <div>
+              <span style={{fontWeight:700,color:TH.text,fontSize:12}}>{r.dk}</span>
+              <span style={{color:TH.textSub,marginLeft:8,fontSize:11}}>{r.d>0&&`☀️${r.d}h `}{r.n>0&&`🌙${r.n}h `}{r.fd>0&&`🎉${r.fd}h `}</span>
+              {r.motivo&&<div style={{fontSize:10,color:TH.textSub}}>📝 {r.motivo}</div>}
+            </div>
+            <span style={{fontWeight:800,color:'#F59E0B',fontSize:12}}>{r.total.toFixed(1)}h</span>
+          </div>
+        ))
+      }
+    </ModalShell>
+  )}
+  {widgetModal==='trials_done'&&(
+    <ModalShell th={TH} title={`⚖️ ${settings.widgets.find(w=>w.id==='trials_done')?.name||'Juicios realizados'}`} onClose={()=>setWidgetModal(null)}>
+      <div style={{marginBottom:12,background:dm?'#1A0F2E':'#F3E8FF',borderRadius:14,padding:12,textAlign:'center'}}>
+        <div style={{fontSize:28,fontWeight:800,color:'#8B5CF6'}}>{trialsDone.length}</div>
+        <div style={{fontSize:11,color:TH.textSub}}>Juicios realizados en {td.getFullYear()}</div>
+      </div>
+      {trialsDone.length===0?<p style={{textAlign:'center',color:TH.textSub,fontSize:13}}>Sin juicios registrados.</p>
+        :trialsDone.map((t,i)=>(
+          <div key={i} style={{padding:'10px 0',borderBottom:`1px solid ${TH.border}`}}>
+            <div style={{fontWeight:800,color:TH.text,fontSize:13}}>{t.dk}</div>
+            <div style={{fontSize:11,color:TH.textSub,marginTop:3}}>
+              {t.juzgado&&<span>⚖️ {t.juzgado} · </span>}
+              {t.horaInicio&&<span>🕐 {t.horaInicio}{t.horaFin&&`–${t.horaFin}`}</span>}
+              {t.termMunicipal&&<span> · {t.termMunicipal==='dentro'?'📍 Dentro':'📍 Fuera'}</span>}
+            </div>
+          </div>
+        ))
+      }
+    </ModalShell>
+  )}
+  {widgetModal==='trials_future'&&(
+    <ModalShell th={TH} title={`📅 ${settings.widgets.find(w=>w.id==='trials_future')?.name||'Juicios futuros'}`} onClose={()=>setWidgetModal(null)}>
+      <div style={{marginBottom:12,background:dm?'#1A0F2E':'#F3E8FF',borderRadius:14,padding:12,textAlign:'center'}}>
+        <div style={{fontSize:28,fontWeight:800,color:'#8B5CF6'}}>{trialsFuture.length}</div>
+        <div style={{fontSize:11,color:TH.textSub}}>Próximos juicios</div>
+      </div>
+      {trialsFuture.length===0?<p style={{textAlign:'center',color:TH.textSub,fontSize:13}}>No hay juicios futuros.</p>
+        :trialsFuture.map((t,i)=>(
+          <div key={i} style={{padding:'10px 12px',borderRadius:12,marginBottom:8,
+            background:i===0?(dm?'#1A0F2E':'#F3E8FF'):(dm?TH.cardBg2:'#FAFAFA'),
+            border:i===0?'2px solid #8B5CF6':`1px solid ${TH.border}`}}>
+            <div style={{fontWeight:800,color:i===0?'#8B5CF6':TH.text,fontSize:13,display:'flex',alignItems:'center',gap:6}}>
+              {i===0&&<span style={{fontSize:9,background:'#8B5CF6',color:'white',borderRadius:8,padding:'1px 6px',fontWeight:700}}>PRÓXIMO</span>}
+              {t.dk}
+            </div>
+            <div style={{fontSize:11,color:TH.textSub,marginTop:4}}>
+              {t.juzgado&&<div>⚖️ {t.juzgado}</div>}
+              {t.horaInicio&&<div>🕐 {t.horaInicio}{t.horaFin&&` – ${t.horaFin}`}</div>}
+              {t.termMunicipal&&<div>{t.termMunicipal==='dentro'?'📍 Dentro':'📍 Fuera'} del término</div>}
+            </div>
+          </div>
+        ))
+      }
+    </ModalShell>
+  )}
+
+  {/* IMPORT */}
+  {importModal&&(
+    <ModalShell th={TH} title="⬆ Importar datos" onClose={()=>setImportModal(false)}>
+      <div style={{background:dm?'#1A1400':'#FEF9C3',borderRadius:12,padding:'10px 14px',fontSize:12,color:'#92400E',marginBottom:12}}>
+        Pega el JSON exportado. Se sobreescribirán todos los datos.
+      </div>
+      <textarea value={importText} onChange={e=>setImportText(e.target.value)} placeholder='Pega el JSON aquí…' rows={7}
+        style={{width:'100%',borderRadius:12,border:`1.5px solid ${TH.border}`,padding:'10px 12px',fontSize:10,fontFamily:'monospace',
+          boxSizing:'border-box',background:TH.cardBg2,resize:'none',color:TH.text}}/>
+      <div style={{display:'flex',gap:8,marginTop:12}}>
+        <Btn full outline onClick={()=>setImportModal(false)}>Cancelar</Btn>
+        <Btn full disabled={!importText.trim()} color='#16A34A' onClick={doImport}>✅ Importar</Btn>
+      </div>
+    </ModalShell>
+  )}
+
+  </div>);
 }
 
-function copiarFicha(){
-  const txt=generarTexto();
-  const btn=document.getElementById('btnCopy'),toast=document.getElementById('toast');
-  const ok=()=>{btn.textContent='✓ Ficha copiada — pégala en el chat';btn.classList.add('ok');toast.classList.add('show');setTimeout(()=>{btn.textContent='⎘ Copiar ficha para generar comparecencia';btn.classList.remove('ok');toast.classList.remove('show');},3000);};
-  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(txt).then(ok).catch(()=>fallback(txt,ok));}else{fallback(txt,ok);}
-}
-function fallback(txt,cb){const ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;top:0;left:0;opacity:0;font-size:16px';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');cb();}catch(e){}document.body.removeChild(ta);}
-
-document.addEventListener('input',guardar);
-document.addEventListener('change',guardar);
-if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
-restaurar();
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+<script>
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',()=>{
+      navigator.serviceWorker.register('./sw.js').catch(e=>console.log('SW',e));
+    });
+  }
 </script>
 </body>
 </html>

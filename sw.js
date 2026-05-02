@@ -1,4 +1,4 @@
-const CACHE='cal-policial-v11';
+const CACHE='cal-policial-v12';
 const ASSETS=['./','./index.html','./manifest.json','./icon.svg'];
 
 self.addEventListener('install',e=>{
@@ -14,20 +14,20 @@ self.addEventListener('activate',e=>{
 });
 
 self.addEventListener('fetch',e=>{
-  // Solo intercepta GETs
   if(e.request.method!=='GET')return;
-  
+
   e.respondWith(
-    fetch(e.request)
-      .then(res=>{
-        // Si llega respuesta de red, actualiza caché y devuelve
-        const clone=res.clone();
-        caches.open(CACHE).then(c=>c.put(e.request,clone));
-        return res;
+    caches.open(CACHE).then(cache=>
+      cache.match(e.request).then(cached=>{
+        // Actualiza caché en background siempre
+        const fetchPromise=fetch(e.request).then(res=>{
+          if(res&&res.status===200)cache.put(e.request,res.clone());
+          return res;
+        }).catch(()=>{});
+
+        // Sirve caché si existe (inmediato), si no espera red
+        return cached||fetchPromise;
       })
-      .catch(()=>
-        // Sin red → sirve desde caché (modo offline)
-        caches.match(e.request)
-      )
+    )
   );
 });
